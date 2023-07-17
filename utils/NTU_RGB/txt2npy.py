@@ -113,11 +113,13 @@ if __name__ == '__main__':
     alread_exist_dict = dict(zip(alread_exist, len(alread_exist) * [True]))
      
     for ind, each in enumerate(datalist):
-        _print_toolbar(ind * 1.0 / len(datalist),
+        """_print_toolbar(ind * 1.0 / len(datalist),
                        '({:>5}/{:<5})'.format(
                            ind + 1, len(datalist)
-                       ))
+                       ))"""
+        print(S)
         S = int(each[1:4])
+        
         if S not in step_ranges:
             continue 
         if each+'.skeleton.npy' in alread_exist_dict:
