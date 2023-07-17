@@ -124,8 +124,8 @@ from utils.NTU_RGB.txt2npy import _load_missing_file, _print_toolbar, _end_toolb
 import os
 import numpy as np 
 user_name = 'user'
-save_npy_path = r'dataset\\NTU_RGB+D\\numpyed\\'
-load_txt_path = r'dataset\\NTU_RGB+D\\raw\\'
+save_npy_path = r'dataset/NTU_RGB+D/numpyed/'
+load_txt_path = r'dataset/NTU_RGB+D/raw/'
 missing_file_path =r'utils/NTU_RGB/NTU_RGBD120_samples_with_missing_skeletons.txt'
 step_ranges = list(range(0,100)) # just parse range, for the purpose of paralle running. 
 
