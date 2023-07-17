@@ -139,7 +139,7 @@ for ind, each in enumerate(datalist):
                     '({:>5}/{:<5})'.format(
                         ind + 1, len(datalist)
                     ))"""
-    print(each[1:4]) 
+    print(each) 
     S = int(each[1:4])
     if S not in step_ranges:
         continue 
