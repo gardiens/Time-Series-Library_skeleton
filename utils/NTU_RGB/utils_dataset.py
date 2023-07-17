@@ -1,0 +1,237 @@
+""" Everything usefull while parsing some NTU dataset ! """
+
+import os
+import numpy as np
+import pandas as pd
+class time_serie_NTU:
+
+    """ Classe de Time_series qui va être la base de notre dataset"""
+    """ File to display the lementary objects used in Dataset. """
+
+
+    def __init__(self,input_len:int=30,output_len:int=30,data_path='./dataset/NTU_RGB+D/numpyed/',file_extension='.skeleton.npy',get_cat_value=True,get_time_value=False,categorical_columns=['nbodys', 'actor', 'acti', 'camera', 'scene', 'repet']) -> None:
+        """_summary_
+
+        Parameters
+        ----------
+        row : df
+            un row d'un pandas dataframe qui contient les informations d'un squelettes
+         seq_len : int, optional
+            longueur de la séquence d'entrée, by default 30
+        out_len : int, optional
+            longueur de la séquence de sortie, by default 30
+        data_path : str, optional
+            path qui contient tous les .npy des skeletons , by default './dataset/NTU_RGB+D/numpyed/'
+
+        file_extension : str, optional
+            _description_, by default '.skeleton.npy'
+        get_cat_value : bool, optional
+            true si on veut les valeurs catégoriques, by default True
+        get_time_value : bool, optional
+            renvoie en plus un array avec le différents temps, by default False
+        categorical_columns : list, optional
+            ensembles des données catégoriques que l'on veut garder ou non, by default ['nbodys', 'actor', 'acti', 'camera', 'scene', 'repet']
+        """
+
+        self.input_len=input_len
+        self.output_len=output_len
+
+        self.data_path=data_path
+        self.file_extension=file_extension
+        self.get_cat_value=get_cat_value
+        self.categorical_columns=categorical_columns
+        self.get_time_value=get_time_value
+        self.intervalle_frame=1/30 #* On suppose que c'est du 30 fps
+    def __len__(self) -> int:
+        return len(self.row)
+    
+    def get_data(self,row):
+        '''Renvoie une sortie de la forme :
+        entry_data, label, cat_data, time_value si les valeurs sont bien bonne
+        entry_data est de la forme (nb_joins,nb_frames, nb_dim ( 3 ici))'''
+        mat_path=os.path.join(self.data_path,row['filename']+self.file_extension) #! WARNING ON THE EXTENSION OF THE .NPY
+        res=[]
+        data=np.load(mat_path,allow_pickle=True).item()
+        #* On récupère la valeur du body intéressant
+        num_body=row['num_body']
+        data=np.load(mat_path,allow_pickle=True).item()[f'skel_body{num_body}'] #* C'est une matrice de la forme [frames,nb_joints,3]
+        
+        debut_frame=int(row['debut_frame'])
+        #print(debut_frame)
+        begin= data[debut_frame:debut_frame+self.input_len] #* On prend les input_len premières frames
+        label= data[debut_frame+self.input_len:debut_frame+self.input_len+self.output_len]     #* On prend les output_len suivantes
+        #* On va permuter les colonnes pour que la 2ème colonne correspondent au nombre de frame ( pour des détails techniques de FEDformers et son pred_len!!)
+        begin=begin.transpose((1,0,2))
+        label=label.transpose((1,0,2))
+        if self.get_time_value:
+            time_value_enc=np.arange(debut_frame,debut_frame+self.input_len)*self.intervalle_frame #* Encoding du temps, représente x_mark_enc pour FEDformers
+            time_value_dec=np.arange(debut_frame+self.input_len,debut_frame+self.input_len+self.output_len)*self.intervalle_frame #* Decoding du temps entre deux frames , représente x_mark_dec pour FedFormers
+            #time_value=np.arange(debut_frame+self.input_len)*self.intervalle_frame
+            res.append(time_value_enc)
+            res.append(time_value_dec)
+        if self.get_cat_value:
+            
+            mat_cat_data=row[self.categorical_columns].values #* C'est un np.array avec les différentes 
+            res.append(mat_cat_data)
+        
+        
+        if len(res)==0:
+            return begin,label
+        else:
+            return begin,label,res
+
+    
+ 
+import re
+def extract_integers(file_name):
+    """ Extract the parameters from the scene file name."""
+    file_name=file_name.split(".")[0]
+    pattern = r'S(\d{3})C(\d{3})P(\d{3})R(\d{3})A(\d{3})'
+    match = re.match(pattern, file_name)
+    if match:
+        integers = [int(match.group(i)) for i in range(1, 6)]
+        return integers
+    else:
+        return []
+
+
+
+
+    
+
+
+
+def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:str='./dataset/NTU_RGB+D/summary_NTU/',name_csv="summary_NTU.csv"):
+    """créer un .csv qui permet à partir des differents .npy de résumer les valeurs importantes
+
+    Parameters
+    ----------
+    path_data_npy : str, optional
+       path vers le dossier où sont stocker les .npy, by default './dataset/NTU_RGB+D/numpyed/'
+    path_csv : str, optional
+        path où on va stocker le .csv, by default './dataset/NTU_RGB+D/summary_NTU/'
+    name_csv : str, optional
+        nom du .csv qu'on va sauvegarder, by default "summary_NTU.csv"
+
+    Returns
+    -------
+    df  
+        le dataframe correspondant au .csv
+    path_csv
+        le path du .csv
+    """
+
+    print('création d un .csv résumant les données NTU RGB+D')
+    if not  os.path.exists(path_csv):
+        os.mkdir(name_csv)
+    result=[]
+    result_nb_frames=[]
+    result_debut_frame=[]
+    maxnbodys=0
+    for file in os.listdir(path_data_npy):
+
+        if file.endswith('.npy'):
+            file_path=os.path.join(path_data_npy,file)
+            data=np.load(file_path,allow_pickle=True).item()
+            # dict avec comme colonnes dict_keys(['file_name', 'nbodys', 'njoints', 'skel_body0'])
+            filename=data['file_name']
+            
+            nbodys=int(max(data['nbodys']))
+            njoints=int(data['njoints'])
+            liste=extract_integers(file.split('.')[0])
+            scene,camera,actor,repet,acti=liste
+            
+            nb_frames=[]
+            debut_frame=[]
+            array=np.array(nbodys)
+            for k in range(nbodys):
+                nb_frames.append(data[f'skel_body{k}'].shape[0]) # Nombre de frame pour chaque body!
+                debut_frame.append(np.argmax(array>k))
+            result.append([nbodys,filename,actor,acti,camera,scene,repet,njoints])
+            result_nb_frames.append(nb_frames)
+            result_debut_frame.append(debut_frame)
+            maxnbodys=max(maxnbodys,nbodys)
+    L=['nbodys','filename','actor','acti','camera','scene','repet','njoints']
+    dtype={k:int for k in L}
+    dtype['filename']=str
+    df1=pd.DataFrame(result,columns=['nbodys','filename','actor','acti','camera','scene','repet','njoints'])
+    df2=pd.DataFrame(result_nb_frames,columns=[f'nb_frames_body_{k}' for k in range(maxnbodys)])
+    df3=pd.DataFrame(result_debut_frame,columns=[f'debut_frame_body_{k}' for k in range(maxnbodys)])
+    df=pd.concat([df1,df2,df3],axis=1)
+    df.infer_objects()
+    df.to_csv(os.path.join(path_csv,name_csv),index=False )
+
+    return df ,os.path.join(path_csv,name_csv)
+
+def preprocess_csv_RGB_to_skeletondf(seq_len:int=30,out_len:int=30,path_csv="./dataset/NTU_RGB+D/summary_NTU/summary_NTU.csv",path_data_npy:str='./dataset/NTU_RGB+D/numpyed/'):
+    """récupère un .csv plus ou moins preprocess pour le transformer en un autre .csv qui va être plus facile à utiliser . il est de la forme [ des données catégorielles, num_body,nb_frames]
+
+    Parameters
+    ----------
+    seq_len : int, optional
+        longueur de la séquence d'entrée, by default 30
+    out_len : int, optional
+        longueur de la séquence de sortie, by default 30
+    path_csv : str, optional
+        path vers le csv initial qui contient bcp d'informations, by default "./dataset/NTU_RGB+D/summary_NTU/summary_NTU.csv"
+    path_data_npy : str, optional
+        path qui contient tous les .npy des skeletons , by default './dataset/NTU_RGB+D/numpyed/'
+
+    Returns
+    -------
+    df  
+        le dataframe correspondant au .csv
+    path_csv
+        le path du .csv
+    """
+    #TODO: we may have some issue with NaN, and on the os.path.exists IL FAUT RAJOUTER LA DATA_PATH je pense
+    if not os.path.exists(path_csv):
+        _,path= summary_csv_NTU(path_csv=path_csv,seq_len=seq_len,out_len=out_len,path_data_npy=path_data_npy)
+    df=pd.read_csv(path_csv)
+    #
+    categorical=['nbodys', 'filename', 'actor', 'acti', 'camera', 'scene', 'repet']
+    list_user=[]
+    maxnbodys=max(df['nbodys'])
+    for k in range(maxnbodys):
+        list_user.append([f'nb_frames_body_{k}',f'debut_frame_body_{k}'])
+    
+    list_df=[]
+    for k in range(maxnbodys):
+        list_df.append(df[categorical+list_user[k]].copy().dropna(subset=[f'nb_frames_body_{k}']))
+        list_df[k]['num_body']=k # Set the numéro of body correspondant
+        list_df[k].rename(columns={f'nb_frames_body_{k}':'nb_frames',f'debut_frame_body_{k}':'debut_frame'},inplace=True)
+    
+    vrai_df=pd.concat(list_df)
+    vrai_df.infer_objects()
+    vrai_df.to_csv(os.path.join(os.path.dirname(path_csv),f'liste_NTU_skeleton_{maxnbodys}.csv'),index=False)
+    return vrai_df,os.path.join(os.path.dirname(path_csv),f'liste_NTU_skeleton_{maxnbodys}.csv')
+
+
+
+def data_rentrer_dans_DATASET_NTU(path_csv:str='./dataset/NTU_RGB+D/summary_NTU/liste_NTU_skeleton_4.csv',seq_len:int=30,out_len:int=30,path_data_npy:str='./dataset/NTU_RGB+D/numpyed/'):
+    """Fonction qu'on va faire rentrer dans le torch Dataset de NTU RGB+D
+
+    Parameters
+    ----------
+    path_csv : str, optional
+        le path de liste_NTU_skeleton_maxnbodys_, by default './dataset/NTU_RGB+D/summary_NTU/liste_NTU_skeleton_3.csv'
+    seq_len : int, optional
+        longueur de la séquence d'entrée, by default 30
+    out_len : int, optional
+        longueur de la sortie à prédire, by default 30
+    #TODO: Rajouter des conditions ici si on veut garder des donées plus spécifiques? 
+    Returns
+    -------
+    un dataframe de la même forme que le précédent mais uniquement avec ceux qui vérifient les bonnes conditions 
+    """
+    #! Pour d'autre parsing sur le dataset, il faut changer cette fonction uniquement. 
+    if not os.path.exists(path_csv):
+        print('on récupère tous les squelettes des données',path_csv)
+        _,path= preprocess_csv_RGB_to_skeletondf(seq_len,out_len,os.path.join(os.path.dirname(path_csv),'summary_NTU.csv'),path_data_npy='./dataset/NTU_RGB+D/numpyed/')
+    
+    df=pd.read_csv(path_csv)
+
+    #On va faire un filtre sur les données
+    nvdf=df[(df['nb_frames']>=seq_len+out_len+df['debut_frame']) & (df['num_body']<=2)].dropna() #* CEST ICI QUON RECUPERE SEULEMENT CEUX QUI ONT UN NOMBRE DE FRAME SUFFISANT, A CHANGER SI BESOIn!!
+
+    return nvdf 
