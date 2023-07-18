@@ -11,8 +11,8 @@ python -u run.py \
   --data NTU \
   --features M \
   --seq_len 96 \
-  --label_len pred_len \
-  --pred_len pred_len \
+  --label_len $pred_len \
+  --pred_len $pred_len \
   --e_layers 2 \
   --d_layers 1 \
   --factor 3 \
