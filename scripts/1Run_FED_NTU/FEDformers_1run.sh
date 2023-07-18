@@ -1,4 +1,4 @@
-
+#!/bin/bash
 model_name=FEDformer
 
 python -u run.py \

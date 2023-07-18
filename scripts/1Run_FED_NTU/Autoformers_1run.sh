@@ -1,3 +1,4 @@
+#!/bin/bash
 model_name=Autoformer
 pred_len=32
 python -u run.py \
