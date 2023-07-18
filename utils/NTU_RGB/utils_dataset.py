@@ -129,7 +129,7 @@ def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:st
 
     print('----création d un .csv résumant les données NTU RGB+D---',flush=True)
     if not  os.path.exists(path_csv):
-        os.mkdir(name_csv)
+        os.mkdir(path_csv)
     result=[]
     result_nb_frames=[]
     result_debut_frame=[]
