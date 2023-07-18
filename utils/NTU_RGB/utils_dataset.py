@@ -48,9 +48,8 @@ class time_serie_NTU:
     def get_data(self,row):
         '''Renvoie une sortie de la forme :
         entry_data, label, cat_data, time_value si les valeurs sont bien bonne
-        entry_data est de la forme (nb_joins,nb_frames, nb_dim ( 3 ici))'''
+        entry_data est de la forme (nb_frames,nb_joints nb_dim ( 3 ici))'''
         mat_path=os.path.join(self.data_path,row['filename']+self.file_extension) #! WARNING ON THE EXTENSION OF THE .NPY
-        res=[]
         data=np.load(mat_path,allow_pickle=True).item()
         #* On récupère la valeur du body intéressant
         num_body=row['num_body']
@@ -60,26 +59,33 @@ class time_serie_NTU:
         #print(debut_frame)
         begin= data[debut_frame:debut_frame+self.input_len] #* On prend les input_len premières frames
         label= data[debut_frame+self.input_len:debut_frame+self.input_len+self.output_len]     #* On prend les output_len suivantes
-        #* On va permuter les colonnes pour que la 2ème colonne correspondent au nombre de frame ( pour des détails techniques de FEDformers et son pred_len!!)
+        """#* On va permuter les colonnes pour que la 2ème colonne correspondent au nombre de frame ( pour des détails techniques de FEDformers et son pred_len!!)
         begin=begin.transpose((1,0,2))
-        label=label.transpose((1,0,2))
+        label=label.transpose((1,0,2))"""
+        #! Détail technique: à priori les données sont de la formes [nb_frames,nb_joints,3] mais les réseauxde neurones acceptent un format [nb_frames,nb_features] donc on va faire un reshape
+        begin=begin.reshape(begin.shape[0],-1)
+        label=label.reshape(label.shape[0],-1)
         if self.get_time_value:
             time_value_enc=np.arange(debut_frame,debut_frame+self.input_len)*self.intervalle_frame #* Encoding du temps, représente x_mark_enc pour FEDformers
             time_value_dec=np.arange(debut_frame+self.input_len,debut_frame+self.input_len+self.output_len)*self.intervalle_frame #* Decoding du temps entre deux frames , représente x_mark_dec pour FedFormers
             #time_value=np.arange(debut_frame+self.input_len)*self.intervalle_frame
-            res.append(time_value_enc)
-            res.append(time_value_dec)
+            time_value_enc=np.tile(time_value_enc,(begin.shape[1],1)).transpose((1,0)) #* On fait un tile pour avoir la même valeur pour chaque joint]))
+            time_value_dec=np.tile(time_value_dec,(label.shape[1],1)).transpose((1,0)) #* On fait un tile pour avoir la même valeur pour chaque joint]))
         if self.get_cat_value:
-            
             mat_cat_data=row[self.categorical_columns].values #* C'est un np.array avec les différentes 
-            res.append(mat_cat_data)
-        
-        
-        if len(res)==0:
-            return begin,label
-        else:
-            return begin,label,res
 
+     
+        #*  renvoie la solution de la bonne forme ! 
+        if self.get_time_value and self.get_cat_value:
+            return begin,label,time_value_enc,time_value_dec,mat_cat_data
+    
+        if self.get_time_value:
+            return begin,label,time_value_enc,time_value_dec
+        if self.get_cat_value:
+            return begin,label,mat_cat_data
+        else:
+            return begin,label
+       
     
  
 import re

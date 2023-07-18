@@ -8,13 +8,12 @@ from exp.exp_anomaly_detection import Exp_Anomaly_Detection
 from exp.exp_classification import Exp_Classification
 import random
 import numpy as np
-import wandb
+
 if __name__ == '__main__':
     fix_seed = 2021
     random.seed(fix_seed)
     torch.manual_seed(fix_seed)
     np.random.seed(fix_seed)
-    wandb.login()
 
     parser = argparse.ArgumentParser(description='TimesNet')
 

@@ -9,7 +9,7 @@ import os
 import time
 import warnings
 import numpy as np
-import wandb
+
 warnings.filterwarnings('ignore')
 
 
@@ -68,7 +68,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
                 pred = outputs.detach().cpu()
                 true = batch_y.detach().cpu()
-
+        
                 loss = criterion(pred, true)
 
                 total_loss.append(loss)
@@ -81,10 +81,10 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         train_data, train_loader = self._get_data(flag='train')
         vali_data, vali_loader = self._get_data(flag='val')
         test_data, test_loader = self._get_data(flag='test')
-        wandb.init(project='Time-Series-Library',
+        """wandb.init(project='Time-Series-Library',
                    name=self.args.model+'_'+self.args.data+'_'+self.args.features,
                    config=self.args,
-                   tags=[self.args.model, self.args.data, self.args.features])
+                   tags=[self.args.model, self.args.data, self.args.features])"""
         path = os.path.join(self.args.checkpoints, setting)
         if not os.path.exists(path):
             os.makedirs(path)
@@ -141,7 +141,10 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
                     f_dim = -1 if self.args.features == 'MS' else 0
                     outputs = outputs[:, -self.args.pred_len:, f_dim:]
+                    #print(" la len",self.args.pred_len)
                     batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
+                    #print("la len",self.args.pred_len)
+                    #print("les batchs",outputs.shape,batch_y.shape)
                     loss = criterion(outputs, batch_y)
                     train_loss.append(loss.item())
                 
@@ -178,7 +181,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             #* Wandb things 
             early_stopping(vali_loss, self.model, path)
             metrics = {'train_loss': train_loss,"Steps":train_steps, 'vali_loss': vali_loss, 'test_loss': test_loss, 'epoch': epoch}
-            wandb.log(metrics)
+            """wandb.log(metrics)"""
             if early_stopping.early_stop:
                 print("Early stopping")
                 break

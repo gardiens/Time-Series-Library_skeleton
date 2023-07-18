@@ -116,13 +116,18 @@ class DataEmbedding(nn.Module):
                                                     freq=freq) if embed_type != 'timeF' else TimeFeatureEmbedding(
             d_model=d_model, embed_type=embed_type, freq=freq)
         self.dropout = nn.Dropout(p=dropout)
+        self.embed_type=embed_type
 
     def forward(self, x, x_mark):
         if x_mark is None:
             x = self.value_embedding(x) + self.position_embedding(x)
         else:
-            x = self.value_embedding(
-                x) + self.temporal_embedding(x_mark) + self.position_embedding(x)
+            print('embed_type',self.embed_type)
+            if  self.embed_type=='timeNTU':
+                x=self.value_embedding(x)
+            else:
+                x = self.value_embedding(
+                    x) + self.temporal_embedding(x_mark) + self.position_embedding(x)
         return self.dropout(x)
 
 
@@ -136,12 +141,15 @@ class DataEmbedding_wo_pos(nn.Module):
                                                     freq=freq) if embed_type != 'timeF' else TimeFeatureEmbedding(
             d_model=d_model, embed_type=embed_type, freq=freq)
         self.dropout = nn.Dropout(p=dropout)
-
+        self.embed_type=embed_type
     def forward(self, x, x_mark):
         if x_mark is None:
             x = self.value_embedding(x)
         else:
-            x = self.value_embedding(x) + self.temporal_embedding(x_mark)
+            if self.embed_type=='timeNTU':
+                return self.value_embedding(x)
+            else:
+                x = self.value_embedding(x) + self.temporal_embedding(x_mark)
         return self.dropout(x)
 
 
