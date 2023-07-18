@@ -192,7 +192,7 @@ def preprocess_csv_RGB_to_skeletondf(seq_len:int=30,out_len:int=30,path_csv="./d
     """
     #TODO: we may have some issue with NaN, and on the os.path.exists IL FAUT RAJOUTER LA DATA_PATH je pense
     if not os.path.exists(path_csv):
-        _,path= summary_csv_NTU(path_csv=path_csv,path_data_npy=path_data_npy)
+        _,path= summary_csv_NTU(path_csv=os.path.dirname(path_csv),path_data_npy=path_data_npy,name_csv=os.path.basename(path_csv))
     df=pd.read_csv(path_csv)
     #
     categorical=['nbodys', 'filename', 'actor', 'acti', 'camera', 'scene', 'repet']
@@ -234,7 +234,7 @@ def data_rentrer_dans_DATASET_NTU(path_csv:str='./dataset/NTU_RGB+D/summary_NTU/
     if not os.path.exists(path_csv):
         print('on récupère tous les squelettes des données',path_csv)
         _,path= preprocess_csv_RGB_to_skeletondf(seq_len,out_len,os.path.join(os.path.dirname(path_csv),'summary_NTU.csv'),path_data_npy='./dataset/NTU_RGB+D/numpyed/')
-    
+         
     df=pd.read_csv(path_csv)
 
     #On va faire un filtre sur les données
