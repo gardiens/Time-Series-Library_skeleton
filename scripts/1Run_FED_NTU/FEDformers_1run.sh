@@ -6,9 +6,9 @@ python -u run.py \
   --is_training 1 \
   --root_path './dataset/NTU_RGB+D/' \
   --data_path 'numpyed/'\
-  --model_id Exchange_96_96_FED \
+  --model_id FED_32_32 \
   --model $model_name \
-  --data ETTh1 \
+  --data NTU \
   --features M \
   --seq_len 32 \
   --label_len 32 \
