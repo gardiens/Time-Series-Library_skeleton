@@ -192,7 +192,7 @@ def preprocess_csv_RGB_to_skeletondf(seq_len:int=30,out_len:int=30,path_csv="./d
     """
     #TODO: we may have some issue with NaN, and on the os.path.exists IL FAUT RAJOUTER LA DATA_PATH je pense
     if not os.path.exists(path_csv):
-        _,path= summary_csv_NTU(path_csv=path_csv,seq_len=seq_len,out_len=out_len,path_data_npy=path_data_npy)
+        _,path= summary_csv_NTU(path_csv=path_csv,path_data_npy=path_data_npy)
     df=pd.read_csv(path_csv)
     #
     categorical=['nbodys', 'filename', 'actor', 'acti', 'camera', 'scene', 'repet']
