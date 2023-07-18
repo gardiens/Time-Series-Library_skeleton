@@ -12,6 +12,7 @@ class Model(nn.Module):
     def __init__(self, configs, individual=False):
         """
         individual: Bool, whether shared model among different variates.
+        à priori False 
         """
         super(Model, self).__init__()
         self.task_name = configs.task_name
