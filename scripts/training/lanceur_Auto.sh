@@ -9,7 +9,7 @@ NB_GPU=2
 #SBATCH --qos=default
 #SBATCH --output=logs/training/${MODEL_NAME}/out.stdout
 #SBATCH --error=logs/training/${MODEL_NAME}/err.stderr
-#SBATCH --job-name=${MODEL_NAME}GF
+#SBATCH --job-name=${MODEL_NAME}FF
 #SBATCH --gres=gpu:${NB_GPU}
 
 function restart
