@@ -9,9 +9,10 @@ NB_GPU=2
 #SBATCH --qos=default
 #SBATCH --output=logs/training/${MODEL_NAME}/out.stdout
 #SBATCH --error=logs/training/${MODEL_NAME}/err.stderr
-#SBATCH --job-name=${MODEL_NAME}FF
-#SBATCH --gres=gpu:${NB_GPU}
-
+#SBATCH --job-name=ATrain
+#SBATCH --gres=gpu:2
+#SBATCH --mail-user=pierrick.bournez@student-cs.fr
+#SBATCH --mail-type=ALL
 function restart
 {
     echo "Calling restart" >> $LOG_STDOUT

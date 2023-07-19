@@ -3,8 +3,10 @@
 #SBATCH --qos=default
 #SBATCH --output=logs/training/FEDFormer/outtest.stdout
 #SBATCH --error=logs/training/FEDFormer/errtest.stderr
-#SBATCH --job-name=FEDFormerGF1
+#SBATCH --job-name=TFFor
 #SBATCH --gres=gpu:2
+#SBATCH --mail-user=pierrick.bournez@student-cs.fr
+#SBATCH --mail-type=ALL
 MODEL_NAME=FEDformer
 LOG_STDOUT="logs/training/FEDFormer/out_test.stdout"
 LOG_STDERR="logs/training/FEDFormer/err_test.stderr"
