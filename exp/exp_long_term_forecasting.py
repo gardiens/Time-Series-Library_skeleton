@@ -10,9 +10,8 @@ import time
 import warnings
 import numpy as np
 from setuptools import distutils
-from setuptools import distutils
 
-print(distutils.__version__, dir(distutils))
+
 from torch.utils.tensorboard import SummaryWriter
 
 warnings.filterwarnings('ignore')
@@ -171,7 +170,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     print("\titers: {0}, epoch: {1} | loss: {2:.7f}".format(i + 1, epoch + 1, loss.item(),),flush=True)
                     speed = (time.time() - time_now) / iter_count
                     left_time = speed * ((self.args.train_epochs - epoch) * train_steps - i)
-                    #writer.add_scalar("Loss/train",loss.item(),epoch)
+                    writer.add_scalar("Loss/train",loss.item(),epoch+i)
                     print('\tspeed: {:.4f}s/iter; left time: {:.4f}s'.format(speed, left_time),flush=True)
                     iter_count = 0
                     time_now = time.time()
@@ -190,7 +189,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             
             vali_loss = self.vali(vali_data, vali_loader, criterion)
             test_loss = self.vali(test_data, test_loader, criterion)
-            #writer.add_scalar("Loss/train",train_loss,epoch)
+            writer.add_scalar("Loss/train",train_loss,epoch)
             writer.add_scalar("Loss/vali",vali_loss,epoch)
             writer.add_scalar("Loss/test",test_loss,epoch)
             print("Epoch: {0}, Steps: {1} | Train Loss: {2:.7f} Vali Loss: {3:.7f} Test Loss: {4:.7f}".format(
