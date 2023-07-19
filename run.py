@@ -8,7 +8,7 @@ from exp.exp_anomaly_detection import Exp_Anomaly_Detection
 from exp.exp_classification import Exp_Classification
 import random
 import numpy as np
-
+import tensorboard as tb
 if __name__ == '__main__':
     fix_seed = 2021
     random.seed(fix_seed)
@@ -107,7 +107,7 @@ if __name__ == '__main__':
         args.gpu = args.device_ids[0]
 
     print('Args in experiment:')
-    print(args)
+    print(args,flush=True)
 
     if args.task_name == 'long_term_forecast':
         Exp = Exp_Long_Term_Forecast
@@ -145,10 +145,10 @@ if __name__ == '__main__':
                 args.des, ii)
 
             exp = Exp(args)  # set experiments
-            print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting))
+            print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting),flush=True)
             exp.train(setting)
 
-            print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+            print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting),flush=True)
             exp.test(setting)
             torch.cuda.empty_cache()
     else:
@@ -173,6 +173,6 @@ if __name__ == '__main__':
             args.des, ii)
 
         exp = Exp(args)  # set experiments
-        print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+        print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting),flush=True)
         exp.test(setting, test=1)
         torch.cuda.empty_cache()

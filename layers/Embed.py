@@ -122,7 +122,7 @@ class DataEmbedding(nn.Module):
         if x_mark is None:
             x = self.value_embedding(x) + self.position_embedding(x)
         else:
-            print('embed_type',self.embed_type)
+            #print('embed_type',self.embed_type)
             if  self.embed_type=='timeNTU':
                 x=self.value_embedding(x)
             else:

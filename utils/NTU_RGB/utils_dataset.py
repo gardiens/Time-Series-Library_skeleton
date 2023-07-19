@@ -73,6 +73,8 @@ class time_serie_NTU:
             time_value_dec=np.tile(time_value_dec,(label.shape[1],1)).transpose((1,0)) #* On fait un tile pour avoir la même valeur pour chaque joint]))
         if self.get_cat_value:
             mat_cat_data=row[self.categorical_columns].values #* C'est un np.array avec les différentes 
+            #* change the type to be float64 , MAY BE BUGGY HERE
+            mat_cat_data=mat_cat_data.astype(np.float64)
 
      
         #*  renvoie la solution de la bonne forme ! 
@@ -232,8 +234,7 @@ def data_rentrer_dans_DATASET_NTU(path_csv:str='./dataset/NTU_RGB+D/summary_NTU/
     """
     #! Pour d'autre parsing sur le dataset, il faut changer cette fonction uniquement. 
     if not os.path.exists(path_csv):
-        print('on récupère tous les squelettes des données',path_csv)
-        _,path= preprocess_csv_RGB_to_skeletondf(seq_len,out_len,os.path.join(os.path.dirname(path_csv),'summary_NTU.csv'),path_data_npy='./dataset/NTU_RGB+D/numpyed/')
+        _,path= preprocess_csv_RGB_to_skeletondf(seq_len,out_len,os.path.join(os.path.dirname(path_csv),'summary_NTU.csv'),path_data_npy=path_data_npy)
          
     df=pd.read_csv(path_csv)
 

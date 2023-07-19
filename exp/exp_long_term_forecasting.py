@@ -9,6 +9,7 @@ import os
 import time
 import warnings
 import numpy as np
+from torch.utils.tensorboard import SummaryWriter
 
 warnings.filterwarnings('ignore')
 
@@ -16,7 +17,13 @@ warnings.filterwarnings('ignore')
 class Exp_Long_Term_Forecast(Exp_Basic):
     def __init__(self, args):
         super(Exp_Long_Term_Forecast, self).__init__(args)
-
+        self.writer=SummaryWriter(log_dir=f"runs/{args.data}/{args.model}_{args.model_id}") #* tensorboard
+        writer=self.writer
+        #print("les args",vars(args))
+        # Add in the writer every parameter which are float,int,str or bool
+        writer.add_hparams({k:v for k,v in vars(args).items() if type(v) in [float,int,str,bool]},{})
+        writer.flush()
+        
     def _build_model(self):
         model = self.model_dict[self.args.model].Model(self.args).float()
 
@@ -25,7 +32,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         return model
 
     def _get_data(self, flag):
-        print("les données intéressantes",self.args.get_time_value,self.args.get_cat_value)
+        #print("les données intéressantes",self.args.get_time_value,self.args.get_cat_value)
         data_set, data_loader = data_provider(self.args, flag)
         return data_set, data_loader
 
@@ -83,10 +90,8 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         train_data, train_loader = self._get_data(flag='train')
         vali_data, vali_loader = self._get_data(flag='val')
         test_data, test_loader = self._get_data(flag='test')
-        """wandb.init(project='Time-Series-Library',
-                   name=self.args.model+'_'+self.args.data+'_'+self.args.features,
-                   config=self.args,
-                   tags=[self.args.model, self.args.data, self.args.features])"""
+        print("-----fin du loading du dataset ---",flush=True)
+        writer=self.writer
         path = os.path.join(self.args.checkpoints, setting)
         if not os.path.exists(path):
             os.makedirs(path)
@@ -98,11 +103,9 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
         model_optim = self._select_optimizer()
         criterion = self._select_criterion()
-        print("GARDE FOU",flush=True)
-        print("les valeurs intéressantes, time et cat")
-        print(train_data.__getitem__(0),flush=True)
+        """print(train_data.__getitem__(0),flush=True)
         print(train_data.__getitem__(0)[0].shape,flush=True)
-        print(train_data.__getitem__(0)[1].shape,flush=True)
+        print(train_data.__getitem__(0)[1].shape,flush=True)"""
         if self.args.use_amp:
             scaler = torch.cuda.amp.GradScaler()
         print("----- début du training-----",flush=True)
@@ -161,10 +164,11 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
 
                 if (i + 1) % 100 == 0:
-                    print("\titers: {0}, epoch: {1} | loss: {2:.7f}".format(i + 1, epoch + 1, loss.item()))
+                    print("\titers: {0}, epoch: {1} | loss: {2:.7f}".format(i + 1, epoch + 1, loss.item(),),flush=True)
                     speed = (time.time() - time_now) / iter_count
                     left_time = speed * ((self.args.train_epochs - epoch) * train_steps - i)
-                    print('\tspeed: {:.4f}s/iter; left time: {:.4f}s'.format(speed, left_time))
+                    #writer.add_scalar("Loss/train",loss.item(),epoch)
+                    print('\tspeed: {:.4f}s/iter; left time: {:.4f}s'.format(speed, left_time),flush=True)
                     iter_count = 0
                     time_now = time.time()
 
@@ -179,9 +183,12 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
             print("Epoch: {} cost time: {}".format(epoch + 1, time.time() - epoch_time))
             train_loss = np.average(train_loss)
+            
             vali_loss = self.vali(vali_data, vali_loader, criterion)
             test_loss = self.vali(test_data, test_loader, criterion)
-
+            #writer.add_scalar("Loss/train",train_loss,epoch)
+            writer.add_scalar("Loss/vali",vali_loss,epoch)
+            writer.add_scalar("Loss/test",test_loss,epoch)
             print("Epoch: {0}, Steps: {1} | Train Loss: {2:.7f} Vali Loss: {3:.7f} Test Loss: {4:.7f}".format(
                 epoch + 1, train_steps, train_loss, vali_loss, test_loss))
             #* Wandb things 
@@ -197,8 +204,8 @@ class Exp_Long_Term_Forecast(Exp_Basic):
            
         best_model_path = path + '/' + 'checkpoint.pth'
         self.model.load_state_dict(torch.load(best_model_path))
-
-        return self.model
+        writer.flush()
+        return self.model   
 
     def test(self, setting, test=0):
         test_data, test_loader = self._get_data(flag='test')

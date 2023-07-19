@@ -10,7 +10,7 @@ python -u run.py \
   --model $model_name \
   --data NTU \
   --features M \
-  --seq_len 96 \
+  --seq_len 32 \
   --label_len $pred_len \
   --pred_len $pred_len \
   --e_layers 2 \

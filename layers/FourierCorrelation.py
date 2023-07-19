@@ -28,7 +28,7 @@ def get_frequency_modes(seq_len, modes=64, mode_select_method='random'):
 class FourierBlock(nn.Module):
     def __init__(self, in_channels, out_channels, seq_len, modes=0, mode_select_method='random'):
         super(FourierBlock, self).__init__()
-        print('fourier enhanced block used!')
+        #print('fourier enhanced block used!')
         """
         1D Fourier block. It performs representation learning on frequency domain, 
         it does FFT, linear transform, and Inverse FFT.    
