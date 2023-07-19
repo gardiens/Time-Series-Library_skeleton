@@ -1,18 +1,18 @@
 #!/bin/bash
-model_name=Autoformer
+model_name=FEDformer
 pred_len=32
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 1 \
   --root_path './dataset/NTU_RGB+D/' \
   --data_path 'numpyed/'\
-  --model_id NTU_32_32_training_AUTO \
+  --model_id NTU_32_32_training_${model_name} \
   --model $model_name \
   --data NTU \
   --features M \
   --seq_len 32 \
-  --label_len $pred_len \
-  --pred_len $pred_len \
+  --label_len ${pred_len} \
+  --pred_len ${pred_len} \
   --e_layers 2 \
   --d_layers 1 \
   --factor 3 \

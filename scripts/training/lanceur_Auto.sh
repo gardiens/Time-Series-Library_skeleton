@@ -1,15 +1,16 @@
 #!/bin/bash
 
-#SBATCH --partition=all
-#SBATCH --qos=default
-#SBATCH --output=logs/training/FED/out.stdou
-#SBATCH --error=logs/training/FED/err.stderr
-#SBATCH --job-name=FEDGF
 
-#SBATCH --gres=gpu:4
-MODEL_NAME=Auto
+MODEL_NAME=Autoformer
 LOG_STDOUT="logs/1run/${MODEL_NAME}/out_$SLURM_JOB_ID.stdout"
 LOG_STDERR="logs/1run/${MODEL_NAME}/err_$SLURM_JOB_ID.stderr"
+NB_GPU=4
+#SBATCH --partition=all
+#SBATCH --qos=default
+#SBATCH --output=logs/training/${MODEL_NAME}/out.stdout
+#SBATCH --error=logs/training/${MODEL_NAME}/err.stderr
+#SBATCH --job-name=${MODEL_NAME}GF
+#SBATCH --gres=gpu:${NB_GPU}
 
 function restart
 {
