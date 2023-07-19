@@ -94,8 +94,8 @@ if __name__ == '__main__':
     parser.add_argument('--p_hidden_layers', type=int, default=2, help='number of hidden layers in projector')
 
     #** NTU_RGB
-    parser.add_argument('--get_time_value', type=bool, default=False, help='get time value')
-    parser.add_argument('--get_cat_value', type=bool, default=False, help='get cat value')
+    parser.add_argument('--get_time_value', type=int, default=0, help='get time value,0 if not, 1 if yes')
+    parser.add_argument('--get_cat_value', type=int, default=0, help='get cat value,0 if not, 1 if yes')
     
     args = parser.parse_args()
     args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
