@@ -2,9 +2,9 @@
 
 
 MODEL_NAME=Autoformer
-LOG_STDOUT="logs/1run/${MODEL_NAME}/out_$SLURM_JOB_ID.stdout"
-LOG_STDERR="logs/1run/${MODEL_NAME}/err_$SLURM_JOB_ID.stderr"
-NB_GPU=4
+LOG_STDOUT="logs/training/${MODEL_NAME}/out_$SLURM_JOB_ID.stdout"
+LOG_STDERR="logs/training/${MODEL_NAME}/err_$SLURM_JOB_ID.stderr"
+NB_GPU=2
 #SBATCH --partition=all
 #SBATCH --qos=default
 #SBATCH --output=logs/training/${MODEL_NAME}/out.stdout
