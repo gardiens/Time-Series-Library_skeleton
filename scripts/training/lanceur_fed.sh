@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --partition=all
 #SBATCH --qos=default
-#SBATCH --output=logs/training/FEDFormer/outtest.stdout
-#SBATCH --error=logs/training/FEDFormer/errtest.stderr
-#SBATCH --job-name=TFFor
-#SBATCH --gres=gpu:2
+#SBATCH --output=logs/training/FEDFormer/outtest1.stdout
+#SBATCH --error=logs/training/FEDFormer/errtest1.stderr
+#SBATCH --job-name=TFFor1
+#SBATCH --gres=gpu:1
 #SBATCH --mail-user=pierrick.bournez@student-cs.fr
 #SBATCH --mail-type=ALL
 MODEL_NAME=FEDformer
