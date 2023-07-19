@@ -34,7 +34,7 @@ echo "Exp name       : test" >> $LOG_STDOUT
 echo "Slurm Job ID   : $SLURM_JOB_ID" >> $LOG_STDOUT
 echo "SBATCH script  : ?" >> $LOG_STDOUT
 
-bash scripts\training\${MODEL_NAME}_train.sh
+bash scripts/training/${MODEL_NAME}_train.sh
 
 
 wait $!
