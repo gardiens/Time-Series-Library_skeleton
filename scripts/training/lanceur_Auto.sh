@@ -1,18 +1,17 @@
 #!/bin/bash
-
-
-MODEL_NAME=Autoformer
-LOG_STDOUT="logs/training/${MODEL_NAME}/out_$SLURM_JOB_ID.stdout"
-LOG_STDERR="logs/training/${MODEL_NAME}/err_$SLURM_JOB_ID.stderr"
-NB_GPU=2
 #SBATCH --partition=all
 #SBATCH --qos=default
-#SBATCH --output=logs/training/${MODEL_NAME}/out.stdout
-#SBATCH --error=logs/training/${MODEL_NAME}/err.stderr
-#SBATCH --job-name=ATrain
+#SBATCH --output=logs/training/Autoformer/outtest.stdout
+#SBATCH --error=logs/training/Autoformer/errtest.stderr
+#SBATCH --job-name=AutoT
 #SBATCH --gres=gpu:2
 #SBATCH --mail-user=pierrick.bournez@student-cs.fr
 #SBATCH --mail-type=ALL
+MODEL_NAME=Autoformer
+LOG_STDOUT="logs/training/Autoformer/out_test.stdout"
+LOG_STDERR="logs/training/Autoformer/err_test.stderr"
+NB_GPU=2
+
 function restart
 {
     echo "Calling restart" >> $LOG_STDOUT
