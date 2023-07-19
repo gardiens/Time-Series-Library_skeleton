@@ -1,16 +1,14 @@
 #!/bin/bash
-
-
-MODEL_NAME=FEDformer
-LOG_STDOUT="logs/training/${MODEL_NAME}/out_$SLURM_JOB_ID.stdout"
-LOG_STDERR="logs/training/${MODEL_NAME}/err_$SLURM_JOB_ID.stderr"
-NB_GPU=2
 #SBATCH --partition=all
 #SBATCH --qos=default
-#SBATCH --output=logs/training/${MODEL_NAME}/out.stdout
-#SBATCH --error=logs/training/${MODEL_NAME}/err.stderr
-#SBATCH --job-name=${MODEL_NAME}GF1
+#SBATCH --output=logs/training/FEDFormer/outtest.stdout
+#SBATCH --error=logs/training/FEDFormer/errtest.stderr
+#SBATCH --job-name=FEDFormerGF1
 #SBATCH --gres=gpu:${NB_GPU}
+MODEL_NAME=FEDformer
+LOG_STDOUT="logs/training/FEDFormer/out_test.stdout"
+LOG_STDERR="logs/training/FEDFormer/err_test.stderr"
+NB_GPU=2
 
 function restart
 {
@@ -36,6 +34,5 @@ echo "SBATCH script  : ?" >> $LOG_STDOUT
 
 bash scripts/training/${MODEL_NAME}_train.sh
 
-echo "Mais tu marches?" >> $LOG_STDOUT
 
 wait $!
