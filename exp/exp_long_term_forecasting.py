@@ -78,6 +78,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
     def train(self, setting):
         """ Les sauvegardes ont lieu dans early stopping ( dans le dossier/ results/settings, en revanche on a pas le nom du checkpoint clair à priori...)"""
+        print("-----loading du dataset ---",flush=True)
         train_data, train_loader = self._get_data(flag='train')
         vali_data, vali_loader = self._get_data(flag='val')
         test_data, test_loader = self._get_data(flag='test')
@@ -96,10 +97,13 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
         model_optim = self._select_optimizer()
         criterion = self._select_criterion()
-
+        print("GARDE FOU",flush=True)
+        print(train_data.__getitem__(0),flush=True)
+        print(train_data.__getitem__(0)[0].shape,flush=True)
+        print(train_data.__getitem__(0)[1].shape,flush=True))    
         if self.args.use_amp:
             scaler = torch.cuda.amp.GradScaler()
-
+        print("----- début du training-----",flush=True)
         for epoch in range(self.args.train_epochs):
             iter_count = 0
             train_loss = []

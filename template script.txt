@@ -1,0 +1,19 @@
+sbatch --gres=gpu:1 --time=1:00:00 --output=<path/to/out.stdout> --error=<path/to/err.stderr> --job-name=<job_name> <path/to/script.sh>
+
+
+
+sbatch --gres=gpu:0 --time=1:00:00 --output=logs/1run/Auto/CPUout.stdout --error=logs/1run/Auto/CPUerr.stderr --job-name=1runAuto scripts/1Run_FED_NTU/Autoformers_1run.sh
+
+sbatch --gres=gpu:0 --time=1:00:00 --output=logs/1run/FED/CPUout.stdout --error=logs/1run/FED/CPUerr.stderr --job-name=1runFEDCPU scripts/1Run_FED_NTU/FEDformers_1run.sh
+
+
+sbatch --gres=gpu:1 --time=4:00:00 --output=logs/1run/Auto/GPUout.stdout --error=logs/1run/Auto/GPUerr.stderr --job-name=AutoGPU scripts/1Run_FED_NTU/Autoformers_1run.sh
+
+sbatch --gres=gpu:1 --time=4:00:00 --output=logs/1run/FED/GPUout.stdout --error=logs/1run/FED/GPUerr.stderr --job-name=FEDGPU scripts/1Run_FED_NTU/FEDformers_1run.sh
+
+
+
+ssh -N -L localhost:8888:n1:8889 bournez@slurm-ext
+
+
+srun --time=10:00:00 --gres=gpu:0 --nodelist=n1 --pty bash
