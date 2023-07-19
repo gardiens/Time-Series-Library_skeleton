@@ -4,7 +4,7 @@
 #SBATCH --output=logs/training/FEDFormer/outtest.stdout
 #SBATCH --error=logs/training/FEDFormer/errtest.stderr
 #SBATCH --job-name=FEDFormerGF1
-#SBATCH --gres=gpu:${NB_GPU}
+#SBATCH --gres=gpu:2
 MODEL_NAME=FEDformer
 LOG_STDOUT="logs/training/FEDFormer/out_test.stdout"
 LOG_STDERR="logs/training/FEDFormer/err_test.stderr"
