@@ -170,7 +170,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     print("\titers: {0}, epoch: {1} | loss: {2:.7f}".format(i + 1, epoch + 1, loss.item(),),flush=True)
                     speed = (time.time() - time_now) / iter_count
                     left_time = speed * ((self.args.train_epochs - epoch) * train_steps - i)
-                    writer.add_scalar("Loss/train",loss.item(),epoch+i)
                     print('\tspeed: {:.4f}s/iter; left time: {:.4f}s'.format(speed, left_time),flush=True)
                     iter_count = 0
                     time_now = time.time()
