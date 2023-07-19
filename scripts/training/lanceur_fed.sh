@@ -36,5 +36,6 @@ echo "SBATCH script  : ?" >> $LOG_STDOUT
 
 bash scripts/training/${MODEL_NAME}_train.sh
 
+echo "Mais tu marches?" >> $LOG_STDOUT
 
 wait $!
