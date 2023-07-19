@@ -1,16 +1,15 @@
 #!/bin/bash
 
-
-MODEL_NAME=FEDformer
-LOG_STDOUT="logs/training/${MODEL_NAME}/out_$SLURM_JOB_ID.stdout"
-LOG_STDERR="logs/training/${MODEL_NAME}/err_$SLURM_JOB_ID.stderr"
-NB_GPU=2
 #SBATCH --partition=all
 #SBATCH --qos=default
-#SBATCH --output=logs/training/${MODEL_NAME}/out.stdout
-#SBATCH --error=logs/training/${MODEL_NAME}/err.stderr
-#SBATCH --job-name=${MODEL_NAME}GF1
-#SBATCH --gres=gpu:${NB_GPU}
+#SBATCH --output=fed_out.stdout
+#SBATCH --error=fed_err.stderr
+#SBATCH --job-name=fed1
+#SBATCH --gres=gpu:2
+
+LOG_STDOUT="fed_out.stdout"
+LOG_STDERR="fed_err.stderr"
+
 
 function restart
 {
@@ -26,16 +25,20 @@ function ignore
 trap restart USR1
 trap ignore TERM
 
-# start or restart experiment
+echo "---START---" >> $LOG_STDOUT
+
 data >> $LOG_STDOUT
+
 which python >> $LOG_STDOUT
-echo "---Begininng program---" >> $LOG_STDOUT
-echo "Exp name       : test" >> $LOG_STDOUT
-echo "Slurm Job ID   : $SLURM_JOB_ID" >> $LOG_STDOUT
-echo "SBATCH script  : ?" >> $LOG_STDOUT
 
-bash scripts/training/${MODEL_NAME}_train.sh
+conda activate tslib_env
 
-echo "Mais tu marches?" >> $LOG_STDOUT
+bash scripts/training/FEDformer_train.sh  >> $LOG_STDOUT
+
+conda deactivate
+
+echo "---END---" >> $LOG_STDOUT
+
+echo
 
 wait $!
