@@ -9,6 +9,10 @@ import os
 import time
 import warnings
 import numpy as np
+from setuptools import distutils
+from setuptools import distutils
+
+print(distutils.__version__, dir(distutils))
 from torch.utils.tensorboard import SummaryWriter
 
 warnings.filterwarnings('ignore')

@@ -11,8 +11,7 @@ import numpy as np
 from setuptools import distutils
 
 if __name__ == '__main__':
-    
-    print(distutils.__version__, dir(distutils))
+
     fix_seed = 2021
     random.seed(fix_seed)
     torch.manual_seed(fix_seed)
