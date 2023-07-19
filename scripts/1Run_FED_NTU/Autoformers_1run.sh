@@ -23,5 +23,6 @@ python -u run.py \
   --itr 1      \
   --dropout 0.1 \
   --embed timeNTU \
-  --get_time_value 1 \
-  --get_cat_value 0 
+  --get_cat_value 0 \
+  --get_time_value 1 
+
