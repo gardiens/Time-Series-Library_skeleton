@@ -25,6 +25,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         return model
 
     def _get_data(self, flag):
+        print("les données intéressantes",self.args.get_time_value,self.args.get_cat_value)
         data_set, data_loader = data_provider(self.args, flag)
         return data_set, data_loader
 
@@ -98,6 +99,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         model_optim = self._select_optimizer()
         criterion = self._select_criterion()
         print("GARDE FOU",flush=True)
+        print("les valeurs intéressantes, time et cat")
         print(train_data.__getitem__(0),flush=True)
         print(train_data.__getitem__(0)[0].shape,flush=True)
         print(train_data.__getitem__(0)[1].shape,flush=True)
