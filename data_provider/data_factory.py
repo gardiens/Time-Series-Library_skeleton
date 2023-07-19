@@ -70,7 +70,7 @@ def data_provider(args, flag):
             collate_fn=lambda x: collate_fn(x, max_len=args.seq_len)
         )
         return data_set, data_loader
-    else:
+    else: #* CAS LONG TIME FORECAST
         if args.data == 'm4':
             drop_last = False
         #* Cas générique
@@ -95,7 +95,7 @@ def data_provider(args, flag):
                 get_time_value=args.get_time_value ,#!
                 get_cat_value=args.get_cat_value #!
             )
-        print(f"flag:{flag} et {len(data_set)}")
+       
         data_loader = DataLoader(
             data_set,
             batch_size=batch_size,

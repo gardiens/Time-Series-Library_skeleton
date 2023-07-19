@@ -16,9 +16,11 @@ jupyter notebook --no-browser --port=8889 --ip=0.0.0.0
 ssh -N -L localhost:8888:n3:8889 bournez@slurm-ext
 --proxy=http://webproxy.lab-ia.fr:8080
 
-srun --time=10:00:00 --gres=gpu:0 --pty bash
 
+
+
+srun --time=10:00:00 --gres=gpu:0 --pty bash
  http://localhost:8888
 
 
-pip3 install --proxy=http://webproxy.lab-ia.fr:8080 torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu117
+tensorboard --logdir=runs--host=localhost --port=6006
