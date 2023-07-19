@@ -100,7 +100,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         print("GARDE FOU",flush=True)
         print(train_data.__getitem__(0),flush=True)
         print(train_data.__getitem__(0)[0].shape,flush=True)
-        print(train_data.__getitem__(0)[1].shape,flush=True))    
+        print(train_data.__getitem__(0)[1].shape,flush=True)
         if self.args.use_amp:
             scaler = torch.cuda.amp.GradScaler()
         print("----- début du training-----",flush=True)
