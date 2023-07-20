@@ -1,4 +1,4 @@
-
+#!/bin/bash
 model_name=Nonstationary_Transformer
 
 python -u run.py \

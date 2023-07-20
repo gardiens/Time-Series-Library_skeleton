@@ -1,7 +1,5 @@
+Pour des scripts rapides:
 sbatch --gres=gpu:1 --time=1:00:00 --output=<path/to/out.stdout> --error=<path/to/err.stderr> --job-name=<job_name> <path/to/script.sh>
-
-
-
 sbatch --gres=gpu:0 --time=1:00:00 --output=logs/1run/Auto/CPUout.stdout --error=logs/1run/Auto/CPUerr.stderr --job-name=AutoCPU scripts/1Run_FED_NTU/Autoformers_1run.sh
 
 sbatch --gres=gpu:0 --time=1:00:00 --output=logs/1run/FED/CPUout.stdout --error=logs/1run/FED/CPUerr.stderr --job-name=FEDCPU scripts/1Run_FED_NTU/FEDformers_1run.sh
@@ -11,17 +9,16 @@ sbatch --gres=gpu:4 --time=20:00:00 --output=logs/1run/Auto/GPUout.stdout --erro
 
 sbatch --gres=gpu:4 --time=20:00:00 --output=logs/1run/FED/GPUout.stdout --error=logs/1run/FED/GPUerr.stderr --job-name=FEDGF scripts/1Run_FED_NTU/FEDformers_1run.sh
 
+Pour Jupyter
+srun --time=10:00:00 --gres=gpu:0 --pty bash
+ http://localhost:8888
+
 
 jupyter notebook --no-browser --port=8889 --ip=0.0.0.0
 ssh -N -L localhost:8888:n3:8889 bournez@slurm-ext
 
+pour pip
 python3 -m pip install --proxy=http://webproxy.lab-ia.fr:8080 [EXTENSION]
-
-
-
-
-srun --time=10:00:00 --gres=gpu:0 --pty bash
- http://localhost:8888
 
 
 tensorboard --logdir=runs --port=6006
@@ -36,3 +33,12 @@ pour lancer les scripts finaux
 sbatch scripts/training/lanceur_fed.sh
 
 sbatch scripts/training/lanceur_Auto.sh
+
+Tensorboard
+ssh -L 16006:127.0.0.1:7859 bournez@slurm-ext
+cd babygarches_rambaud/Time-Series-Library_babygarches/
+tensorboard --logdir=runs --host=localhost --port=7859
+puis sur navigateur localhost:16006
+
+
+git cmp pour commit et push!!!
