@@ -7,14 +7,15 @@ sbatch --gres=gpu:0 --time=1:00:00 --output=logs/1run/Auto/CPUout.stdout --error
 sbatch --gres=gpu:0 --time=1:00:00 --output=logs/1run/FED/CPUout.stdout --error=logs/1run/FED/CPUerr.stderr --job-name=FEDCPU scripts/1Run_FED_NTU/FEDformers_1run.sh
 
 
-sbatch --gres=gpu:1 --time=4:00:00 --output=logs/1run/Auto/GPUout.stdout --error=logs/1run/Auto/GPUerr.stderr --job-name=AutoGPU scripts/1Run_FED_NTU/Autoformers_1run.sh
+sbatch --gres=gpu:4 --time=20:00:00 --output=logs/1run/Auto/GPUout.stdout --error=logs/1run/Auto/GPUerr.stderr --job-name=AutoGF scripts/1Run_FED_NTU/Autoformers_1run.sh
 
-sbatch --gres=gpu:1 --time=4:00:00 --output=logs/1run/FED/GPUout.stdout --error=logs/1run/FED/GPUerr.stderr --job-name=FEDGPU scripts/1Run_FED_NTU/FEDformers_1run.sh
+sbatch --gres=gpu:4 --time=20:00:00 --output=logs/1run/FED/GPUout.stdout --error=logs/1run/FED/GPUerr.stderr --job-name=FEDGF scripts/1Run_FED_NTU/FEDformers_1run.sh
 
 
 jupyter notebook --no-browser --port=8889 --ip=0.0.0.0
 ssh -N -L localhost:8888:n3:8889 bournez@slurm-ext
---proxy=http://webproxy.lab-ia.fr:8080
+
+python3 -m pip install --proxy=http://webproxy.lab-ia.fr:8080 [EXTENSION]
 
 
 
@@ -23,4 +24,15 @@ srun --time=10:00:00 --gres=gpu:0 --pty bash
  http://localhost:8888
 
 
-tensorboard --logdir=runs--host=localhost --port=6006
+tensorboard --logdir=runs --port=6006
+
+ tensorboard --logdir=/mnt/beegfs/home/bournez/babygarches_rambaud/Time-Series-Library_babygarches/runs --port=7859
+
+
+sbatch --gres=gpu:0 --time=1:00:00 --output=logs/training/Autoformer/CPUout.stdout --error=logs/training/Autoformer/CPUerr.stderr --job-name=AutoCPUtest scripts/training/Autoformer_train.sh
+
+
+pour lancer les scripts finaux
+sbatch scripts/training/lanceur_fed.sh
+
+sbatch scripts/training/lanceur_Auto.sh

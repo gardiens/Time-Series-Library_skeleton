@@ -27,7 +27,7 @@ trap restart USR1
 trap ignore TERM
 
 # start or restart experiment
-data >> $LOG_STDOUT
+
 which python >> $LOG_STDOUT
 echo "---Begininng program---" >> $LOG_STDOUT
 echo "Exp name       : test" >> $LOG_STDOUT
