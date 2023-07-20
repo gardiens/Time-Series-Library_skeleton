@@ -8,7 +8,7 @@ from exp.exp_anomaly_detection import Exp_Anomaly_Detection
 from exp.exp_classification import Exp_Classification
 import random
 import numpy as np
-from setuptools import distutils
+
 
 if __name__ == '__main__':
 

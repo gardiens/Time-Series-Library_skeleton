@@ -8,7 +8,7 @@ python -u run.py \
   --data_path 'numpyed/'\
   --model_id NTU_32_32_training_${model_name} \
   --model $model_name \
-  --data custom \
+  --data NTU \
   --features M \
   --seq_len 32 \
   --label_len 32 \
@@ -20,8 +20,9 @@ python -u run.py \
   --dec_in 75 \
   --c_out 75 \
   --des 'Exp' \
-  --itr 1 \
+  --itr 1      \
   --p_hidden_dims 256 256 \
   --p_hidden_layers 2 \
+  --embed timeNTU \
   --get_cat_value 0 \
-  --get_time_value 1 \ 
+  --get_time_value 1 

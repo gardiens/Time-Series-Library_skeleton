@@ -24,7 +24,7 @@ class Exp_Basic(object):
             'Crossformer': Crossformer,
             'FiLM': FiLM,
         }
-        self.device = self._acquire_device()
+        self.device = self._acquire_device() #* Est-ce que ça autorise le multi-gpu?
         self.model = self._build_model().to(self.device)
 
     def _build_model(self):
