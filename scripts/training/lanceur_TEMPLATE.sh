@@ -1,15 +1,15 @@
 #!/bin/bash
 #SBATCH --partition=all
 #SBATCH --qos=default
-#SBATCH --output=logs/training/FEDFormer/outtest1.stdout
-#SBATCH --error=logs/training/FEDFormer/errtest1.stderr
-#SBATCH --job-name=TFFor1
+#SBATCH --output=logs/training/NTS/outtest.stdout
+#SBATCH --error=logs/training/NTS/errtest.stderr
+#SBATCH --job-name=NTS
 #SBATCH --gres=gpu:1
 #SBATCH --mail-user=pierrick.bournez@student-cs.fr
 #SBATCH --mail-type=ALL
-MODEL_NAME=FEDformer
-LOG_STDOUT="logs/training/FEDFormer/out_test.stdout"
-LOG_STDERR="logs/training/FEDFormer/err_test.stderr"
+MODEL_NAME=NTS
+LOG_STDOUT="logs/training/NTS/out_test.stdout"
+LOG_STDERR="logs/training/NTS/err_test.stderr"
 NB_GPU=2
 
 function restart
