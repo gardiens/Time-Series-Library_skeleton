@@ -4,7 +4,7 @@
 #SBATCH --output=logs/training/NTS/outtest.stdout
 #SBATCH --error=logs/training/NTS/errtest.stderr
 #SBATCH --job-name=NTS
-#SBATCH --gres=gpu:teslav100:1
+#SBATCH --gres=gpu:2
 #SBATCH --mail-user=pierrick.bournez@student-cs.fr
 #SBATCH --mail-type=ALL
 MODEL_NAME=NTS
