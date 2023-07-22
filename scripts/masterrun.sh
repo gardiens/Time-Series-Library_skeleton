@@ -33,15 +33,3 @@ OUTPUT=${PATH_LOG}/${MODEL_NAME}/output_%j.out
 ERROR=${PATH_LOG}/${MODEL_NAME}/error_%j.err
 
 sbatch $PATH_SCRIPT/Autoformer_train.sh --partition=${PARTITION} --qos=${QOS} --mail-user=${MAIL} --mail-type=${MAIL_TYPE} --time=${TIME} --job-name=${JOB_NAME} --output=${OUTPUT} --error=${ERROR} --gres=gpu:1
-MODEL_NAME=FEDformer
-mkdir -p $PATH_LOG/${MODEL_NAME}
-OUTPUT=${PATH_LOG}/${MODEL_NAME}/output_%j.out
-ERROR=${PATH_LOG}/${MODEL_NAME}/error_%j.err
-
-sbatch $PATH_SCRIPT/FEDformer_train.sh --partition=${PARTITION} --qos=${QOS} --mail-user=${MAIL} --mail-type=${MAIL_TYPE} --time=${TIME} --job-name=${JOB_NAME} --output=${OUTPUT} --error=${ERROR} --gres=gpu:1 
-MODEL_NAME=NTS
-mkdir -p $PATH_LOG/${MODEL_NAME}
-OUTPUT=${PATH_LOG}/${MODEL_NAME}/output_%j.out
-ERROR=${PATH_LOG}/${MODEL_NAME}/error_%j.err
-
-sbatch $PATH_SCRIPT/NTS_train.sh --partition=${PARTITION} --qos=${QOS} --mail-user=${MAIL} --mail-type=${MAIL_TYPE} --time=${TIME} --job-name=${JOB_NAME} --output=${OUTPUT} --error=${ERROR} --gres=gpu:1

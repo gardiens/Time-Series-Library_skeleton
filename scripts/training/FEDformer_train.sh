@@ -27,5 +27,6 @@ python -u run.py \
   --embed timeNTU \
   --get_cat_value 0 \
   --get_time_value 1 \
+  > "$OUTPUT" 2>"$ERROR"
   
 

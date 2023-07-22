@@ -46,6 +46,12 @@ git cmp pour commit et push!!!
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/mnt/beegfs/home/rambaud/babygarches_rambaud/miniconda3/envs/tslib_env/lib
 Version python /mnt/beegfs/home/rambaud/babygarches_rambaud/miniconda3/envs/tslib_env/bin/python
 
+
+
+ 319987       all FEDforme  bournez  R    3:48:23      1 n102
+ 319988       all NTS_trai  bournez  R    3:48:23      1 n102
+les deux utilisaient du CPU...
+
 sbatch --gres=gpu:1 --time=20:00:00 --output=logs/training/NTS/GPUout.stdout --error=logs/training/NTS/GPUerr.stderr --job-name=NTS scripts/training/NTS_train.sh
 
 
@@ -54,3 +60,33 @@ bash scripts/utils/recup_logs.sh
 scp bournez@slurm-ext:/mnt/beegfs/home/bournez/babygarches_rambaud/Time-Series-Library_babygarches/logs/training/NTS ./logs
 
 git cmp pour tous envoyer !!
+
+
+erreur :
+RuntimeError: CUDA error: no kernel image is available for execution on the device
+CUDA kernel errors might be asynchronously reported at some other API call,so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1.
+
+cuda version 11.2
+
+
+le problème: pytorch n'est peut être pas installé avec la bonne version de CUDA ! Il faut donc la builde pour 11.2 exactement ...
+
+320075 essai 20 heure
+
+
+à rajouter après ::
+MODEL_NAME=FEDformer
+mkdir -p $PATH_LOG/${MODEL_NAME}
+OUTPUT=${PATH_LOG}/${MODEL_NAME}/output_%j.out
+ERROR=${PATH_LOG}/${MODEL_NAME}/error_%j.err
+
+sbatch $PATH_SCRIPT/FEDformer_train.sh --partition=${PARTITION} --qos=${QOS} --mail-user=${MAIL} --mail-type=${MAIL_TYPE} --time=${TIME} --job-name=${JOB_NAME} --output=${OUTPUT} --error=${ERROR} --gres=gpu:1 
+MODEL_NAME=NTS
+mkdir -p $PATH_LOG/${MODEL_NAME}
+OUTPUT=${PATH_LOG}/${MODEL_NAME}/output_%j.out
+ERROR=${PATH_LOG}/${MODEL_NAME}/error_%j.err
+
+sbatch $PATH_SCRIPT/NTS_train.sh --partition=${PARTITION} --qos=${QOS} --mail-user=${MAIL} --mail-type=${MAIL_TYPE} --time=${TIME} --job-name=${JOB_NAME} --output=${OUTPUT} --error=${ERROR} --gres=gpu:1
+
+
