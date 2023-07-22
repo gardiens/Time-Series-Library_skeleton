@@ -1,5 +1,6 @@
 #!/bin/bash
-NB_GPU=1
+
+NB_GPU=2
 NOM_RUNS=training
 
 #C'est ici qu'on va submit toutes nos runs avec un sbatch, cela va permettre de sauvegarder ce qu'on fait ou non...
@@ -31,16 +32,16 @@ mkdir -p $PATH_LOG/${MODEL_NAME}
 OUTPUT=${PATH_LOG}/${MODEL_NAME}/output_%j.out
 ERROR=${PATH_LOG}/${MODEL_NAME}/error_%j.err
 
-sbatch $PATH_SCRIPT/Autoformer_train.sh --partition=${PARTITION} --qos=${QOS} --mail-user=${MAIL} --mail-type=${MAIL_TYPE} --time=${TIME} --job-name=${JOB_NAME} --output=${OUTPUT} --error=${ERROR} --gres=gpu:${NB_GPU} 
+sbatch $PATH_SCRIPT/Autoformer_train.sh --partition=${PARTITION} --qos=${QOS} --mail-user=${MAIL} --mail-type=${MAIL_TYPE} --time=${TIME} --job-name=${JOB_NAME} --output=${OUTPUT} --error=${ERROR} --gres=gpu:1
 MODEL_NAME=FEDformer
 mkdir -p $PATH_LOG/${MODEL_NAME}
 OUTPUT=${PATH_LOG}/${MODEL_NAME}/output_%j.out
 ERROR=${PATH_LOG}/${MODEL_NAME}/error_%j.err
 
-sbatch $PATH_SCRIPT/FEDformer_train.sh --partition=${PARTITION} --qos=${QOS} --mail-user=${MAIL} --mail-type=${MAIL_TYPE} --time=${TIME} --job-name=${JOB_NAME} --output=${OUTPUT} --error=${ERROR} --gres=gpu:${NB_GPU} 
+sbatch $PATH_SCRIPT/FEDformer_train.sh --partition=${PARTITION} --qos=${QOS} --mail-user=${MAIL} --mail-type=${MAIL_TYPE} --time=${TIME} --job-name=${JOB_NAME} --output=${OUTPUT} --error=${ERROR} --gres=gpu:1 
 MODEL_NAME=NTS
 mkdir -p $PATH_LOG/${MODEL_NAME}
 OUTPUT=${PATH_LOG}/${MODEL_NAME}/output_%j.out
 ERROR=${PATH_LOG}/${MODEL_NAME}/error_%j.err
 
-sbatch $PATH_SCRIPT/NTS_train.sh --partition=${PARTITION} --qos=${QOS} --mail-user=${MAIL} --mail-type=${MAIL_TYPE} --time=${TIME} --job-name=${JOB_NAME} --output=${OUTPUT} --error=${ERROR} --gres=gpu:${NB_GPU} 
+sbatch $PATH_SCRIPT/NTS_train.sh --partition=${PARTITION} --qos=${QOS} --mail-user=${MAIL} --mail-type=${MAIL_TYPE} --time=${TIME} --job-name=${JOB_NAME} --output=${OUTPUT} --error=${ERROR} --gres=gpu:1

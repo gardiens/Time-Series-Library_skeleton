@@ -101,7 +101,7 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
-
+    print("use_gpu: ", args.use_gpu, flush=True)
     if args.use_gpu and args.use_multi_gpu:
         args.devices = args.devices.replace(' ', '')
         device_ids = args.devices.split(',')
