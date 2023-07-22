@@ -14,7 +14,7 @@ if __name__ == '__main__':
     print("version de cuda",torch.version.cuda)
     print("version de cudnn",torch.backends.cudnn.version())
     print("version de torch",torch.__version__)
-    print("version de python",sys.version)
+    #print("version de python",sys.version)
     fix_seed = 2021
     random.seed(fix_seed)
     torch.manual_seed(fix_seed)
