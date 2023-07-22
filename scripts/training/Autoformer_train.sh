@@ -1,12 +1,12 @@
 #!/bin/bash
 model_name=Autoformer
-pred_len=32
+pred_len=64
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 1 \
   --root_path './dataset/NTU_RGB+D/' \
   --data_path 'numpyed/'\
-  --model_id NTU_32_32_training_${model_name} \
+  --model_id NTU_32_64_training_${model_name} \
   --model $model_name \
   --data NTU \
   --features M \

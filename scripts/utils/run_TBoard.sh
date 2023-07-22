@@ -1,4 +1,5 @@
-# Function to stop TensorBoard gracefully
+# Fichier.sh qui permets de lancer automatiquement  le tensorboard et envoie le fichier
+# Function to stop TensorBoard gracefully, MARCHE
 stop_tensorboard() {
   echo "Stopping TensorBoard..."
   pkill -f "tensorboard --logdir=runs --host=localhost --port=7860"

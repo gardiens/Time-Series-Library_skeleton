@@ -3,6 +3,7 @@
 import os
 import numpy as np
 import pandas as pd
+from torch import tensor
 class time_serie_NTU:
 
     """ Classe de Time_series qui va être la base de notre dataset"""
@@ -45,23 +46,24 @@ class time_serie_NTU:
     def __len__(self) -> int:
         return len(self.row)
     
+    
     def get_data(self,row):
-        '''Renvoie une sortie de la forme :
+        ''' FONCTION UTILISE DANS LES DATASET/DATALOADER
+        Renvoie une sortie de la forme :
         entry_data, label, cat_data, time_value si les valeurs sont bien bonne
         entry_data est de la forme (nb_frames,nb_joints nb_dim ( 3 ici))'''
         mat_path=os.path.join(self.data_path,row['filename']+self.file_extension) #! WARNING ON THE EXTENSION OF THE .NPY
         data=np.load(mat_path,allow_pickle=True).item()
         #* On récupère la valeur du body intéressant
         num_body=row['num_body']
-        data=np.load(mat_path,allow_pickle=True).item()[f'skel_body{num_body}'] #* C'est une matrice de la forme [frames,nb_joints,3]
+        data=np.load(mat_path,allow_pickle=True).item()[f'skel_body{int(num_body)}'] #* C'est une matrice de la forme [frames,nb_joints,3]
         
         debut_frame=int(row['debut_frame'])
         #print(debut_frame)
         begin= data[debut_frame:debut_frame+self.input_len] #* On prend les input_len premières frames
         label= data[debut_frame+self.input_len:debut_frame+self.input_len+self.output_len]     #* On prend les output_len suivantes
-        """#* On va permuter les colonnes pour que la 2ème colonne correspondent au nombre de frame ( pour des détails techniques de FEDformers et son pred_len!!)
-        begin=begin.transpose((1,0,2))
-        label=label.transpose((1,0,2))"""
+      
+        #* Ici begin est de la forme [nb_joints,nb_frames,3] et label est de la forme [nb_joints,nb_frames,3]
         #! Détail technique: à priori les données sont de la formes [nb_frames,nb_joints,3] mais les réseauxde neurones acceptent un format [nb_frames,nb_features] donc on va faire un reshape
         begin=begin.reshape(begin.shape[0],-1)
         label=label.reshape(label.shape[0],-1)
@@ -87,6 +89,43 @@ class time_serie_NTU:
             return begin,label,mat_cat_data
         else:
             return begin,label
+    def inverse_transform(self,x):
+        """Renvoie les données dans le bon format pour pouvoir les afficher
+        renvoie de la forme [nb_frames,nb_joints,3]"""
+        return x.reshape(x.shape[0],int(x.shape[1]//3),3)
+
+    def get_input_model(self,entry):
+        """ depuis un X obtenu de get_data ou get_data_from_sample_name, renvoie un input de la bonne forme pour le modèle"""
+        
+        if self.get_time_value and self.get_cat_value:
+            begin,label,time_value_enc,time_value_dec,mat_cat_data=entry
+    
+        elif self.get_time_value:
+             begin,label,time_value_enc,time_value_dec=entry
+        elif self.get_cat_value:
+             begin,label,mat_cat_data=entry
+        else:
+             begin,label=entry 
+        begin=tensor(np.expand_dims(begin,axis=0)).float()
+        label=tensor(np.expand_dims(label,axis=0)).float()
+        if self.get_time_value and self.get_cat_value:
+            time_value_enc=tensor(np.expand_dims(time_value_enc,axis=0)).float()
+            time_value_dec=tensor(np.expand_dims(time_value_dec,axis=0)).float()
+            mat_cat_data=tensor(np.expand_dims(mat_cat_data,axis=0)).float()
+            return begin,label,time_value_enc,time_value_dec,mat_cat_data
+        if self.get_time_value:
+            time_value_enc=tensor(np.expand_dims(time_value_enc,axis=0)).float()
+            time_value_dec=tensor(np.expand_dims(time_value_dec,axis=0)).float()
+            return begin,label,time_value_enc,time_value_dec
+        if self.get_cat_value:
+            mat_cat_data=tensor(np.expand_dims(mat_cat_data,axis=0)).float()
+            return begin,label,mat_cat_data
+        else:
+            return begin,label
+
+
+
+
        
     
  
@@ -98,9 +137,9 @@ def extract_integers(file_name):
     match = re.match(pattern, file_name)
     if match:
         integers = [int(match.group(i)) for i in range(1, 6)]
-        return integers
+        return np.array(integers)
     else:
-        return []
+        return np.array([])
 
 
 

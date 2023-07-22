@@ -10,21 +10,26 @@ import time
 import warnings
 import numpy as np
 from setuptools import distutils
-
-
+from utils.NTU_RGB.plot_skeleton import plot_video_skeletons
+from utils.constantes import get_settings
 from torch.utils.tensorboard import SummaryWriter
 
 warnings.filterwarnings('ignore')
 
-
+from utils.NTU_RGB.tensorboard import add_hparams
 class Exp_Long_Term_Forecast(Exp_Basic):
     def __init__(self, args):
         super(Exp_Long_Term_Forecast, self).__init__(args)
-        self.writer=SummaryWriter(log_dir=f"runs/{args.data}/{args.model}_{args.model_id}") #* tensorboard
+        setting = get_settings(args)
+                
+        self.setting=setting
+        self.writer=SummaryWriter(log_dir=f"runs/{setting}") #* tensorboard
         writer=self.writer
         #print("les args",vars(args))
+        add_hparams(self.writer,args) #* tensorboard
+
         # Add in the writer every parameter which are float,int,str or bool
-        writer.add_hparams({k:v for k,v in vars(args).items() if type(v) in [float,int,str,bool]},{})
+        #writer.add_hparams({k:v for k,v in vars(args).items() if type(v) in [float,int,str,bool]},{})
         writer.flush()
         
     def _build_model(self):
@@ -106,9 +111,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
         model_optim = self._select_optimizer()
         criterion = self._select_criterion()
-        """print(train_data.__getitem__(0),flush=True)
-        print(train_data.__getitem__(0)[0].shape,flush=True)
-        print(train_data.__getitem__(0)[1].shape,flush=True)"""
+        
         if self.args.use_amp:
             scaler = torch.cuda.amp.GradScaler()
         print("----- début du training-----",flush=True)
@@ -139,7 +142,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                         else:
                             outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
 
-                        f_dim = -1 if self.args.features == 'MS' else 0
+                        f_dim = -1 if self.args.features == 'MS' else 0 #! ATTENTION LA ? 
                         outputs = outputs[:, -self.args.pred_len:, f_dim:]
                         batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
                         loss = criterion(outputs, batch_y)
@@ -194,9 +197,8 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             print("Epoch: {0}, Steps: {1} | Train Loss: {2:.7f} Vali Loss: {3:.7f} Test Loss: {4:.7f}".format(
                 epoch + 1, train_steps, train_loss, vali_loss, test_loss))
             #* Wandb things 
-            early_stopping(vali_loss, self.model, path)
-            metrics = {'train_loss': train_loss,"Steps":train_steps, 'vali_loss': vali_loss, 'test_loss': test_loss, 'epoch': epoch}
-            """wandb.log(metrics)"""
+            early_stopping(vali_loss, self.model, path) #C'est ici qu'on sauvegarde le modèle !!!! avec le path. Il est sauvegardé de la frome path/SETTING !!
+            
             if early_stopping.early_stop:
                 print("Early stopping")
                 break
@@ -209,7 +211,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         writer.flush()
         return self.model   
 
-    def test(self, setting, test=0):
+    def test(self, setting, test=0,nb_samples=20):
         test_data, test_loader = self._get_data(flag='test')
         if test:
             print('loading model')
@@ -258,12 +260,17 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
                 preds.append(pred)
                 trues.append(true)
-                if i % 20 == 0:
+                if i % 2000 == 0:
                     input = batch_x.detach().cpu().numpy()
-                    gt = np.concatenate((input[0, :, -1], true[0, :, -1]), axis=0)
-                    pd = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0)
+                    gt = np.concatenate((input[0, :, -1], true[0, :, -1]), axis=0) # On récupère lesignal avec le DERNIER CHANNEL UNIQUEMENT
+                    pd = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0) #ON RECUPERE LE SIGNAL AVEC LE DERNIER CHANNEL UNIQUEMENT
                     visual(gt, pd, os.path.join(folder_path, str(i) + '.pdf'))
-
+                while i<nb_samples:
+                    input = batch_x.detach().cpu().numpy()
+                    X_pred=np.concatenate((input[0,:,:],pred[0,:,:]),axis=0)
+                    X_true=np.concatenate((input[0,:,:],true[0,:,:]),axis=0)
+                    plot_video_skeletons(mat_skeletons=[X_true,X_pred],save_name=setting+str(i),path_folder_save=folder_path)
+        
         preds = np.array(preds)
         trues = np.array(trues)
         print('test shape:', preds.shape, trues.shape)

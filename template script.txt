@@ -36,9 +36,21 @@ sbatch scripts/training/lanceur_Auto.sh
 
 Tensorboard
 ssh -L 16006:127.0.0.1:7859 bournez@slurm-ext
-cd babygarches_rambaud/Time-Series-Library_babygarches/
+
 tensorboard --logdir=runs --host=localhost --port=7859
 puis sur navigateur localhost:16006
 
 
 git cmp pour commit et push!!!
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/mnt/beegfs/home/rambaud/babygarches_rambaud/miniconda3/envs/tslib_env/lib
+Version python /mnt/beegfs/home/rambaud/babygarches_rambaud/miniconda3/envs/tslib_env/bin/python
+
+sbatch --gres=gpu:1 --time=20:00:00 --output=logs/training/NTS/GPUout.stdout --error=logs/training/NTS/GPUerr.stderr --job-name=NTS scripts/training/NTS_train.sh
+
+
+bash scripts/utils/recup_logs.sh
+
+scp bournez@slurm-ext:/mnt/beegfs/home/bournez/babygarches_rambaud/Time-Series-Library_babygarches/logs/training/NTS ./logs
+
+git cmp pour tous envoyer !!

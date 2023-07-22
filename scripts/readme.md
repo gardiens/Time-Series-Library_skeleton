@@ -7,5 +7,14 @@ Pour les inputs à mettre:
 
 
 pour l'utilisation des scripts:
-Si vous voulez mettre en place automatiquement Tboard il faut faire:
+-Si vous voulez mettre en place automatiquement Tboard il faut faire:
 bash TensorBoard_run.sh
+
+pour add/commit push automatiquement avec git:
+git cmp " votremessage"
+
+normalement le pull est automatique chez slurm...
+
+
+pour récupérer les logs:
+scp -r bournez@slurm-ext:/mnt/beegfs/home/bournez/babygarches_rambaud/Time-Series-Library_babygarches/logs/./logs

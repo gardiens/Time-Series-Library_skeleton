@@ -761,3 +761,24 @@ class dataset_NTURGBD(Dataset):
             return time_series.get_data(row=row)
         else:
             return time_series.get_data(row=row)
+        
+
+    def get_data_from_sample_name(self,name_skeleton:str):
+      
+        """ name_skeleton doit être de la forme 'S001C001P001R001A001'
+        permet de récupérer la data sachant uniquement le nom du skeleton."""
+        if name_skeleton[-4:]=='.npy' or name_skeleton[-8:]=='.skeleton':
+            name_skeleton=name_skeleton[:-4] # pour virer le .skeleton ou .npy
+        row=self.liste_path.where(self.liste_path['filename']==name_skeleton).dropna().iloc[0]
+        #print(row)
+        time_series=self.item
+        return time_series.get_data(row=row)
+    
+
+    def inverse_transform_data(self,x):
+        """ renvoie X de la bonne forme ( nb_frames,nb_joints,3)"""
+        return self.item.inverse_transform(x)
+
+    def get_input_model(self,entry):
+        """ depuis un X obtenu de get_data ou get_data_from_sample_name, renvoie un input de la bonne forme pour le modèle"""
+        return self.item.get_input_model(entry)
