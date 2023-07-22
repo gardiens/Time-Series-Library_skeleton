@@ -8,13 +8,13 @@ python -u run.py \
   --is_training 1 \
   --root_path './dataset/NTU_RGB+D/' \
   --data_path 'numpyed/'\
-  --model_id NTU_32_32_training_${model_name} \
+  --model_id NTU_32_64_training_${model_name} \
   --model $model_name \
   --data NTU \
   --features M \
   --seq_len 32 \
-  --label_len 32 \
-  --pred_len 32 \
+  --label_len 64 \
+  --pred_len 64 \
   --e_layers 2 \
   --d_layers 1 \
   --factor 3 \
