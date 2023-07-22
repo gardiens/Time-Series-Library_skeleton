@@ -4,8 +4,8 @@ NOM_RUNS=training
 
 #C'est ici qu'on va submit toutes nos runs avec un sbatch, cela va permettre de sauvegarder ce qu'on fait ou non...
 #donnée technique souvent modifiable
-PATH_LOG= $PWD/logs/${NOM_RUNS}
-PATH_SCRIPT= $PWD/scripts/${NOM_RUNS}
+PATH_LOG=$PWD/logs/${NOM_RUNS}
+PATH_SCRIPT=$PWD/scripts/${NOM_RUNS}
 # Create directories if they don't exist
 #mkdir -p $PATH_LOG/${MODEL_NAME}
 #mkdir -p $PATH_SCRIPT/${MODEL_NAME}
