@@ -100,6 +100,7 @@ if __name__ == '__main__':
     parser.add_argument('--get_cat_value', type=int, default=0, help='get cat value,0 if not, 1 if yes')
     
     args = parser.parse_args()
+    print("use_gpu: ", args.use_gpu, torch.cuda.is_available(), flush=True)
     args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
     print("use_gpu: ", args.use_gpu, flush=True)
     if args.use_gpu and args.use_multi_gpu:

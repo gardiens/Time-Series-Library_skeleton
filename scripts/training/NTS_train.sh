@@ -1,4 +1,6 @@
 #!/bin/bash
+export CUDA_VISIBLE_DEVICES=1
+
 model_name=Nonstationary_Transformer
 
 python -u run.py \

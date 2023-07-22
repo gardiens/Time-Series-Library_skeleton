@@ -1,4 +1,6 @@
 #!/bin/bash
+export CUDA_VISIBLE_DEVICES=1
+
 model_name=Autoformer
 pred_len=64
 python -u run.py \
