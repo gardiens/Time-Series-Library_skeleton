@@ -38,7 +38,9 @@ model_dict = {
         'MICN': MICN,
         'Crossformer': Crossformer,
         'FiLM': FiLM,
-    }
+        'NonstationaryTransformer':Nonstationary_Transformer,
+        'NTS':Nonstationary_Transformer
+}
 
 
 
@@ -240,7 +242,7 @@ def get_settings(args):
                 args.factor,
                 args.embed,
                 args.distil,
-                args.des,args.num_itr,
+                args.des,self.num_itr,
                 args.get_cat_value,
                 args.get_time_value)
 
@@ -249,4 +251,128 @@ def get_args_from_settings(settings:str):
     pass # Trop relou ? 
 
 
+#* Configuration utilisé pour le test de certaines composition
 
+class Args_technique_CPU():
+    def __init__(self):
+        # basic config
+
+        self.is_training = 0
+
+        # data loader
+        self.data = 'NTU'
+        self.root_path = './dataset/NTU_RGB+D/'
+        self.data_path = 'numpyed/'
+
+        self.target = 'OT'
+        self.freq = 'h'
+        self.checkpoints = './checkpoints/'
+
+        # forecasting task
+
+        self.seasonal_patterns = 'Monthly'
+
+        # inputation task
+        self.mask_rate = 0.25
+
+        # anomaly detection task
+        self.anomaly_ratio = 0.25
+
+        # model define
+        self.top_k = 5
+        self.num_kernels = 6
+        self.enc_in = 75
+        self.dec_in = 75
+        self.c_out = 75
+        self.moving_avg = 25
+        self.dropout = 0
+        self.activation = 'gelu'
+        self.output_attention = False
+
+        # optimization
+        self.num_workers = 10
+        self.itr = 1
+        self.train_epochs = 10
+        self.batch_size = 4
+        self.patience = 3
+        self.learning_rate = 0.0001
+        self.des = 'test'
+        self.loss = 'MSE'
+        self.lradj = 'type1'
+        self.use_amp = False
+
+        # GPU
+        self.use_gpu = False #! A METTRE TRUE POUR DGX 
+        self.gpu = 0
+        self.use_multi_gpu = False
+        self.devices = '0'
+
+        # de-stationary projector params
+        self.p_hidden_dims = [128, 128]
+        self.p_hidden_layers = 2
+        self.num_itr=0
+
+        # NTU_RGB
+        self.ii=0
+
+class Args_technique_GPU():
+    def __init__(self):
+        # basic config
+
+        self.is_training = 0
+
+        # data loader
+        self.data = 'NTU'
+        self.root_path = './dataset/NTU_RGB+D/'
+        self.data_path = 'numpyed/'
+
+        self.target = 'OT'
+        self.freq = 'h'
+        self.checkpoints = './checkpoints/'
+
+        # forecasting task
+
+        self.seasonal_patterns = 'Monthly'
+
+        # inputation task
+        self.mask_rate = 0.25
+
+        # anomaly detection task
+        self.anomaly_ratio = 0.25
+
+        # model define
+        self.top_k = 5
+        self.num_kernels = 6
+        self.enc_in = 75
+        self.dec_in = 75
+        self.c_out = 75
+        self.moving_avg = 25
+        self.dropout = 0
+        self.activation = 'gelu'
+        self.output_attention = False
+
+        # optimization
+        self.num_workers = 10
+        self.itr = 1
+        self.train_epochs = 10
+        self.batch_size = 4
+        self.patience = 3
+        self.learning_rate = 0.0001
+        self.des = 'test'
+        self.loss = 'MSE'
+        self.lradj = 'type1'
+        self.use_amp = False
+
+        # GPU
+        self.use_gpu = True #! A METTRE TRUE POUR DGX 
+        self.gpu = 0
+        self.use_multi_gpu = True
+        self.devices = '0,1'
+
+        # de-stationary projector params
+        self.p_hidden_dims = [128, 128]
+        self.p_hidden_layers = 2
+        self.num_itr=0
+
+        # NTU_RGB
+        self.ii=0

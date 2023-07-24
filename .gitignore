@@ -163,3 +163,5 @@ data_loader_all.py
 /results/
 
 /videos/
+*.txt
+*.mp4

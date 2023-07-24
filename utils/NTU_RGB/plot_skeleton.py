@@ -139,7 +139,8 @@ def plot_video_skeletons(mat_skeletons,title=None,write=True,animate=False,path_
     
     #* Fin on met tous en forme pour l'animation
 
-
+    if not os.path.exists(path_folder_save):
+        os.makedirs(path_folder_save)
     ani=animation.FuncAnimation(fig,update,frames=range(nb_framestotal), fargs=(mat_skeletons,liste_line,liste_point,liste_invariant))
     if write:
         animation.writer=animation.writers['ffmpeg']
@@ -197,7 +198,7 @@ def plot_skeleton(path_skeleton:str=None,save_name='skeleton',title=None,write=T
     else:
         assert ValueError('Unexpected file format, expected .skeleton or .npy')
        
-    return plot_videos_skeleton(mat_skeletons=[nv_skeleton],save_name=save_name,title=title,write=write,animate=animate,path_folder_save=path_folder_save)
+    return plot_video_skeletons(mat_skeletons=[nv_skeleton],save_name=save_name,title=title,write=write,animate=animate,path_folder_save=path_folder_save)
 
 
 
@@ -211,7 +212,8 @@ def plot_prediction_modele(model,data_set,args=None,checkpoint=None,sample_name:
     entry_model=data_set.get_input_model(entry)
     X=entry[0]
     y_true=entry[1]
-    
+    print(X.shape)
+    print(y_true.shape)    
     
     if  checkpoint !=None:
         if args==None:
@@ -324,11 +326,11 @@ def plot_prediction_modele(model,data_set,args=None,checkpoint=None,sample_name:
     #* On va plot les résultats
 
     #* On retransforme dans un format utilisable 
-    X=data_set.inverse_transform_data(X)
-    y_out=data_set.inverse_transform_data(y_out)
-    y_true=data_set.inverse_transform_data(y_true)
-    X_pred=np.concatenate((X,y_out),axis=0) # Quelle axis?
-    X_true=np.concatenate((X,y_true),axis=0)
+    y_out=data_set.inverse_transform_data(y_out,entry=X)
+    y_true=data_set.inverse_transform_data(y_true,entry=X)
+    X=data_set.inverse_transform_data(X,entry=X)
+    X_pred=y_out #np.concatenate((X,y_out),axis=0) # Quelle axis?
+    X_true=y_true #np.concatenate((X,y_true),axis=0)
 
     #* plot_video_skeletons demande :  (nb_joints,3,nb_frames) et pour l'instant on a ( nb_frames,nb_joints,3) 
     X_pred=X_pred.transpose(1,2,0)

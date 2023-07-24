@@ -13,7 +13,7 @@ from sktime.datasets import load_from_tsfile_to_dataframe
 from utils.NTU_RGB.utils_dataset import time_serie_NTU, data_rentrer_dans_DATASET_NTU
 import warnings
 warnings.filterwarnings('ignore')
-
+from sklearn.model_selection import train_test_split
 
 class Dataset_ETT_hour(Dataset):
     def __init__(self, root_path, flag='train', size=None,
@@ -713,7 +713,7 @@ class dataset_NTURGBD(Dataset):
     def __init__(self, root_path:str="./dataset/NTU_RGB+D/",data_path:str='numpyed/', flag='train', size:list=None,
                  features:str='MS',transform=None,
                  target:str='OT', scale=True, timeenc=0, freq='h', seasonal_patterns=None,nb_joints=25,item=time_serie_NTU,csv_path='./dataset/NTU_RGB+D/summary_NTU/liste_NTU_skeleton_4.csv',
-                 get_time_value=False,get_cat_value=False) -> None:
+                 get_time_value=False,get_cat_value=False,train_size=0.60,test_size=0.20) -> None:
 
         if size==None:
             pass 
@@ -736,15 +736,20 @@ class dataset_NTURGBD(Dataset):
             self.out_len=self.label_len
         #* les autres paras sont globalement inutiles
         self.data_path=os.path.join(root_path,data_path)
+        
         self.csv_path=csv_path
-        self.liste_path=data_rentrer_dans_DATASET_NTU(path_csv=self.csv_path,seq_len=self.seq_len,out_len=self.out_len,path_data_npy=self.data_path) # c'est un pandas dataframe qui devriat tous avoir normalement
+        #* Ici liste_path correspond au dataset où on va prendre les données voulues! On va d'abord
         self.input_len=self.seq_len #* longueur de la time_series en entrée
         self.nb_joints=25 #* nombre de joints dans la time_series
         self.get_cat_value=get_cat_value #* si on veut les catégories
         self.get_time_value=get_time_value #* si on veut les time_values
 
         self.item=time_serie_NTU(data_path=self.data_path,input_len=self.input_len,output_len=self.out_len,get_cat_value=self.get_cat_value,get_time_value=self.get_time_value) #* Classe de base du data'set qui va renvoyer la time series voulu 
-        
+        self.test_size=test_size
+        self.train_size=train_size
+        self.vali_size=1-self.train_size-self.test_size
+        self.liste_path=self.get_df() # c'est un pandas dataframe qui devriat tous avoir normalement
+
     def __len__(self) -> int:
         return len(self.liste_path)
     
@@ -762,7 +767,15 @@ class dataset_NTURGBD(Dataset):
         else:
             return time_series.get_data(row=row)
         
-
+    def get_df(self):
+        """ Renvoie le pandas dataframe prétraité  et correspondant bien au bon dataset"""
+        df=data_rentrer_dans_DATASET_NTU(path_csv=self.csv_path,seq_len=self.seq_len,out_len=self.out_len,path_data_npy=self.data_path) # c'est un pandas dataframe qui devriat tous avoir normalement
+        if self.set_type==0:
+            return pd.DataFrame(train_test_split(df,test_size=1-self.train_size)[self.set_type])
+        else:
+            df2=pd.DataFrame(train_test_split(df,train_size=self.train_size)[1])
+            #print(self.test_size/self.train_size)
+            return pd.DataFrame(train_test_split(df2,test_size=self.test_size/(1-self.train_size))[self.set_type-1])
     def get_data_from_sample_name(self,name_skeleton:str):
       
         """ name_skeleton doit être de la forme 'S001C001P001R001A001'
@@ -775,9 +788,12 @@ class dataset_NTURGBD(Dataset):
         return time_series.get_data(row=row)
     
 
-    def inverse_transform_data(self,x):
-        """ renvoie X de la bonne forme ( nb_frames,nb_joints,3)"""
-        return self.item.inverse_transform(x)
+    def inverse_transform_data(self,x,entry=None,preprocessing=True):
+        """ renvoie X de la bonne forme ( nb_frames,nb_joints,3) et effectue les potentielles effets inverses"""
+        if preprocessing:
+            return self.item.inverse_transform(x,entry=entry,preprocessing=preprocessing)
+        else:
+            return self.item.inverse_transform(x)
 
     def get_input_model(self,entry):
         """ depuis un X obtenu de get_data ou get_data_from_sample_name, renvoie un input de la bonne forme pour le modèle"""

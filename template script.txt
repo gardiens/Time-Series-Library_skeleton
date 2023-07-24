@@ -91,4 +91,5 @@ sbatch $PATH_SCRIPT/NTS_train.sh --partition=${PARTITION} --qos=${QOS} --mail-us
 
 
 320096 Autformer et marche ?
-320101 FEDFormer
+320101 FEDFormer et semble marcher
+on envoie NTS 

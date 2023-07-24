@@ -10,9 +10,10 @@ import time
 import warnings
 import numpy as np
 from setuptools import distutils
-from utils.NTU_RGB.plot_skeleton import plot_video_skeletons
+from utils.NTU_RGB.plot_skeleton import plot_video_skeletons,plot_skeleton
 from utils.constantes import get_settings
 from torch.utils.tensorboard import SummaryWriter
+from utils.losses import mape_loss, mase_loss, smape_loss
 
 warnings.filterwarnings('ignore')
 
@@ -40,7 +41,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         return model
 
     def _get_data(self, flag):
-        #print("les données intéressantes",self.args.get_time_value,self.args.get_cat_value)
         data_set, data_loader = data_provider(self.args, flag)
         return data_set, data_loader
 
@@ -48,9 +48,13 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         model_optim = optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
         return model_optim
 
-    def _select_criterion(self):
-        criterion = nn.MSELoss()
-        return criterion
+    def _select_criterion(self,loss_name="MSE"):
+        if  loss_name == 'MSE':
+            criterion=nn.MSELoss()
+
+        elif loss_name == 'SMAPE':
+            criterion=smape_loss
+            return criterion
 
     def vali(self, vali_data, vali_loader, criterion):
         total_loss = []
@@ -216,7 +220,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         if test:
             print('loading model')
             self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth')))
-
+        
         preds = []
         trues = []
         folder_path = './test_results/' + setting + '/'
@@ -260,17 +264,29 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
                 preds.append(pred)
                 trues.append(true)
-                if i % 2000 == 0:
-                    input = batch_x.detach().cpu().numpy()
+                if i % 1000 == 0: # METTRE 200 sinon 
+                    """input = batch_x.detach().cpu().numpy()
                     gt = np.concatenate((input[0, :, -1], true[0, :, -1]), axis=0) # On récupère lesignal avec le DERNIER CHANNEL UNIQUEMENT
                     pd = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0) #ON RECUPERE LE SIGNAL AVEC LE DERNIER CHANNEL UNIQUEMENT
-                    visual(gt, pd, os.path.join(folder_path, str(i) + '.pdf'))
-                while i<nb_samples:
+                    visual(gt, pd, os.path.join(folder_path, str(i) + '.pdf'))"""
                     input = batch_x.detach().cpu().numpy()
-                    X_pred=np.concatenate((input[0,:,:],pred[0,:,:]),axis=0)
-                    X_true=np.concatenate((input[0,:,:],true[0,:,:]),axis=0)
-                    plot_video_skeletons(mat_skeletons=[X_true,X_pred],save_name=setting+str(i),path_folder_save=folder_path)
-        
+                    y_out=outputs[0]
+                    y_true=batch_y[0]
+                    data_set=test_data
+                    y_out=data_set.inverse_transform_data(y_out,entry=input[0])
+                    y_true=data_set.inverse_transform_data(y_true,entry=input[0])
+                    X=data_set.inverse_transform_data(input[0],entry=input[0])
+                    X_pred=y_out #np.concatenate((X,y_out),axis=0) # Quelle axis?
+                    X_true=y_true #np.concatenate((X,y_true),axis=0)
+                    #* plot_video_skeletons demande :  (nb_joints,3,nb_frames) et pour l'instant on a ( nb_frames,nb_joints,3) 
+                    
+                    X_pred=X_pred.transpose(1,2,0)
+                    X_true=X_true.transpose(1,2,0)
+                    #* On va plot les résultats
+
+                    plot_video_skeletons(mat_skeletons=[X_true,X_pred],save_name=str(i),path_folder_save=os.path.join(folder_path,str(setting)))
+                    filename=str(test_data.liste_path["filename"].iloc[i]) # ???
+                    plot_skeleton(path_skeleton=os.path.join(self.args.root_path,"raw/",filename+".skeleton"),save_name=str(i),path_folder_save=folder_path)
         preds = np.array(preds)
         trues = np.array(trues)
         print('test shape:', preds.shape, trues.shape)
@@ -282,9 +298,17 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         folder_path = './results/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
-
+        
         mae, mse, rmse, mape, mspe = metric(preds, trues)
         print('mse:{}, mae:{}'.format(mse, mae))
+        if self.args.data == 'NTU':
+            df=test_data.liste_path
+            df["mae"]=mae
+            df["mse"]=mse
+            df["rmse"]=rmse
+            df["mape"]=mape
+            df["mspe"]=mspe
+            df.to_csv(os.path.join(folder_path,"results_df.csv"))
         f = open("result_long_term_forecast.txt", 'a')
         f.write(setting + "  \n")
         f.write('mse:{}, mae:{}'.format(mse, mae))

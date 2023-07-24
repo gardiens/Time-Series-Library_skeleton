@@ -163,7 +163,7 @@ if __name__ == '__main__':
     else:
         ii = 0
         args.num_itr=ii
-        setting = '{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_cv_{}_tvv{}'.format(
+        setting = '{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_cv{}_tv{}'.format(
             args.task_name,
             args.model_id,
             args.model,
