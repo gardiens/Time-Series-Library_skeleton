@@ -1,7 +1,7 @@
 #!/bin/bash
 export CUDA_VISIBLE_DEVICES=2
 
-model_name=FEDformer
+model_name=FEDWav
 pred_len=64
 model_id_name=NTU-32-64-training24-7-${model_name}
 data=NTU
