@@ -31,5 +31,5 @@ python -u run.py \
   --get_cat_value 0 \
   --get_time_value 1 \
   --use_gpu 1 \
-  --use_multi_gpu 
+
   
