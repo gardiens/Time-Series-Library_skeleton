@@ -12,7 +12,7 @@ python -u run.py \
   --data_path 'numpyed/'\
   --model_id ${model_id_name} \
   --model ${model_name} \
-  --data ${NTU} \
+  --data ${data} \
   --features M \
   --seq_len 32 \
   --label_len ${pred_len} \
