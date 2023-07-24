@@ -242,7 +242,7 @@ def get_settings(args):
                 args.factor,
                 args.embed,
                 args.distil,
-                args.des,self.num_itr,
+                args.des,args.num_itr,
                 args.get_cat_value,
                 args.get_time_value)
 

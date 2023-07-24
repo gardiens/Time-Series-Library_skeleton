@@ -51,10 +51,13 @@ class Exp_Long_Term_Forecast(Exp_Basic):
     def _select_criterion(self,loss_name="MSE"):
         if  loss_name == 'MSE':
             criterion=nn.MSELoss()
+            
 
         elif loss_name == 'SMAPE':
             criterion=smape_loss
-            return criterion
+        else:
+            criterion=nn.MSELoss()
+        return criterion
 
     def vali(self, vali_data, vali_loader, criterion):
         total_loss = []
