@@ -6,7 +6,7 @@ pred_len=64
 model_id_name=NTU-32-64-training25-7-vali-${model_name}
 python -u run.py \
   --task_name long_term_forecast \
-  --is_training 1 \
+  --is_training 0 \
   --root_path './dataset/NTU_RGB+D/' \
   --data_path 'numpyed/'\
   --model_id ${model_id_name} \

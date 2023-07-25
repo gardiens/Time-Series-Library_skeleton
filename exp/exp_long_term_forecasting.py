@@ -311,7 +311,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         df["rmse"]=rmse
         df["mape"]=mape
         df["mspe"]=mspe
-        df.to_csv(os.path.join(folder_path,setting+"/""results_df.csv"))
+        df.to_csv(os.path.join(folder_path,"results_df.csv"))
         f = open("result_long_term_forecast.txt", 'a')
         f.write(setting + "  \n")
         f.write('mse:{}, mae:{}'.format(mse, mae))
