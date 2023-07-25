@@ -69,8 +69,8 @@ class time_serie_NTU:
         label=label.reshape(label.shape[0],-1)
         if preprocessing:
             #* On normalise les données par rapport à la première frame 
-            begin=begin-np.mean(begin,axis=0)
-            label=label-np.mean(begin,axis=0)
+            begin=begin#-np.mean(begin,axis=0)
+            label=label#-np.mean(begin,axis=0)
         #* Maintenant , begin est de la forme( nb_frames,nb_joints*3) et label est de la forme (nb_frames,nb_joints*3
         if self.get_time_value:
             time_value_enc=np.arange(debut_frame,debut_frame+self.input_len)*self.intervalle_frame #* Encoding du temps, représente x_mark_enc pour FEDformers
@@ -89,6 +89,9 @@ class time_serie_NTU:
             return begin,label,time_value_enc,time_value_dec,mat_cat_data
     
         if self.get_time_value:
+            
+                
+              
             return begin,label,time_value_enc,time_value_dec
         if self.get_cat_value:
             return begin,label,mat_cat_data
@@ -100,7 +103,7 @@ class time_serie_NTU:
         if not preprocessing:
             return x.reshape(x.shape[0],int(x.shape[1]//3),3)
         else:
-            return (x+np.mean(entry,axis=0)).reshape(x.shape[0],int(x.shape[1]//3),3)
+            return (x).reshape(x.shape[0],int(x.shape[1]//3),3)
 
     def get_input_model(self,entry):
         """ depuis un X obtenu de get_data ou get_data_from_sample_name, renvoie un input de la bonne forme pour le modèle"""

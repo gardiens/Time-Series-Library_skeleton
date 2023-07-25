@@ -226,7 +226,7 @@ connexion_tuples = np.array([[Joints.SPINEBASE, Joints.SPINEMID],
 
 # utilisé dans expr.basic et expr.long_term_forecast
 def get_settings(args):
-    return '{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_cv_{}_tvv{}'.format(
+    return '{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_cv{}_tvv{}'.format(
                 args.task_name,
                 args.model_id,
                 args.model,

@@ -183,7 +183,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     print('\tspeed: {:.4f}s/iter; left time: {:.4f}s'.format(speed, left_time),flush=True)
                     iter_count = 0
                     time_now = time.time()
-
+                    break #!!!!!!!!
                 if self.args.use_amp:
                     scaler.scale(loss).backward()
                     scaler.step(model_optim)
@@ -199,6 +199,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             vali_loss = self.vali(vali_data, vali_loader, criterion)
             test_loss = self.vali(test_data, test_loader, criterion)
             writer.add_scalar("Loss/train",train_loss,epoch)
+            print(vali_loss)
             writer.add_scalar("Loss/vali",vali_loss,epoch)
             writer.add_scalar("Loss/test",test_loss,epoch)
             print("Epoch: {0}, Steps: {1} | Train Loss: {2:.7f} Vali Loss: {3:.7f} Test Loss: {4:.7f}".format(
@@ -273,12 +274,11 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     pd = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0) #ON RECUPERE LE SIGNAL AVEC LE DERNIER CHANNEL UNIQUEMENT
                     visual(gt, pd, os.path.join(folder_path, str(i) + '.pdf'))"""
                     input = batch_x.detach().cpu().numpy()
-                    y_out=outputs[0]
-                    y_true=batch_y[0]
+                    y_out=pred[0,:,:]
+                    y_true=batch_y[0,:,:]
                     data_set=test_data
-                    y_out=data_set.inverse_transform_data(y_out,entry=input[0])
-                    y_true=data_set.inverse_transform_data(y_true,entry=input[0])
-                    X=data_set.inverse_transform_data(input[0],entry=input[0])
+                    y_out=data_set.inverse_transform_data(y_out)
+                    y_true=data_set.inverse_transform_data(y_true)
                     X_pred=y_out #np.concatenate((X,y_out),axis=0) # Quelle axis?
                     X_true=y_true #np.concatenate((X,y_true),axis=0)
                     #* plot_video_skeletons demande :  (nb_joints,3,nb_frames) et pour l'instant on a ( nb_frames,nb_joints,3) 
@@ -286,10 +286,11 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     X_pred=X_pred.transpose(1,2,0)
                     X_true=X_true.transpose(1,2,0)
                     #* On va plot les résultats
-
-                    plot_video_skeletons(mat_skeletons=[X_true,X_pred],save_name=str(i),path_folder_save=os.path.join(folder_path,str(setting)))
+                    print("le y_out",y_out)
+                    plot_video_skeletons(mat_skeletons=[X_true,X_pred],save_name=str(i),path_folder_save=os.path.join(folder_path,str(setting)[10:]))
                     filename=str(test_data.liste_path["filename"].iloc[i]) # ???
                     plot_skeleton(path_skeleton=os.path.join(self.args.root_path,"raw/",filename+".skeleton"),save_name=str(i),path_folder_save=folder_path)
+
         preds = np.array(preds)
         trues = np.array(trues)
         print('test shape:', preds.shape, trues.shape)
@@ -304,14 +305,13 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         
         mae, mse, rmse, mape, mspe = metric(preds, trues)
         print('mse:{}, mae:{}'.format(mse, mae))
-        if self.args.data == 'NTU':
-            df=test_data.liste_path
-            df["mae"]=mae
-            df["mse"]=mse
-            df["rmse"]=rmse
-            df["mape"]=mape
-            df["mspe"]=mspe
-            df.to_csv(os.path.join(folder_path,"results_df.csv"))
+        df=test_data.liste_path
+        df["mae"]=mae
+        df["mse"]=mse
+        df["rmse"]=rmse
+        df["mape"]=mape
+        df["mspe"]=mspe
+        df.to_csv(os.path.join(folder_path,setting+"/""results_df.csv"))
         f = open("result_long_term_forecast.txt", 'a')
         f.write(setting + "  \n")
         f.write('mse:{}, mae:{}'.format(mse, mae))

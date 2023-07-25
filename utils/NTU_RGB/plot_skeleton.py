@@ -208,14 +208,16 @@ def plot_skeleton(path_skeleton:str=None,save_name='skeleton',title=None,write=T
 def plot_prediction_modele(model,data_set,args=None,checkpoint=None,sample_name:str="S001C001P001R001A001",settings=None,save_name='skeleton',title=None,write=True,animate=False,path_folder_save='./videos/'):
     """ Plot la vidéo de prédiction d'un modèle sur un sample donné"""
 
-    entry=data_set.get_data_from_sample_name(sample_name)#
+    entry=data_set.get_data_from_sample_name(sample_name)
     entry_model=data_set.get_input_model(entry)
     X=entry[0]
+    print(X[:,0].mean())
     y_true=entry[1]
     print(X.shape)
     print(y_true.shape)    
     
     if  checkpoint !=None:
+        print("on load un checkpoint, ne devrait pas arriver dans la prédiction de modèle")
         if args==None:
             print("pas de args, on en définit un par défaut")
             #* Exemple de args possible pour débug et setting
@@ -314,6 +316,7 @@ def plot_prediction_modele(model,data_set,args=None,checkpoint=None,sample_name:
                     args.des, 0)
                 
                 #* Load the model from the checkpoints
+        print("dans plot prédiction on load depuis un checkpoint")
         model.load_state_dict(checkpoint['model_state_dict'])
         model.float() # Just in case? 
     #* On va prédire la sortie du modèle
@@ -326,18 +329,21 @@ def plot_prediction_modele(model,data_set,args=None,checkpoint=None,sample_name:
     #* On va plot les résultats
 
     #* On retransforme dans un format utilisable 
-    y_out=data_set.inverse_transform_data(y_out,entry=X)
-    y_true=data_set.inverse_transform_data(y_true,entry=X)
-    X=data_set.inverse_transform_data(X,entry=X)
+    #print(mean)
+    y_out=data_set.inverse_transform_data(y_out)
+    y_true=data_set.inverse_transform_data(y_true)
+    X=data_set.inverse_transform_data(X)
+    #print("y_out",y_out)
     X_pred=y_out #np.concatenate((X,y_out),axis=0) # Quelle axis?
     X_true=y_true #np.concatenate((X,y_true),axis=0)
 
     #* plot_video_skeletons demande :  (nb_joints,3,nb_frames) et pour l'instant on a ( nb_frames,nb_joints,3) 
     X_pred=X_pred.transpose(1,2,0)
     X_true=X_true.transpose(1,2,0)
+    X=X.transpose(1,2,0)
     #* On va plot les résultats
     plot_video_skeletons(mat_skeletons=[X_true,X_pred],save_name=save_name,title=title,write=write,animate=animate,path_folder_save=path_folder_save)
-        
+    plot_video_skeletons(mat_skeletons=[X],save_name=save_name+'_input',title=title,write=write,animate=animate,path_folder_save=path_folder_save)
 import os
 from utils.NTU_RGB.utils_dataset import extract_integers
 def plot_plusieurs_skeletons_selon_A(model,data_set,checkpoints=None,nb_sample=1,video_save_path="./videos",root_path='./dataset/NTU_RGB+D',data_path_npy="numpyed/"):

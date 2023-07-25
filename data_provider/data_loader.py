@@ -788,10 +788,10 @@ class dataset_NTURGBD(Dataset):
         return time_series.get_data(row=row)
     
 
-    def inverse_transform_data(self,x,entry=None,preprocessing=True):
+    def inverse_transform_data(self,x,preprocessing=True):
         """ renvoie X de la bonne forme ( nb_frames,nb_joints,3) et effectue les potentielles effets inverses"""
         if preprocessing:
-            return self.item.inverse_transform(x,entry=entry,preprocessing=preprocessing)
+            return self.item.inverse_transform(x)
         else:
             return self.item.inverse_transform(x)
 
