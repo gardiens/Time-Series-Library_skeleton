@@ -9,6 +9,7 @@ from exp.exp_classification import Exp_Classification
 import random
 import numpy as np
 import sys
+from utils.constantes import get_settings
 
 if __name__ == '__main__':
     print("version de cuda",torch.version.cuda)
@@ -130,7 +131,8 @@ if __name__ == '__main__':
         for ii in range(args.itr):
             # setting record of experiments
             args.num_itr=ii
-            setting = '{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_cv_{}_tvv{}'.format(
+            setting = get_settings(args)
+            """'{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_cv{}_tvv{}'.format(
                 args.task_name,
                 args.model_id,
                 args.model,
@@ -149,7 +151,7 @@ if __name__ == '__main__':
                 args.distil,
                 args.des, ii,
                 args.get_cat_value,
-                args.get_time_value)
+                args.get_time_value)"""
                 
             exp = Exp(args)  # set experiments
             print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting),flush=True)
@@ -159,9 +161,11 @@ if __name__ == '__main__':
             exp.test(setting)
             torch.cuda.empty_cache()
     else:
+        print(" On test directement les données:")
         ii = 0
         args.num_itr=ii
-        setting = '{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_cv{}_tv{}'.format(
+        setting = get_settings(args)
+        """'{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_cv{}_tv{}'.format(
             args.task_name,
             args.model_id,
             args.model,
@@ -181,7 +185,7 @@ if __name__ == '__main__':
             args.des, ii,
             args.get_cat_value,
             args.get_time_value)
-
+"""
         exp = Exp(args)  # set experiments
         print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting),flush=True)
         exp.test(setting, test=1)

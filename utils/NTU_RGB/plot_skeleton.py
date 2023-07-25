@@ -211,10 +211,7 @@ def plot_prediction_modele(model,data_set,args=None,checkpoint=None,sample_name:
     entry=data_set.get_data_from_sample_name(sample_name)
     entry_model=data_set.get_input_model(entry)
     X=entry[0]
-    print(X[:,0].mean())
     y_true=entry[1]
-    print(X.shape)
-    print(y_true.shape)    
     
     if  checkpoint !=None:
         print("on load un checkpoint, ne devrait pas arriver dans la prédiction de modèle")
