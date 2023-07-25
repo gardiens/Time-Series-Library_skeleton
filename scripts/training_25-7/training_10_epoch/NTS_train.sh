@@ -2,12 +2,12 @@
 export CUDA_VISIBLE_DEVICES=2
 
 model_name=NTS
-model_id_name=NTS-32-64-training25-7vali${model_name}
+model_id_name=NTS-32-64-training25-710epvali${model_name}
 data=NTU
 pred_len=64
 python -u run.py \
   --task_name long_term_forecast \
-  --is_training 0 \
+  --is_training 1 \
   --root_path './dataset/NTU_RGB+D/' \
   --data_path 'numpyed/'\
   --model_id ${model_id_name} \
