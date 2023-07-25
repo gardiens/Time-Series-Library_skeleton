@@ -102,9 +102,9 @@ if __name__ == '__main__':
     parser.add_argument('--get_cat_value', type=int, default=0, help='get cat value,0 if not, 1 if yes')
     
     args = parser.parse_args()
-    print("use_gpu: ", args.use_gpu, torch.cuda.is_available(), flush=True)
+    print("use_gpu: ce quon demande ", args.use_gpu, "cuda est-il disponible:", torch.cuda.is_available(), flush=True)
     args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
-    print("use_gpu: ", args.use_gpu, flush=True)
+    print("use_gpu: selon l'ordi après ", args.use_gpu, flush=True)
     if args.use_gpu and args.use_multi_gpu:
         args.devices = args.devices.replace(' ', '')
         device_ids = args.devices.split(',')

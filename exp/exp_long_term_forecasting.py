@@ -223,14 +223,19 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         test_data, test_loader = self._get_data(flag='test')
         if test:
             print('loading model')
-            try:
-                self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth')))
+            try: #* On load le check 
+                if torch.cuda.is_available():
+                    self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth')))
+                else:
+                    self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth'),map_location=torch.device('cpu')))
             except FileNotFoundError:
                 args1=get_args_from_filename(setting)
                 args1.get_cat_value="_"+str(args1.get_cat_value)
                 setting1=get_settings(args1)
-                self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting1, 'checkpoint.pth')))
-
+                if torch.cuda.is_available:
+                    self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting1, 'checkpoint.pth')))
+                else:
+                    self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting1, 'checkpoint.pth'),map_location=torch.device('cpu')))
         preds = []
         trues = []
         folder_path = './test_results/' + setting + '/'

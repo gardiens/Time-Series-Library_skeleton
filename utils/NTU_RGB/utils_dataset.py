@@ -4,6 +4,25 @@ import os
 import numpy as np
 import pandas as pd
 from torch import tensor
+
+
+
+def normaliser_input_unpoint(x,y,point_ref:int=None):
+    """ le but est de normaliser par rapport à un point le squelette pour être plus stable"""
+    """ x,y sont de la forme [nb_frames,nb_joints,3]"""
+    if point_ref is None:
+        point_ref=20 #Spine Shoulder
+    
+    mean_x=np.mean(x[:,point_ref,1],axis=0)
+    mean_y= np.mean(x[:,point_ref,2],axis=0)
+    mean_z= np.mean(x[:,point_ref,2],axis=0)
+    x=x[:,:,1]-mean_x
+    x=x[:,:,2]-mean_y
+    x=x[:,:,3]-mean_z
+    y=y[:,:,1]-mean_x
+    y=y[:,:,2]-mean_y
+    y=y[:,:,3]-mean_z
+    return x,y
 class time_serie_NTU:
 
     """ Classe de Time_series qui va être la base de notre dataset"""
