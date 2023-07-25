@@ -227,7 +227,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth')))
             except FileNotFoundError:
                 args1=get_args_from_filename(setting)
-                args1.get_cat_value="_"+str(args1.cv)
+                args1.get_cat_value="_"+str(args1.get_cat_value)
                 setting1=get_settings(args1)
                 self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting1, 'checkpoint.pth')))
 
