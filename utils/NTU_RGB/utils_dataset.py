@@ -66,7 +66,7 @@ class time_serie_NTU:
         return len(self.row)
     
     
-    def get_data(self,row,preprocessing=True):
+    def get_data(self,row,preprocessing:int=0):
         ''' FONCTION UTILISE DANS LES DATASET/DATALOADER
         Renvoie une sortie de la forme :
         entry_data, label, cat_data, time_value si les valeurs sont bien bonne

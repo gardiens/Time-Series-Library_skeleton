@@ -226,11 +226,13 @@ connexion_tuples = np.array([[Joints.SPINEBASE, Joints.SPINEMID],
 
 # utilisé dans expr.basic et expr.long_term_forecast
 def get_settings(args):
+    """ Sachant des args, permets de renvoyer un setting de manière automatiser,
+    REMPLACE AUTOMATQIEUEMNT _ PAR - """
     return '{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_cv{}_tvv{}'.format(
                 args.task_name,
-                args.model_id,
+                args.model_id.replace("_","-"),
                 args.model,
-                args.data,
+                args.data.replace("_","-"),
                 args.features,
                 args.seq_len,
                 args.label_len,
@@ -250,45 +252,80 @@ def get_settings(args):
 #Fonction ivnerse de get settings
 
 
-def get_args_from_filename(file):
+def get_args_from_filename(file,args_inherit=None ):
     """ On va retourner le setting sachant le Filefait à la main
     POUR FED SI CEST NTU IL FAUT RAJOUTER DES TRUCS  """
     parser=file.split("_")
-    class Args1(Args_technique_GPU):
-        def __init__(self):
-            super().__init__()
-            parser = file.split("_")
-       
-            self.task_name = "long_term_forecast"
-            self.model_id = str(parser[3])
-            self.model = str(parser[4])
-            self.data = str(parser[5])
-            self.features = str(parser[6][2:])
-            self.seq_len = int(parser[7][2:])
-            self.label_len = int(parser[8][2:])
-            self.pred_len = int(parser[9][2:])
-            self.d_model = int(parser[10][2:])
-            self.n_heads = int(parser[11][2:])
-            self.e_layers = int(parser[12][2:])
-            self.d_layers = int(parser[13][2:])
-            self.d_ff = int(parser[14][2:])
-            self.factor = int(parser[15][2:])
-            self.embed = str(parser[16][2:])
-            self.distil = parser[17][2:] == "True"
-            self.des = str(parser[18])
-            self.ii = int(parser[19])
-            print(parser[18])
-            print(parser[20][2:])
-            if len(parser[20][2:])==0:
-                #print("frérot t'as encore oublié cv_NOMBRe alors qu'il fallait faire cvN")
-                self.get_cat_value = int(parser[21])
-                self.get_time_value = int(parser[22][3:])
-            else:
+    if args_inherit is None:
+        class Args1(Args_technique_CPU):
+            def __init__(self):
+                super().__init__()
+                parser = file.split("_")
+        
+                self.task_name = "long_term_forecast"
+                self.model_id = str(parser[3])
+                self.model = str(parser[4])
+                self.data = str(parser[5])
+                self.features = str(parser[6][2:])
+                self.seq_len = int(parser[7][2:])
+                self.label_len = int(parser[8][2:])
+                self.pred_len = int(parser[9][2:])
+                self.d_model = int(parser[10][2:])
+                self.n_heads = int(parser[11][2:])
+                self.e_layers = int(parser[12][2:])
+                self.d_layers = int(parser[13][2:])
+                self.d_ff = int(parser[14][2:])
+                self.factor = int(parser[15][2:])
+                self.embed = str(parser[16][2:])
+                self.distil = parser[17][2:] == "True"
+                self.des = str(parser[18])
+                self.ii = int(parser[19])
+                print(parser[18])
+                print(parser[20][2:])
+                if len(parser[20][2:])==0:
+                    #print("frérot t'as encore oublié cv_NOMBRe alors qu'il fallait faire cvN")
+                    self.get_cat_value = int(parser[21])
+                    self.get_time_value = int(parser[22][3:])
+                else:
 
-                self.get_cat_value = int(parser[20][2:])
+                    self.get_cat_value = int(parser[20][2:])
 
-                self.get_time_value = int(parser[21][3:])
+                    self.get_time_value = int(parser[21][3:])
+    else:
+        class Args1(args_inherit):
+            def __init__(self):
+                super().__init__()
+                parser = file.split("_")
+        
+                self.task_name = "long_term_forecast"
+                self.model_id = str(parser[3])
+                self.model = str(parser[4])
+                self.data = str(parser[5])
+                self.features = str(parser[6][2:])
+                self.seq_len = int(parser[7][2:])
+                self.label_len = int(parser[8][2:])
+                self.pred_len = int(parser[9][2:])
+                self.d_model = int(parser[10][2:])
+                self.n_heads = int(parser[11][2:])
+                self.e_layers = int(parser[12][2:])
+                self.d_layers = int(parser[13][2:])
+                self.d_ff = int(parser[14][2:])
+                self.factor = int(parser[15][2:])
+                self.embed = str(parser[16][2:])
+                self.distil = parser[17][2:] == "True"
+                self.des = str(parser[18])
+                self.ii = int(parser[19])
+                print(parser[18])
+                print(parser[20][2:])
+                if len(parser[20][2:])==0:
+                    #print("frérot t'as encore oublié cv_NOMBRe alors qu'il fallait faire cvN")
+                    self.get_cat_value = int(parser[21])
+                    self.get_time_value = int(parser[22][3:])
+                else:
 
+                    self.get_cat_value = int(parser[20][2:])
+
+                    self.get_time_value = int(parser[21][3:])
     args=Args1()
     return args 
 #* Configuration utilisé pour le test de certaines composition

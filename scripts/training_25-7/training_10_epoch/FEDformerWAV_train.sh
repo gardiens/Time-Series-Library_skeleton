@@ -1,10 +1,10 @@
 #!/bin/bash
 export CUDA_VISIBLE_DEVICES=2
 
-model_name=NTS
-model_id_name=NTS-32-64-training25-7vali${model_name}
-data=NTU
+model_name=FEDWav
 pred_len=64
+model_id_name=NTU-32-64-training25-7vali${model_name}
+data=NTU
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 0 \
@@ -25,11 +25,9 @@ python -u run.py \
   --c_out 75 \
   --des 'Exp' \
   --itr 1      \
-  --p_hidden_dims 256 256 \
-  --p_hidden_layers 2 \
+  --dropout 0.1 \
   --embed timeNTU \
   --get_cat_value 0 \
   --get_time_value 1 \
   --use_gpu 1 \
-  --train_epochs 6
-  
+  --train_epochs 10

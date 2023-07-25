@@ -229,7 +229,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 else:
                     self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth'),map_location=torch.device('cpu')))
             except FileNotFoundError:
-                args1=get_args_from_filename(setting)
+                args1=get_args_from_filename(setting,self.args)
                 args1.get_cat_value="_"+str(args1.get_cat_value)
                 setting1=get_settings(args1)
                 if torch.cuda.is_available():
@@ -279,7 +279,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
                 preds.append(pred)
                 trues.append(true)
-                if i % 1000 == 0: # METTRE 200 sinon 
+                if i % 400 == 0: # METTRE 200 sinon 
                     """input = batch_x.detach().cpu().numpy()
                     gt = np.concatenate((input[0, :, -1], true[0, :, -1]), axis=0) # On récupère lesignal avec le DERNIER CHANNEL UNIQUEMENT
                     pd = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0) #ON RECUPERE LE SIGNAL AVEC LE DERNIER CHANNEL UNIQUEMENT
@@ -297,7 +297,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     X_pred=X_pred.transpose(1,2,0)
                     X_true=X_true.transpose(1,2,0)
                     #* On va plot les résultats
-                    plot_video_skeletons(mat_skeletons=[X_true,X_pred],save_name=str(i),path_folder_save=os.path.join(folder_path,str(setting)[10:]))
+                    plot_video_skeletons(mat_skeletons=[X_true,X_pred],save_name="label:"+self.args.model_id+str(i),path_folder_save=os.path.join(folder_path))
                     filename=str(test_data.liste_path["filename"].iloc[i]) # ???
                     plot_skeleton(path_skeleton=os.path.join(self.args.root_path,"raw/",filename+".skeleton"),save_name=str(i),path_folder_save=folder_path)
 

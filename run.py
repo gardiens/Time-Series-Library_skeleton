@@ -100,7 +100,7 @@ if __name__ == '__main__':
     #** NTU_RGB
     parser.add_argument('--get_time_value', type=int, default=0, help='get time value,0 if not, 1 if yes')
     parser.add_argument('--get_cat_value', type=int, default=0, help='get cat value,0 if not, 1 if yes')
-    
+    parser.add_argument('--preprocess', type=int, default=0, help='preprocess data,0 if 1 or more we do sth')
     args = parser.parse_args()
     print("use_gpu: ce quon demande ", args.use_gpu, "cuda est-il disponible:", torch.cuda.is_available(), flush=True)
     args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
@@ -132,26 +132,6 @@ if __name__ == '__main__':
             # setting record of experiments
             args.num_itr=ii
             setting = get_settings(args)
-            """'{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_cv{}_tvv{}'.format(
-                args.task_name,
-                args.model_id,
-                args.model,
-                args.data,
-                args.features,
-                args.seq_len,
-                args.label_len,
-                args.pred_len,
-                args.d_model,
-                args.n_heads,
-                args.e_layers,
-                args.d_layers,
-                args.d_ff,
-                args.factor,
-                args.embed,
-                args.distil,
-                args.des, ii,
-                args.get_cat_value,
-                args.get_time_value)"""
                 
             exp = Exp(args)  # set experiments
             print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting),flush=True)
@@ -165,27 +145,6 @@ if __name__ == '__main__':
         ii = 0
         args.num_itr=ii
         setting = get_settings(args)
-        """'{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_cv{}_tv{}'.format(
-            args.task_name,
-            args.model_id,
-            args.model,
-            args.data,
-            args.features,
-            args.seq_len,
-            args.label_len,
-            args.pred_len,
-            args.d_model,
-            args.n_heads,
-            args.e_layers,
-            args.d_layers,
-            args.d_ff,
-            args.factor,
-            args.embed,
-            args.distil,
-            args.des, ii,
-            args.get_cat_value,
-            args.get_time_value)
-"""
         exp = Exp(args)  # set experiments
         print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting),flush=True)
         exp.test(setting, test=1)
