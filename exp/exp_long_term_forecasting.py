@@ -219,7 +219,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         writer.flush()
         return self.model   
 
-    def test(self, setting, test=0,nb_samples=20):
+    def test(self, setting, test=0):
         test_data, test_loader = self._get_data(flag='test')
         if test:
             print('loading model')

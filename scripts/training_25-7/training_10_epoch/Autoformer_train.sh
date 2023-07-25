@@ -3,7 +3,7 @@ export CUDA_VISIBLE_DEVICES=2
 
 model_name=Autoformer
 pred_len=64
-model_id_name=NTU-32-64-training25-7-vali-10ep${model_name}
+model_id_name=NTU-32-64-training25-710ep-vali${model_name}
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 1 \

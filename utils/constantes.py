@@ -292,7 +292,7 @@ def get_args_from_filename(file,args_inherit=None ):
 
                     self.get_time_value = int(parser[21][3:])
     else:
-        class Args1(args_inherit):
+        class Args1(Args_technique_GPU):
             def __init__(self):
                 super().__init__()
                 parser = file.split("_")
