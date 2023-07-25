@@ -11,7 +11,7 @@ import warnings
 import numpy as np
 from setuptools import distutils
 from utils.NTU_RGB.plot_skeleton import plot_video_skeletons,plot_skeleton
-from utils.constantes import get_settings
+from utils.constantes import get_settings,get_args_from_filename
 from torch.utils.tensorboard import SummaryWriter
 from utils.losses import mape_loss, mase_loss, smape_loss
 
@@ -223,8 +223,14 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         test_data, test_loader = self._get_data(flag='test')
         if test:
             print('loading model')
-            self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth')))
-        
+            try:
+                self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth')))
+            except FileNotFoundError:
+                args1=get_args_from_filename(setting)
+                args1.cv="_"+str(args1.cv)
+                setting1=get_settings(args1)
+                self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting1, 'checkpoint.pth')))
+            
         preds = []
         trues = []
         folder_path = './test_results/' + setting + '/'
