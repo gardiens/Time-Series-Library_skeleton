@@ -20,7 +20,7 @@ def check_nombre_frames(L):
             raise ValueError("Les deux np.array n'ont pas le même nombre de frames")
     
 
-def plot_video_skeletons(mat_skeletons,title=None,write=True,animate=False,path_folder_save='./videos/',save_name='skeleton'):
+def plot_video_skeletons(mat_skeletons,title=None,write=True,animate=False,path_folder_save='./videos/',save_name='skeleton',num_body=0):
     """Plot the videos for several skeletons
     Input: les mat_skeletons est une liste d'arrays qui sont supposés être des sorties de FEDFormers de la forme (nb_joints,3,nb_frames)
     la couleur est preset et ne peut pas dépasser 11 individus...
@@ -156,7 +156,7 @@ def plot_video_skeletons(mat_skeletons,title=None,write=True,animate=False,path_
     return ani
 
 
-def plot_skeleton(path_skeleton:str=None,save_name='skeleton',title=None,write=True,animate=False,path_folder_save='./videos/'):
+def plot_skeleton(path_skeleton:str=None,save_name='skeleton',title=None,write=True,animate=False,path_folder_save='./videos/',num_body=0):
     """plot le skeleton d'une personne du dataset NTU RGB+D sachant le .skeleton 
 
     Parameters
@@ -185,28 +185,34 @@ def plot_skeleton(path_skeleton:str=None,save_name='skeleton',title=None,write=T
     if not os.path.exists(path_folder_save):
         os.makedirs(path_folder_save)
     #* Parsing the skeleton
+    if not path_skeleton.strip().endswith('.skeleton') and not path_skeleton.strip().endswith('.npy'):
+        path_skeleton='./dataset/NTU_RGB+D/raw/'+path_skeleton+'.skeleton'
+
     if path_skeleton.strip().endswith('.skeleton'):
         skeleton = read_xyz(path_skeleton) # l'ouput est `(3 {x, y, z}, max_frame, num_joint, 2 {n_subjects})
-        nv_skeleton=skeleton.transpose(3, 2, 0, 1)[0] #! Il st de la forme (nb_joints,3,nb_frames)
+        print(skeleton.transpose(3, 2, 0, 1).shape)
+        nv_skeleton=skeleton.transpose(3, 2, 0, 1)[num_body] #! Il st de la forme (nb_joints,3,nb_frames)
 
     elif path_skeleton.strip().endswith('.npy'):
         skeleton=np.load(path_skeleton,allow_pickle=True).item()
         print(' le plot de skeleton en .npy nest pas encore supporté,unexpected behavior EXPECTED !')
-        skeleton=skeleton['data0']
+        skeleton=skeleton['b0']
         nv_skeleton=skeleton.transpose(3, 2, 0, 1)[0] #! Il st de la forme (nb_joints,3,nb_frames)
 
     else:
         assert ValueError('Unexpected file format, expected .skeleton or .npy')
-       
+    print("On sauvegarde le skeleton au nom de ",save_name)
     return plot_video_skeletons(mat_skeletons=[nv_skeleton],save_name=save_name,title=title,write=write,animate=animate,path_folder_save=path_folder_save)
 
 
 
 
+from data_provider.data_loader import dataset_NTURGBD
 
-
-def plot_prediction_modele(model,data_set,args=None,checkpoint=None,sample_name:str="S001C001P001R001A001",settings=None,save_name='skeleton',title=None,write=True,animate=False,path_folder_save='./videos/'):
+def plot_prediction_modele(model,data_set:dataset_NTURGBD,args=None,checkpoint=None,sample_name:str="S001C001P001R001A001",settings=None,save_name='skeleton',title=None,write=True,animate=False,path_folder_save='./videos/'):
     """ Plot la vidéo de prédiction d'un modèle sur un sample donné"""
+    print("on va plot:",sample_name)
+    print(data_set.liste_path.where(data_set.liste_path["filename"]==sample_name).dropna())
 
     entry=data_set.get_data_from_sample_name(sample_name)
     entry_model=data_set.get_input_model(entry)

@@ -73,18 +73,6 @@ def data_provider(args, flag):
     else: #* CAS LONG TIME FORECAST
         if args.data == 'm4':
             drop_last = False
-        #* Cas générique
-        data_set = Data(
-            root_path=args.root_path,
-            data_path=args.data_path,
-            flag=flag,
-            size=[args.seq_len, args.label_len, args.pred_len],
-            features=args.features,
-            target=args.target,
-            timeenc=timeenc,
-            freq=freq,
-            seasonal_patterns=args.seasonal_patterns
-        )
         #* Cas NTU_RGBD
         if args.data == 'NTU':
             data_set= Data(
@@ -93,9 +81,24 @@ def data_provider(args, flag):
                 flag=flag,
                 size=[args.seq_len, args.label_len, args.pred_len],
                 get_time_value=args.get_time_value ,#!
-                get_cat_value=args.get_cat_value #!
+                get_cat_value=args.get_cat_value, #!,
+                preproccess=args.preprocess #!
             )
-       
+        else:
+            #* Cas générique
+            print("hein")
+            data_set = Data(
+                root_path=args.root_path,
+                data_path=args.data_path,
+                flag=flag,
+                size=[args.seq_len, args.label_len, args.pred_len],
+                features=args.features,
+                target=args.target,
+                timeenc=timeenc,
+                freq=freq,
+                seasonal_patterns=args.seasonal_patterns
+            )
+        
         data_loader = DataLoader(
             data_set,
             batch_size=batch_size,

@@ -101,6 +101,8 @@ if __name__ == '__main__':
     parser.add_argument('--get_time_value', type=int, default=0, help='get time value,0 if not, 1 if yes')
     parser.add_argument('--get_cat_value', type=int, default=0, help='get cat value,0 if not, 1 if yes')
     parser.add_argument('--preprocess', type=int, default=0, help='preprocess data,0 if 1 or more we do sth')
+    parser.add_argument('--refaire_csv', action='store_true', help='permet de recréer ou non le csv de NTU_RGB', default=False)
+
     args = parser.parse_args()
     print("use_gpu: ce quon demande ", args.use_gpu, "cuda est-il disponible:", torch.cuda.is_available(), flush=True)
     args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False

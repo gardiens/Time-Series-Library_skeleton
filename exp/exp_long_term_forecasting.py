@@ -220,6 +220,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         return self.model   
 
     def test(self, setting, test=0):
+        train_data,train_loader = self._get_data(flag='train')
         test_data, test_loader = self._get_data(flag='test')
         if test:
             print('loading model')
@@ -299,7 +300,97 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     #* On va plot les résultats
                     plot_video_skeletons(mat_skeletons=[X_true,X_pred],save_name="label:"+self.args.model_id+str(i),path_folder_save=os.path.join(folder_path))
                     filename=str(test_data.liste_path["filename"].iloc[i]) # ???
-                    plot_skeleton(path_skeleton=os.path.join(self.args.root_path,"raw/",filename+".skeleton"),save_name=str(i),path_folder_save=folder_path)
+                    plot_skeleton(path_skeleton=os.path.join(self.args.root_path,"raw/",filename+".skeleton"),save_name=str(i)+filename,path_folder_save=folder_path)
+
+        preds = np.array(preds)
+        trues = np.array(trues)
+        print('test shape:', preds.shape, trues.shape)
+        preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
+        trues = trues.reshape(-1, trues.shape[-2], trues.shape[-1])
+        print('test shape:', preds.shape, trues.shape)
+
+        # result save
+        folder_path = './results/' + setting + '/'
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        
+        mae, mse, rmse, mape, mspe = metric(preds, trues)
+        print('mse:{}, mae:{}'.format(mse, mae))
+        df=test_data.liste_path
+        df["mae"]=mae
+        df["mse"]=mse
+        df["rmse"]=rmse
+        df["mape"]=mape
+        df["mspe"]=mspe
+        df.to_csv(os.path.join(folder_path,"results_df.csv"))
+        f = open("result_long_term_forecast.txt", 'a')
+        f.write(setting + "  \n")
+        f.write('mse:{}, mae:{}'.format(mse, mae))
+        f.write('\n')
+        f.write('\n')
+        f.close()
+
+        np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, mape, mspe]))
+        np.save(folder_path + 'pred.npy', preds)
+        np.save(folder_path + 'true.npy', trues)
+
+
+        #* On plot aussi le train 
+        train_data,train_loader = self._get_data(flag='train')
+        with torch.no_grad():
+            for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(train_loader):
+                batch_x = batch_x.float().to(self.device)
+                batch_y = batch_y.float().to(self.device)
+
+                batch_x_mark = batch_x_mark.float().to(self.device)
+                batch_y_mark = batch_y_mark.float().to(self.device)
+
+                # decoder input
+                dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
+                dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
+                # encoder - decoder
+                if self.args.use_amp:
+                    with torch.cuda.amp.autocast():
+                        if self.args.output_attention:
+                            outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)[0]
+                        else:
+                            outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+                else:
+                    if self.args.output_attention:
+                        outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)[0]
+
+                    else:
+                        outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+
+                f_dim = -1 if self.args.features == 'MS' else 0
+                outputs = outputs[:, -self.args.pred_len:, f_dim:]
+                batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
+                outputs = outputs.detach().cpu().numpy()
+                batch_y = batch_y.detach().cpu().numpy()
+
+                pred = outputs
+                true = batch_y
+
+                preds.append(pred)
+                trues.append(true)
+                if i % 400 == 0: # METTRE 200 sinon 
+            
+                    input = batch_x.detach().cpu().numpy()
+                    y_out=pred[0,:,:]
+                    y_true=batch_y[0,:,:]
+                    data_set=test_data
+                    y_out=data_set.inverse_transform_data(y_out)
+                    y_true=data_set.inverse_transform_data(y_true)
+                    X_pred=y_out #np.concatenate((X,y_out),axis=0) # Quelle axis?
+                    X_true=y_true #np.concatenate((X,y_true),axis=0)
+                    #* plot_video_skeletons demande :  (nb_joints,3,nb_frames) et pour l'instant on a ( nb_frames,nb_joints,3) 
+                    
+                    X_pred=X_pred.transpose(1,2,0)
+                    X_true=X_true.transpose(1,2,0)
+                    #* On va plot les résultats
+                    plot_video_skeletons(mat_skeletons=[X_true,X_pred],save_name="train:"+self.args.model_id+str(i),path_folder_save=os.path.join(folder_path))
+                    filename=str(test_data.liste_path["filename"].iloc[i]) # ???
+                    plot_skeleton(path_skeleton=os.path.join(self.args.root_path,"raw/",filename+".skeleton"),save_name="train_"+str(i)+filename,path_folder_save=folder_path)
 
         preds = np.array(preds)
         trues = np.array(trues)

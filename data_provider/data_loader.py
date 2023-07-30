@@ -15,6 +15,119 @@ import warnings
 warnings.filterwarnings('ignore')
 from sklearn.model_selection import train_test_split
 
+
+#* DATA_LOADER A IMPLEMENTER JIMAGINE
+
+class dataset_NTURGBD(Dataset):
+    """Made by Phillipe rambaud and Pierrick Bournez 
+    a bit debugged by Pierrick """
+    """Dataset for the NTU RGB+D dataset, les items sont de la forme (time_serie, label) pas comme ETT """
+    
+    def __init__(self, root_path:str="./dataset/NTU_RGB+D/",data_path:str='numpyed/', flag='train', size:list=None,
+                 features:str='MS',transform=None,item=time_serie_NTU,csv_path='./dataset/NTU_RGB+D/summary_NTU/liste_NTU_skeleton_4.csv',
+                 get_time_value=False,get_cat_value=False,train_size=0.60,test_size=0.20,preproccess:int=0) -> None:
+
+        if size==None:
+            
+            #TODO: A MODIFIEr
+            self.seq_len = 32
+            self.label_len=32
+            self.pred_len=32
+
+        else:
+            self.seq_len = size[0]
+
+            self.label_len=size[1] #* longueur de la time_series en sortie
+            self.pred_len=size[2] #* longueur de la time_series à prédire
+        assert flag in ['train', 'test', 'val']
+        type_map = {'train': 0, 'val': 1, 'test': 2}
+        self.set_type = type_map[flag]
+        if flag=='test':
+            self.out_len=size[2]
+        else:
+            self.out_len=self.label_len
+        #* les autres paras sont globalement inutiles
+        self.data_path=os.path.join(root_path,data_path)
+        self.preproccess=preproccess
+        self.csv_path=csv_path
+        self.input_len=self.seq_len #* longueur de la time_series en entrée
+        self.nb_joints=25 #* nombre de joints dans la time_series
+        self.get_cat_value=get_cat_value #* si on veut les catégories
+        self.get_time_value=get_time_value #* si on veut les time_values
+
+        self.item=time_serie_NTU(data_path=self.data_path,input_len=self.input_len,output_len=self.out_len,get_cat_value=self.get_cat_value,get_time_value=self.get_time_value,preproccess=self.preproccess) #* Classe de base du data'set qui va renvoyer la time series voulu 
+        self.test_size=test_size
+        self.train_size=train_size
+        self.vali_size=1-self.train_size-self.test_size
+        self.liste_path=self.get_df() #* Ici liste_path correspond au dataset où on va prendre les données voulues! On va d'abord
+
+    def __len__(self) -> int:
+        return len(self.liste_path)
+    
+
+    def __getitem__(self, index: int):
+        """ renvoie la time_series à l'index donné, en particulier donnée,label!
+         Il renvoie un tuple de la forme:
+          (time_series: Numpy, le label qui est np.array aussi
+          et possible un time_value qui est un numpy array du temps entre deux frames et un np.array qui sont les données catégoriques ) """
+        time_series=self.item
+        row=self.liste_path.iloc[index] #C'est la row du dataframe 
+
+        if self.set_type==2:
+            return time_series.get_data(row=row)
+        else:
+            return time_series.get_data(row=row)
+        
+    def get_df(self):
+        """ Renvoie le pandas dataframe prétraité  et correspondant bien au bon dataset"""
+        df=data_rentrer_dans_DATASET_NTU(path_csv=self.csv_path,seq_len=self.seq_len,out_len=self.out_len,path_data_npy=self.data_path,preprocess=self.preproccess) # c'est un pandas dataframe qui devriat tous avoir normalement
+
+        #* On split entre les trois datasets
+        if self.preproccess==0: #* On split le dataset de manière équilibrée
+            if self.set_type==0:
+                return pd.DataFrame(train_test_split(df,test_size=1-self.train_size)[self.set_type])
+            else:
+                df2=pd.DataFrame(train_test_split(df,train_size=self.train_size)[1])
+                #print(self.test_size/self.train_size)
+                return pd.DataFrame(train_test_split(df2,test_size=self.test_size/(1-self.train_size))[self.set_type-1])
+        elif self.preproccess==1:
+            #* le test_set correspond aux acti de 110 à 120 et le validation set correspond au set de 100 à 110
+            if self.set_type==0: #* Training one
+                return df.where(df['acti']<100).dropna()
+            elif self.set_type==1: #* Validation one
+                return df.where((df['acti']>=100) & (df['acti']<110)).dropna()
+            else: #* Test one
+                return df.where(df['acti']>=110).dropna()
+            
+    def get_data_from_sample_name(self,name_skeleton:str,num_body=0):
+      
+        """ name_skeleton doit être de la forme 'S001C001P001R001A001'
+        permet de récupérer la data sachant uniquement le nom du skeleton."""
+        if name_skeleton[-4:]=='.npy' or name_skeleton[-8:]=='.skeleton':
+            name_skeleton=name_skeleton[:-4] # pour virer le .skeleton ou .npy
+        try:
+
+            row=self.liste_path.where( (self.liste_path['filename']==name_skeleton) & (self.liste_path["num_body"]==num_body)).dropna().iloc[0]
+        except:
+            print("Bugg sur le nom du skeleton et body",name_skeleton,num_body)
+            print(self.liste_path.where( (self.liste_path['filename']==name_skeleton) & (self.liste_path["num_body"]==num_body)).dropna())
+            raise ValueError("bug num_body ou name_skeleton dans get_data_from_sample_name")
+        #print(row)
+        time_series=self.item
+        return time_series.get_data(row=row)
+    
+
+    def inverse_transform_data(self,x,preprocessing=True):
+        """ renvoie X de la bonne forme ( nb_frames,nb_joints,3) et effectue les potentielles effets inverses"""
+        if preprocessing:
+            return self.item.inverse_transform(x)
+        else:
+            return self.item.inverse_transform(x)
+
+    def get_input_model(self,entry):
+        """ depuis un X obtenu de get_data ou get_data_from_sample_name, renvoie un input de la bonne forme pour le modèle"""
+        return self.item.get_input_model(entry)
+
 class Dataset_ETT_hour(Dataset):
     def __init__(self, root_path, flag='train', size=None,
                  features='S', data_path='ETTh1.csv',
@@ -702,99 +815,3 @@ class UEAloader(Dataset):
 
     def __len__(self):
         return len(self.all_IDs)
-
-#* DATA_LOADER A IMPLEMENTER JIMAGINE
-
-class dataset_NTURGBD(Dataset):
-    """Made by Phillipe rambaud and Pierrick Bournez 
-    a bit debugged by Pierrick """
-    """Dataset for the NTU RGB+D dataset, les items sont de la forme (time_serie, label) pas comme ETT """
-    
-    def __init__(self, root_path:str="./dataset/NTU_RGB+D/",data_path:str='numpyed/', flag='train', size:list=None,
-                 features:str='MS',transform=None,
-                 target:str='OT', scale=True, timeenc=0, freq='h', seasonal_patterns=None,nb_joints=25,item=time_serie_NTU,csv_path='./dataset/NTU_RGB+D/summary_NTU/liste_NTU_skeleton_4.csv',
-                 get_time_value=False,get_cat_value=False,train_size=0.60,test_size=0.20) -> None:
-
-        if size==None:
-            pass 
-            #TODO: A MODIFIEr
-            self.seq_len = 30
-            self.label_len=30
-            self.pred_len=30
-
-        else:
-            self.seq_len = size[0]
-
-            self.label_len=size[1] #* longueur de la time_series en sortie
-            self.pred_len=size[2] #* longueur de la time_series à prédire
-        assert flag in ['train', 'test', 'val']
-        type_map = {'train': 0, 'val': 1, 'test': 2}
-        self.set_type = type_map[flag]
-        if flag=='test':
-            self.out_len=size[2]
-        else:
-            self.out_len=self.label_len
-        #* les autres paras sont globalement inutiles
-        self.data_path=os.path.join(root_path,data_path)
-        
-        self.csv_path=csv_path
-        #* Ici liste_path correspond au dataset où on va prendre les données voulues! On va d'abord
-        self.input_len=self.seq_len #* longueur de la time_series en entrée
-        self.nb_joints=25 #* nombre de joints dans la time_series
-        self.get_cat_value=get_cat_value #* si on veut les catégories
-        self.get_time_value=get_time_value #* si on veut les time_values
-
-        self.item=time_serie_NTU(data_path=self.data_path,input_len=self.input_len,output_len=self.out_len,get_cat_value=self.get_cat_value,get_time_value=self.get_time_value) #* Classe de base du data'set qui va renvoyer la time series voulu 
-        self.test_size=test_size
-        self.train_size=train_size
-        self.vali_size=1-self.train_size-self.test_size
-        self.liste_path=self.get_df() # c'est un pandas dataframe qui devriat tous avoir normalement
-
-    def __len__(self) -> int:
-        return len(self.liste_path)
-    
-
-    def __getitem__(self, index: int):
-        """ renvoie la time_series à l'index donné, en particulier donnée,label!
-         Il renvoie un tuple de la forme:
-          (time_series: Numpy, le label qui est np.array aussi
-          et possible un time_value qui est un numpy array du temps entre deux frames et un np.array qui sont les données catégoriques ) """
-        time_series=self.item
-        row=self.liste_path.iloc[index] #C'est la row du dataframe 
-
-        if self.set_type==2:
-            return time_series.get_data(row=row)
-        else:
-            return time_series.get_data(row=row)
-        
-    def get_df(self):
-        """ Renvoie le pandas dataframe prétraité  et correspondant bien au bon dataset"""
-        df=data_rentrer_dans_DATASET_NTU(path_csv=self.csv_path,seq_len=self.seq_len,out_len=self.out_len,path_data_npy=self.data_path) # c'est un pandas dataframe qui devriat tous avoir normalement
-        if self.set_type==0:
-            return pd.DataFrame(train_test_split(df,test_size=1-self.train_size)[self.set_type])
-        else:
-            df2=pd.DataFrame(train_test_split(df,train_size=self.train_size)[1])
-            #print(self.test_size/self.train_size)
-            return pd.DataFrame(train_test_split(df2,test_size=self.test_size/(1-self.train_size))[self.set_type-1])
-    def get_data_from_sample_name(self,name_skeleton:str):
-      
-        """ name_skeleton doit être de la forme 'S001C001P001R001A001'
-        permet de récupérer la data sachant uniquement le nom du skeleton."""
-        if name_skeleton[-4:]=='.npy' or name_skeleton[-8:]=='.skeleton':
-            name_skeleton=name_skeleton[:-4] # pour virer le .skeleton ou .npy
-        row=self.liste_path.where(self.liste_path['filename']==name_skeleton).dropna().iloc[0]
-        #print(row)
-        time_series=self.item
-        return time_series.get_data(row=row)
-    
-
-    def inverse_transform_data(self,x,preprocessing=True):
-        """ renvoie X de la bonne forme ( nb_frames,nb_joints,3) et effectue les potentielles effets inverses"""
-        if preprocessing:
-            return self.item.inverse_transform(x)
-        else:
-            return self.item.inverse_transform(x)
-
-    def get_input_model(self,entry):
-        """ depuis un X obtenu de get_data ou get_data_from_sample_name, renvoie un input de la bonne forme pour le modèle"""
-        return self.item.get_input_model(entry)

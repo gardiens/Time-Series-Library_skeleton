@@ -228,7 +228,7 @@ connexion_tuples = np.array([[Joints.SPINEBASE, Joints.SPINEMID],
 def get_settings(args):
     """ Sachant des args, permets de renvoyer un setting de manière automatiser,
     REMPLACE AUTOMATQIEUEMNT _ PAR - """
-    return '{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_cv{}_tvv{}'.format(
+    return '{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_cv{}_tvv{}_p{}'.format(
                 args.task_name,
                 args.model_id.replace("_","-"),
                 args.model,
@@ -247,7 +247,8 @@ def get_settings(args):
                 args.distil,
                 args.des,args.num_itr,
                 args.get_cat_value,
-                args.get_time_value)
+                args.get_time_value,
+                args.preprocess)
 
 #Fonction ivnerse de get settings
 
@@ -321,11 +322,19 @@ def get_args_from_filename(file,args_inherit=None ):
                     #print("frérot t'as encore oublié cv_NOMBRe alors qu'il fallait faire cvN")
                     self.get_cat_value = int(parser[21])
                     self.get_time_value = int(parser[22][3:])
+                    try:
+                        self.preprocess = int(parser[23][1:])
+                    except:
+                        self.preprocess=0
                 else:
 
                     self.get_cat_value = int(parser[20][2:])
 
                     self.get_time_value = int(parser[21][3:])
+                    try:
+                        self.preprocess = int(parser[22][1:])
+                    except:
+                        self.preprocess=0
     args=Args1()
     return args 
 #* Configuration utilisé pour le test de certaines composition

@@ -58,7 +58,7 @@ def read_skeleton(file):
     return skeleton_sequence
 
 
-def read_xyz(file, max_body=2, num_joint=25):
+def read_xyz(file, max_body=4, num_joint=25):
     r"""Creates a numpy array containing the 3D skeleton data for a given skeleton file of the NTU RGB+D dataset.
     This code is slightly modified and is courtesy of the awesome ST-GCN repository by yysijie
     (https://github.com/yysijie/st-gcn/)
