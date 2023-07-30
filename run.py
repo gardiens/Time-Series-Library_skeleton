@@ -100,7 +100,7 @@ if __name__ == '__main__':
     #** NTU_RGB
     parser.add_argument('--get_time_value', type=int, default=0, help='get time value,0 if not, 1 if yes')
     parser.add_argument('--get_cat_value', type=int, default=0, help='get cat value,0 if not, 1 if yes')
-    parser.add_argument('--preprocess', type=int, default=0, help='preprocess data,0 if 1 or more we do sth')
+    parser.add_argument('--preprocess', type=int, default=1, help='preprocess data,0 if 1 or more we do sth')
     parser.add_argument('--refaire_csv', action='store_true', help='permet de recréer ou non le csv de NTU_RGB', default=False)
 
     args = parser.parse_args()
