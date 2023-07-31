@@ -16,8 +16,8 @@ python -u run.py \
   --seq_len 32 \
   --label_len ${pred_len} \
   --pred_len ${pred_len} \
-  --e_layers 2 \
-  --d_layers 1 \
+  --e_layers 3 \
+  --d_layers 3 \
   --factor 3 \
   --enc_in 75 \
   --dec_in 75 \
