@@ -1,9 +1,16 @@
 # Fichier.sh qui permets de lancer automatiquement  le tensorboard et envoie le fichier
-# Function to stop TensorBoard gracefully, MARCHE
+# Function to stop TensorBoard gracefully
 stop_tensorboard() {
   echo "Stopping TensorBoard..."
-  pkill -f "tensorboard --logdir=runs --host=localhost --port=7860"
-  echo "TensorBoard stopped."
+  # Get the PID of the TensorBoard process
+  tensorboard_pid=$(pgrep -f "tensorboard --logdir=runs --host=localhost --port=7860")
+  if [ -n "$tensorboard_pid" ]; then
+    # Terminate the TensorBoard process using Windows taskkill command
+    taskkill //F //PID $tensorboard_pid
+    echo "TensorBoard stopped."
+  else
+    echo "TensorBoard process not found."
+  fi
 }
 
 # Start the SSH tunnel in the background

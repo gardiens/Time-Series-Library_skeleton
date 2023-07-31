@@ -325,7 +325,7 @@ def get_args_from_filename(file,args_inherit=None ):
                     try:
                         self.preprocess = int(parser[23][1:])
                     except:
-                        self.preprocess=0
+                        self.preprocess=1
                 else:
 
                     self.get_cat_value = int(parser[20][2:])
@@ -334,7 +334,7 @@ def get_args_from_filename(file,args_inherit=None ):
                     try:
                         self.preprocess = int(parser[22][1:])
                     except:
-                        self.preprocess=0
+                        self.preprocess=1
     args=Args1()
     return args 
 #* Configuration utilisé pour le test de certaines composition

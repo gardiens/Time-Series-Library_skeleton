@@ -105,6 +105,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         train_data, train_loader = self._get_data(flag='train')
         vali_data, vali_loader = self._get_data(flag='val')
         test_data, test_loader = self._get_data(flag='test')
+        print("vérification du dataset:",train_data.liste_path.head())
         print("-----fin du loading du dataset ---",flush=True)
         writer=self.writer
         path = os.path.join(self.args.checkpoints, setting)
@@ -164,6 +165,8 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     f_dim = -1 if self.args.features == 'MS' else 0
                     outputs = outputs[:, -self.args.pred_len:, f_dim:]
                     #print(" la len",self.args.pred_len)
+                    
+                    outputs=outputs+torch.cat((batch_x,batch_x),axis=1)
                     batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
                     #print("la len",self.args.pred_len)
                     #print("les batchs",outputs.shape,batch_y.shape)
@@ -322,7 +325,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         df["rmse"]=rmse
         df["mape"]=mape
         df["mspe"]=mspe
-        df.to_csv(os.path.join(folder_path,"results_df.csv"))
+        df.to_csv(os.path.join(folder_path,"results_df_test.csv"))
         f = open("result_long_term_forecast.txt", 'a')
         f.write(setting + "  \n")
         f.write('mse:{}, mae:{}'.format(mse, mae))
@@ -330,12 +333,14 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         f.write('\n')
         f.close()
 
-        np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, mape, mspe]))
-        np.save(folder_path + 'pred.npy', preds)
-        np.save(folder_path + 'true.npy', trues)
+        np.save(folder_path + 'metrics_test.npy', np.array([mae, mse, rmse, mape, mspe]))
+        np.save(folder_path + 'pred_test.npy', preds)
+        np.save(folder_path + 'true_test.npy', trues)
 
 
         #* On plot aussi le train 
+        preds = []
+        trues = []
         train_data,train_loader = self._get_data(flag='train')
         with torch.no_grad():
             for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(train_loader):
@@ -412,16 +417,16 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         df["rmse"]=rmse
         df["mape"]=mape
         df["mspe"]=mspe
-        df.to_csv(os.path.join(folder_path,"results_df.csv"))
-        f = open("result_long_term_forecast.txt", 'a')
+        df.to_csv(os.path.join(folder_path,"results_df_train.csv"))
+        f = open("result_long_term_forecast_train.txt", 'a')
         f.write(setting + "  \n")
         f.write('mse:{}, mae:{}'.format(mse, mae))
         f.write('\n')
         f.write('\n')
         f.close()
 
-        np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, mape, mspe]))
-        np.save(folder_path + 'pred.npy', preds)
-        np.save(folder_path + 'true.npy', trues)
+        np.save(folder_path + 'metrics_train.npy', np.array([mae, mse, rmse, mape, mspe]))
+        np.save(folder_path + 'pred_train.npy', preds)
+        np.save(folder_path + 'true_train.npy', trues)
 
         return

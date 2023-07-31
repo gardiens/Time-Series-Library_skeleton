@@ -29,7 +29,7 @@ class time_serie_NTU:
     """ File to display the lementary objects used in Dataset. """
 
 
-    def __init__(self,input_len:int=30,output_len:int=30,data_path='./dataset/NTU_RGB+D/numpyed/',file_extension='.skeleton.npy',get_cat_value=True,get_time_value=False,categorical_columns=['nbodys', 'actor', 'acti', 'camera', 'scene', 'repet'],preproccess:int=0) -> None:
+    def __init__(self,input_len:int=30,output_len:int=30,data_path='./dataset/NTU_RGB+D/numpyed/',file_extension='.skeleton.npy',get_cat_value=True,get_time_value=False,categorical_columns=['nbodys', 'actor', 'acti', 'camera', 'scene', 'repet'],preproccess:int=1) -> None:
         """_summary_
 
         Parameters
@@ -67,7 +67,7 @@ class time_serie_NTU:
         return len(self.row)
     
     
-    def get_data(self,row,preprocessing:int=0):
+    def get_data(self,row,preprocessing:int=1):
         ''' FONCTION UTILISE DANS LES DATASET/DATALOADER
         Renvoie une sortie de la forme :
         entry_data, label, cat_data, time_value si les valeurs sont bien bonne
@@ -83,8 +83,8 @@ class time_serie_NTU:
         #* On récupère le début et la fin de la séquence
         debut=debut_frame  
         begin=data[debut:debut+self.input_len]
-        label=data[debut+self.input_len:debut+self.input_len+self.output_len]#* On prend les output_len suivantes
-
+        label=data[debut:debut+self.output_len]#* On prend les output_len suivantes
+        #! A CHANGER ICI 
         #* Ici begin est de la forme [nb_joints,nb_frames,3] et label est de la forme [nb_joints,nb_frames,3]
         #! Détail technique: à priori les données sont de la formes [nb_frames,nb_joints,3] mais les réseauxde neurones acceptent un format [nb_frames,nb_features] donc on va faire un reshape
         begin=begin.reshape(begin.shape[0],-1)
@@ -96,7 +96,7 @@ class time_serie_NTU:
         #* Maintenant , begin est de la forme( nb_frames,nb_joints*3) et label est de la forme (nb_frames,nb_joints*3
         if self.get_time_value:
             time_value_enc=np.arange(debut_frame,debut_frame+self.input_len)*self.intervalle_frame #* Encoding du temps, représente x_mark_enc pour FEDformers
-            time_value_dec=np.arange(debut_frame+self.input_len,debut_frame+self.input_len+self.output_len)*self.intervalle_frame #* Decoding du temps entre deux frames , représente x_mark_dec pour FedFormers
+            time_value_dec=np.arange(debut_frame,debut_frame+self.output_len)*self.intervalle_frame #* Decoding du temps entre deux frames , représente x_mark_dec pour FedFormers
             time_value_enc=np.tile(time_value_enc,(begin.shape[1],1)).transpose((1,0)) #* On fait un tile pour avoir la même valeur pour chaque joint]))
             time_value_dec=np.tile(time_value_dec,(label.shape[1],1)).transpose((1,0)) #* On fait un tile pour avoir la même valeur pour chaque joint]))
         if self.get_cat_value:
@@ -336,7 +336,7 @@ def preprocess_csv_RGB_to_skeletondf(seq_len:int=30,out_len:int=30,path_csv="./d
 
 
 
-def data_rentrer_dans_DATASET_NTU(path_csv:str='./dataset/NTU_RGB+D/summary_NTU/liste_NTU_skeleton_4.csv',seq_len:int=30,out_len:int=30,path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',preprocess=0,path_excel:str='./dataset/NTU_RGB+D/summary_NTU/data_quality.xlsx'):
+def data_rentrer_dans_DATASET_NTU(path_csv:str='./dataset/NTU_RGB+D/summary_NTU/liste_NTU_skeleton_4.csv',seq_len:int=30,out_len:int=30,path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',preprocess=1,path_excel:str='./dataset/NTU_RGB+D/summary_NTU/data_quality.xlsx'):
     """Fonction qu'on va faire rentrer dans le torch Dataset de NTU RGB+D
     CEST ICI QUON FAIT NOS OPERATIONS DE PREPROCESSING :!!!!
     Parameters
