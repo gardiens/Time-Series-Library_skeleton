@@ -85,6 +85,10 @@ class time_serie_NTU:
         begin=data[debut:debut+self.input_len]
         label=data[debut:debut+self.output_len]#* On prend les output_len suivantes
         #! A CHANGER ICI 
+        reference=20 # Correspond à Spine shoulder ! 
+        mean=np.mean(begin[:,reference,:],axis=0)
+        begin=begin-mean # On recentre le squelette par rapport à la frame de référence
+        label=label-mean
         #* Ici begin est de la forme [nb_joints,nb_frames,3] et label est de la forme [nb_joints,nb_frames,3]
         #! Détail technique: à priori les données sont de la formes [nb_frames,nb_joints,3] mais les réseauxde neurones acceptent un format [nb_frames,nb_features] donc on va faire un reshape
         begin=begin.reshape(begin.shape[0],-1)

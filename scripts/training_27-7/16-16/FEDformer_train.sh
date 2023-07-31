@@ -3,7 +3,7 @@ export CUDA_VISIBLE_DEVICES=2
 
 model_name=FEDformer
 pred_len=32
-model_id_name=NTU-16-16-training27-7${model_name}
+model_id_name=NTU-16-16-training27-740ep${model_name}
 data=NTU
 python -u run.py \
   --task_name long_term_forecast \
@@ -30,6 +30,6 @@ python -u run.py \
   --get_cat_value 0 \
   --get_time_value 1 \
   --use_gpu 1 \
-  --train_epochs 10
+  --train_epochs 40
 
   

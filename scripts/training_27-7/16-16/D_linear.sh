@@ -1,20 +1,19 @@
 #!/bin/bash
 export CUDA_VISIBLE_DEVICES=2
 
-model_name=FEDformer
-pred_len=64
-model_id_name=NTU-32-32-training27-740ep${model_name}
-data=NTU
+model_name=DLinear
+pred_len=32
+model_id_name=NTU-16-16-training27-740ep${model_name}
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 1 \
   --root_path './dataset/NTU_RGB+D/' \
   --data_path 'numpyed/'\
   --model_id ${model_id_name} \
-  --model ${model_name} \
-  --data ${data} \
+  --model $model_name \
+  --data NTU \
   --features M \
-  --seq_len 32 \
+  --seq_len 16 \
   --label_len ${pred_len} \
   --pred_len ${pred_len} \
   --e_layers 2 \
@@ -31,5 +30,8 @@ python -u run.py \
   --get_time_value 1 \
   --use_gpu 1 \
   --train_epochs 40
+
+
+
 
   

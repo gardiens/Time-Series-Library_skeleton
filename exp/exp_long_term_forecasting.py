@@ -88,7 +88,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 f_dim = -1 if self.args.features == 'MS' else 0
                 outputs = outputs[:, -self.args.pred_len:, f_dim:]
                 batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
-                outputs=outputs+torch.cat((batch_x,batch_x),axis=1)#! On ajoute le signal d'entrée
                 pred = outputs.detach().cpu()
                 true = batch_y.detach().cpu()
         
@@ -166,7 +165,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     outputs = outputs[:, -self.args.pred_len:, f_dim:]
                     #print(" la len",self.args.pred_len)
                     
-                    outputs=outputs+torch.cat((batch_x,batch_x),axis=1)#!
                     batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
                     #print("la len",self.args.pred_len)
                     #print("les batchs",outputs.shape,batch_y.shape)
@@ -275,7 +273,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 f_dim = -1 if self.args.features == 'MS' else 0
                 outputs = outputs[:, -self.args.pred_len:, f_dim:]
                 batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
-                outputs=outputs+torch.cat((batch_x,batch_x),axis=1)#!
                 outputs = outputs.detach().cpu().numpy()
                 batch_y = batch_y.detach().cpu().numpy()
 
