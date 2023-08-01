@@ -12,7 +12,7 @@ import sys
 from utils.constantes import get_settings
 
 if __name__ == '__main__':
-    os.environ["CUDA_VISIBLE_DEVICES"] = "0, 1"
+    
     print("version de cuda",torch.version.cuda)
     print("version de cudnn",torch.backends.cudnn.version())
     print("version de torch",torch.__version__)
