@@ -35,7 +35,7 @@ class FourierBlock(nn.Module):
         """
         # get modes on frequency domain
         self.index = get_frequency_modes(seq_len, modes=modes, mode_select_method=mode_select_method)
-        print('modes={}, index={}'.format(modes, self.index))
+        #print('modes={}, index={}'.format(modes, self.index))
 
         self.scale = (1 / (in_channels * out_channels))
         self.weights1 = nn.Parameter(

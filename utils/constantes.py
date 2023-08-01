@@ -21,6 +21,7 @@ data_dict = {
 from models import Autoformer, Transformer, TimesNet, Nonstationary_Transformer, DLinear, FEDformer, \
     Informer, LightTS, Reformer, ETSformer, Pyraformer, PatchTST, MICN, Crossformer, FiLM
 from models import FEDformer_wavelet
+from models import Metaformer
 #used in exp_basic.
 model_dict = {
         'TimesNet': TimesNet,
@@ -40,7 +41,8 @@ model_dict = {
         'FiLM': FiLM,
         'NonstationaryTransformer':Nonstationary_Transformer,
         'NTS':Nonstationary_Transformer,
-        'FEDWav':FEDformer_wavelet
+        'FEDWav':FEDformer_wavelet,
+        'Meta':Metaformer
 }
 
 
