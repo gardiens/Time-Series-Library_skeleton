@@ -5,7 +5,7 @@
 model_name=FEDformer
 pred_len=32
 data=NTU
-batch_size=256
+batch_size=128
 model_id_name=NTU01-08Auto${model_name}${batch_size}
 python -u run.py \
   --task_name long_term_forecast \
@@ -32,7 +32,7 @@ python -u run.py \
   --get_cat_value 0 \
   --get_time_value 1 \
   --use_gpu 1 \
-  --train_epochs 5\
+  --train_epochs 3\
   --no_test\
   --batch_size ${batch_size}
 
