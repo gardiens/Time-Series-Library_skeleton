@@ -33,8 +33,8 @@ python -u run.py \
   --get_time_value 1 \
   --use_gpu 1 \
   --train_epochs 5\
-  --no_test
-
+  --no_test\
+  --batch_size ${batch_size}
 
 model_name=FEDformer
 pred_len=32
@@ -68,7 +68,8 @@ python -u run.py \
   --get_time_value 1 \
   --use_gpu 1 \
   --train_epochs 5\
-  --no_test
+  --no_test\
+  --batch_size ${batch_size}
 
 
 data=NTU
@@ -100,7 +101,8 @@ python -u run.py \
   --get_time_value 1 \
   --use_gpu 1 \
   --train_epochs 5\
-  --no_test
+  --no_test\
+  --batch_size ${batch_size}
 
 data=NTU
 batch_size=2048
@@ -131,4 +133,5 @@ python -u run.py \
   --get_time_value 1 \
   --use_gpu 1 \
   --train_epochs 5\
-  --no_test
+  --no_test\
+  --batch_size ${batch_size}
