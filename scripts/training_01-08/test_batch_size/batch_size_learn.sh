@@ -1,5 +1,5 @@
 #!/bin/bash
-export CUDA_VISIBLE_DEVICES=2
+export CUDA_VISIBLE_DEVICES=0,1
 
 
 model_name=FEDformer
