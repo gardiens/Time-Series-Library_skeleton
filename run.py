@@ -106,6 +106,7 @@ if __name__ == '__main__':
     parser.add_argument('--refaire_csv', action='store_true', help='permet de recréer ou non le csv de NTU_RGB', default=False)
     parser.add_argument('--sous_model', type=str, default='FED', help='sous-Model pour metaformer')
     parser.add_argument('--quel_membre', type=str, default='buste', help='quel membre pour metaformer')
+    parser.add_argument('--no_test', action='store_true', help='permet de ne pas faire de test', default=False)
     args = parser.parse_args()
     print("use_gpu: ce quon demande ", args.use_gpu, "cuda est-il disponible:", torch.cuda.is_available(), flush=True)
     args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
@@ -143,6 +144,9 @@ if __name__ == '__main__':
             exp.train(setting)
 
             print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting),flush=True)
+            if args.no_test:
+                print(" On ne test pas")
+                continue
             exp.test(setting)
             torch.cuda.empty_cache()
     else:

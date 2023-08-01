@@ -32,8 +32,8 @@ python -u run.py \
   --get_cat_value 0 \
   --get_time_value 1 \
   --use_gpu 1 \
-  --train_epochs 5
-
+  --train_epochs 5\
+  --no_test
 
 
 model_name=FEDformer
@@ -67,7 +67,8 @@ python -u run.py \
   --get_cat_value 0 \
   --get_time_value 1 \
   --use_gpu 1 \
-  --train_epochs 5
+  --train_epochs 5\
+  --no_test
 
 
 data=NTU
@@ -98,7 +99,8 @@ python -u run.py \
   --get_cat_value 0 \
   --get_time_value 1 \
   --use_gpu 1 \
-  --train_epochs 5
+  --train_epochs 5\
+  --no_test
 
 data=NTU
 batch_size=2048
@@ -128,4 +130,5 @@ python -u run.py \
   --get_cat_value 0 \
   --get_time_value 1 \
   --use_gpu 1 \
-  --train_epochs 5
+  --train_epochs 5\
+  --no_test
