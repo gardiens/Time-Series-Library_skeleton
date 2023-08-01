@@ -70,5 +70,5 @@ class Model(nn.Module):
             #* On remet la série temporelle à la bonne taille
             yprime=yprime.reshape(yprime.shape[0],yprime.shape[1],len(liste_membre[k]),3)
             y[:,:,liste_membre[k],:]=yprime
-        y.reshape(y.shape[0],y.shape[1],self.c_out)
+        y=y.reshape(y.shape[0],y.shape[1],self.c_out)
         return y 
