@@ -6,7 +6,7 @@ do
   model_name=FEDformer
   pred_len=32
   data=NTU
-  batch_size=256
+  batch_size=512
   model_id_name=NTU01-08${model_name}-lr-${i}-bs${batch_size}
   python -u run.py \
     --task_name long_term_forecast \
@@ -49,7 +49,7 @@ do
   model_name=FEDformer
   pred_len=32
   data=NTU
-  batch_size=256
+  batch_size=512
   model_id_name=NTU01-08${model_name}-lr${i}-bs${batch_size}
   python -u run.py \
     --task_name long_term_forecast \
