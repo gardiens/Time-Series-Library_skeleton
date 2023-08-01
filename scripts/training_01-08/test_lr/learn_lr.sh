@@ -42,15 +42,14 @@ do
 done 
 
 
-
 for i in 1 2 3 4 5 6 7 8 9 10
 do 
 
   model_name=FEDformer
   pred_len=32
   data=NTU
-  batch_size=512
-  model_id_name=NTU01-08${model_name}-lr${i}-bs${batch_size}
+  batch_size=256
+  model_id_name=NTU01-08${model_name}-lr-${i}-bs${batch_size}
   python -u run.py \
     --task_name long_term_forecast \
     --is_training 1 \
@@ -79,7 +78,9 @@ do
     --train_epochs 10\
     --no_test\
     --batch_size ${batch_size}\
-    --learning_rate $(echo "scale=10; 10^$i" | bc)
+    --learning_rate $(echo "scale=10; 10^-$i" | bc)
 
 
 done 
+
+
