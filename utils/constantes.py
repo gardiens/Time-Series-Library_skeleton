@@ -21,7 +21,7 @@ data_dict = {
 from models import Autoformer, Transformer, TimesNet, Nonstationary_Transformer, DLinear, FEDformer, \
     Informer, LightTS, Reformer, ETSformer, Pyraformer, PatchTST, MICN, Crossformer, FiLM
 from models import FEDformer_wavelet
-from models import Metaformer
+
 #used in exp_basic.
 model_dict = {
         'TimesNet': TimesNet,
@@ -42,7 +42,6 @@ model_dict = {
         'NonstationaryTransformer':Nonstationary_Transformer,
         'NTS':Nonstationary_Transformer,
         'FEDWav':FEDformer_wavelet,
-        'Meta':Metaformer
 }
 
 
@@ -464,3 +463,18 @@ class Args_technique_GPU():
 
         # NTU_RGB
         self.ii=0
+dict_membre={
+    "buste":[0,1,2,3,20],
+    "bras_gauche":[4,5,6,7,21,22],
+    "bras_droit":[8,9,10,11,23,24],
+    "jambe_gauche":[12,13,14,15],
+    "jambe_droite":[16,17,18,19],
+    
+}
+
+Liste_set_membre={
+    "5_partie":[dict_membre["buste"],dict_membre["bras_gauche"],dict_membre["bras_droit"],dict_membre["jambe_gauche"],dict_membre["jambe_droite"]],
+    "3_partie:":[dict_membre["buste"],dict_membre["bras_gauche"]+dict_membre["bras_droit"],dict_membre["jambe_gauche"]+dict_membre["jambe_droite"]],
+    "2_partie":[dict_membre["buste"]+dict_membre["bras_gauche"]+dict_membre["bras_droit"],dict_membre["jambe_gauche"]+dict_membre["jambe_droite"]],
+}
+

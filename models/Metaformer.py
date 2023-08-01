@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
+from utils.constantes import model_dict
 from models.FEDformer import Model as FEDformer
 from models import Autoformer 
 import copy 
@@ -39,6 +39,7 @@ class Model(nn.Module):
         self.modelmembre= FEDformer
         self.liste_modele_partie=nn.ModuleList()
         self.c_out=configs.c_out   
+        self.nom_sous_model=configs.sous_model
         configprime=copy.deepcopy(configs)
         
         for k in range(len(self.liste_membre)):
@@ -48,9 +49,8 @@ class Model(nn.Module):
             configprime.c_out=len(liste_membre[k])*3
                 
         
-            ajouter=self.modelmembre(configprime)
+            ajouter=model_dict[self.nom_sous_model](configprime)         
             self.liste_modele_partie.append(ajouter)
-        
 
     def forward(self, x_enc, x_mark_enc, x_dec, x_mark_dec, mask=None):
         y=torch.zeros(x_enc.shape[0],self.pred_len,25,3).to(x_enc.device)

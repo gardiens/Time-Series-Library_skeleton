@@ -89,7 +89,7 @@ if __name__ == '__main__':
     # GPU
     parser.add_argument('--use_gpu', type=bool, default=True, help='use gpu')
     parser.add_argument('--gpu', type=int, default=0, help='gpu')
-    parser.add_argument('--use_multi_gpu', action='store_true', help='use multiple gpus', default=False)
+    parser.add_argument('--use_multi_gpu', action='store_true', help='use multiple gpus', default=True)
     parser.add_argument('--devices', type=str, default='0,1', help='device ids of multile gpus')
 
     # de-stationary projector params
@@ -102,7 +102,8 @@ if __name__ == '__main__':
     parser.add_argument('--get_cat_value', type=int, default=0, help='get cat value,0 if not, 1 if yes')
     parser.add_argument('--preprocess', type=int, default=1, help='preprocess data,0 if 1 or more we do sth')
     parser.add_argument('--refaire_csv', action='store_true', help='permet de recréer ou non le csv de NTU_RGB', default=False)
-
+    parser.add_argument('--sous_model', type=str, default='FED', help='sous-Model pour metaformer')
+    parser.add_argument('--quel_membre', type=str, default='buste', help='quel membre pour metaformer')
     args = parser.parse_args()
     print("use_gpu: ce quon demande ", args.use_gpu, "cuda est-il disponible:", torch.cuda.is_available(), flush=True)
     args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False

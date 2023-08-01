@@ -28,7 +28,7 @@ def get_frequency_modes(seq_len, modes=64, mode_select_method='random'):
 class FourierBlock(nn.Module):
     def __init__(self, in_channels, out_channels, seq_len, modes=0, mode_select_method='random'):
         super(FourierBlock, self).__init__()
-        print('fourier enhanced block used!')
+        #print('fourier enhanced block used!')
         """
         1D Fourier block. It performs representation learning on frequency domain, 
         it does FFT, linear transform, and Inverse FFT.    
@@ -82,7 +82,7 @@ class FourierCrossAttention(nn.Module):
     def __init__(self, in_channels, out_channels, seq_len_q, seq_len_kv, modes=64, mode_select_method='random',
                  activation='tanh', policy=0):
         super(FourierCrossAttention, self).__init__()
-        print(' fourier enhanced cross attention used!')
+        #print(' fourier enhanced cross attention used!')
         """
         1D Fourier Cross Attention layer. It does FFT, linear transform, attention mechanism and Inverse FFT.    
         """
@@ -93,8 +93,8 @@ class FourierCrossAttention(nn.Module):
         self.index_q = get_frequency_modes(seq_len_q, modes=modes, mode_select_method=mode_select_method)
         self.index_kv = get_frequency_modes(seq_len_kv, modes=modes, mode_select_method=mode_select_method)
 
-        print('modes_q={}, index_q={}'.format(len(self.index_q), self.index_q))
-        print('modes_kv={}, index_kv={}'.format(len(self.index_kv), self.index_kv))
+        #print('modes_q={}, index_q={}'.format(len(self.index_q), self.index_q))
+        #print('modes_kv={}, index_kv={}'.format(len(self.index_kv), self.index_kv))
 
         self.scale = (1 / (in_channels * out_channels))
         self.weights1 = nn.Parameter(

@@ -29,7 +29,7 @@ nohup tensorboard --logdir=runs --host=localhost --port=7860 > tensorboard.log 2
 tensorboard_pid=$!
 
 # Set up the trap to stop TensorBoard when the script exits
-trap stop_tensorboard EXIT
+
 
 # Open a new browser to view TensorBoard, WUINDOWS only
 start http://localhost:16007
