@@ -36,7 +36,7 @@ do
     --train_epochs 10\
     --no_test\
     --batch_size ${batch_size}\
-    --learning_rate ${10**(-i)}
+    --learning_rate $(echo "scale=10; 10^-$i" | bc)
 
 
 done 
@@ -79,7 +79,7 @@ do
     --train_epochs 10\
     --no_test\
     --batch_size ${batch_size}\
-    --learning_rate ${10**(i)}
+    --learning_rate $(echo "scale=10; 10^$i" | bc)
 
 
 done 
