@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from models import FEDformer
+from models.FEDformer import Model as FEDformer
 from models import Autoformer 
 import copy 
 dict_membre={
