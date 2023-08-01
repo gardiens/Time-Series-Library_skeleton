@@ -12,9 +12,11 @@ import sys
 from utils.constantes import get_settings
 
 if __name__ == '__main__':
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0, 1"
     print("version de cuda",torch.version.cuda)
     print("version de cudnn",torch.backends.cudnn.version())
     print("version de torch",torch.__version__)
+    print("nombre de gpu disponible",torch.cuda.device_count())
     #print("version de python",sys.version)
     fix_seed = 2021
     random.seed(fix_seed)
