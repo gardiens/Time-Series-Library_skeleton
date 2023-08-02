@@ -33,7 +33,7 @@ python -u run.py \
   --get_cat_value 0 \
   --get_time_value 1 \
   --use_gpu 1 \
-  --train_epochs ${epoch}} \
+  --train_epochs ${epoch} \
   --batch_size ${batch_size}\
   --learning_rate $(echo "scale=10; 10^-$i" | bc)\
   --split_train_test action \
@@ -69,7 +69,7 @@ python -u run.py \
   --get_cat_value 0 \
   --get_time_value 1 \
   --use_gpu 1 \
-  --train_epochs ${epoch}} \
+  --train_epochs ${epoch} \
   --batch_size ${batch_size}\
   --learning_rate $(echo "scale=10; 10^-$i" | bc)\
   --split_train_test action \
@@ -105,7 +105,7 @@ python -u run.py \
   --get_cat_value 0 \
   --get_time_value 1 \
   --use_gpu 1 \
-  --train_epochs ${epoch}} \
+  --train_epochs ${epoch} \
   --batch_size ${batch_size}\
   --learning_rate $(echo "scale=10; 10^-$i" | bc)\
   --split_train_test action \
