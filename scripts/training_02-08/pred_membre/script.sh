@@ -1,3 +1,5 @@
+#!/bin/bash
+
 model_name=FEDformer
 pred_len=32
 data=NTU_leg
