@@ -2,7 +2,8 @@
 
 model_name=FEDformer
 pred_len=32
-data=NTU_leg
+data=NTU-leg
+
 batch_size=256
 
 i=3
@@ -42,7 +43,8 @@ python -u run.py \
   --no_test
 
 
-data=NTU_body
+data=NTU-body
+
 model_id_name=NTU02-08${model_name}leg-lr-${i}-bs${batch_size}
 python -u run.py \
   --task_name long_term_forecast \
@@ -78,7 +80,8 @@ python -u run.py \
   --no_test
 
 
-data=NTU_arm
+data=NTU-arm
+
 model_id_name=NTU02-08${model_name}leg-lr-${i}-bs${batch_size}
 python -u run.py \
   --task_name long_term_forecast \

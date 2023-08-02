@@ -18,9 +18,9 @@ data_dict = {
     'SWAT': SWATSegLoader,
     'UEA': UEAloader,
     'NTU': dataset_NTURGBD,
-    'NTU_leg':partial(dataset_NTURGBD,quoi_pred='leg'),
-    'NTU_body':partial(dataset_NTURGBD,quoi_pred='body'),
-    'NTU_arm':partial(dataset_NTURGBD,quoi_pred='arm')
+    'NTU-leg':partial(dataset_NTURGBD,quoi_pred='leg'),
+    'NTU-body':partial(dataset_NTURGBD,quoi_pred='body'),
+    'NTU-arm':partial(dataset_NTURGBD,quoi_pred='arm')
 }
 
 
