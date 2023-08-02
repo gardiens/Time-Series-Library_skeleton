@@ -29,7 +29,7 @@ class time_serie_NTU:
     """ File to display the lementary objects used in Dataset. """
 
 
-    def __init__(self,input_len:int=30,output_len:int=30,data_path='./dataset/NTU_RGB+D/numpyed/',file_extension='.skeleton.npy',get_cat_value=True,get_time_value=False,categorical_columns=['nbodys', 'actor', 'acti', 'camera', 'scene', 'repet'],preproccess:int=1) -> None:
+    def __init__(self,input_len:int=30,output_len:int=30,data_path='./dataset/NTU_RGB+D/numpyed/',file_extension='.skeleton.npy',get_cat_value=True,get_time_value=False,categorical_columns=['nbodys', 'actor', 'acti', 'camera', 'scene', 'repet'],preprocess:int=1) -> None:
         """_summary_
 
         Parameters
@@ -62,7 +62,150 @@ class time_serie_NTU:
         self.categorical_columns=categorical_columns
         self.get_time_value=get_time_value
         self.intervalle_frame=1/30 #* On suppose que c'est du 30 fps
-        self.preproccess=preproccess
+        self.preprocess=preprocess
+    def __len__(self) -> int:
+        return len(self.row)
+    
+    
+    def get_data(self,row):
+        ''' FONCTION UTILISE DANS LES DATASET/DATALOADER
+        Renvoie une sortie de la forme :
+        entry_data, label, cat_data, time_value si les valeurs sont bien bonne
+        entry_data est de la forme (nb_frames,nb_joints nb_dim ( 3 ici))'''
+        mat_path=os.path.join(self.data_path,row['filename']+self.file_extension) #! WARNING ON THE EXTENSION OF THE .NPY
+        data=np.load(mat_path,allow_pickle=True).item()
+        #* On récupère la valeur du body intéressant
+        num_body=row['num_body']
+        data=np.load(mat_path,allow_pickle=True).item()[f'skel_body{int(num_body)}'] #* C'est une matrice de la forme [frames,nb_joints,3]
+        
+        debut_frame=int(row['debut_frame'])
+        #print(debut_frame)
+        #* On récupère le début et la fin de la séquence
+        # data est de la frome [nb_frames,nb_joints,3]
+        debut=debut_frame  
+        begin=data[debut:debut+self.input_len]
+        label=data[debut:debut+self.output_len]#* On prend les output_len suivantes
+        #! A CHANGER ICI 
+        reference=20 # Correspond à Spine shoulder ! 
+        mean=np.mean(begin[:,reference,:],axis=0)
+        begin=begin-mean # On recentre le squelette par rapport à la frame de référence
+        label=label-mean
+        #! Détail technique: à priori les données sont de la formes [nb_frames,nb_joints,3] mais les réseauxde neurones acceptent un format [nb_frames,nb_features] donc on va faire un reshape
+        begin=begin.reshape(begin.shape[0],-1)
+        label=label.reshape(label.shape[0],-1)
+        
+        #* Maintenant , begin est de la forme( nb_frames,nb_joints*3) et label est de la forme (nb_frames,nb_joints*3
+        if self.get_time_value:
+            time_value_enc=np.arange(debut_frame,debut_frame+self.input_len)*self.intervalle_frame #* Encoding du temps, représente x_mark_enc pour FEDformers
+            time_value_dec=np.arange(debut_frame,debut_frame+self.output_len)*self.intervalle_frame #* Decoding du temps entre deux frames , représente x_mark_dec pour FedFormers
+            time_value_enc=np.tile(time_value_enc,(begin.shape[1],1)).transpose((1,0)) #* On fait un tile pour avoir la même valeur pour chaque joint]))
+            time_value_dec=np.tile(time_value_dec,(label.shape[1],1)).transpose((1,0)) #* On fait un tile pour avoir la même valeur pour chaque joint]))
+        if self.get_cat_value:
+            mat_cat_data=row[self.categorical_columns].values #* C'est un np.array avec les différentes 
+            #* change the type to be float64 , MAY BE BUGGY HERE
+            mat_cat_data=mat_cat_data.astype(np.float64)
+
+        
+        #*  renvoie la solution de la bonne forme ! 
+        if self.get_time_value and self.get_cat_value:
+            return begin,label,time_value_enc,time_value_dec,mat_cat_data
+    
+        if self.get_time_value:
+            
+                
+              
+            return begin,label,time_value_enc,time_value_dec
+        if self.get_cat_value:
+            return begin,label,mat_cat_data
+        else:
+            return begin,label
+    def inverse_transform(self,x,entry=None,preprocessing=1):
+        """Renvoie les données dans le bon format pour pouvoir les afficher
+        renvoie de la forme [nb_frames,nb_joints,3]"""
+        if not preprocessing:
+            return x.reshape(x.shape[0],int(x.shape[1]//3),3)
+        else:
+            return (x).reshape(x.shape[0],int(x.shape[1]//3),3)
+
+    def get_input_model(self,entry):
+        """ depuis un X obtenu de get_data ou get_data_from_sample_name, renvoie un input de la bonne forme pour le modèle"""
+        
+        if self.get_time_value and self.get_cat_value:
+            begin,label,time_value_enc,time_value_dec,mat_cat_data=entry
+    
+        elif self.get_time_value:
+             begin,label,time_value_enc,time_value_dec=entry
+        elif self.get_cat_value:
+             begin,label,mat_cat_data=entry
+        else:
+             begin,label=entry 
+        begin=tensor(np.expand_dims(begin,axis=0)).float()
+        label=tensor(np.expand_dims(label,axis=0)).float()
+        if self.get_time_value and self.get_cat_value:
+            time_value_enc=tensor(np.expand_dims(time_value_enc,axis=0)).float()
+            time_value_dec=tensor(np.expand_dims(time_value_dec,axis=0)).float()
+            mat_cat_data=tensor(np.expand_dims(mat_cat_data,axis=0)).float()
+            return begin,label,time_value_enc,time_value_dec,mat_cat_data
+        if self.get_time_value:
+            time_value_enc=tensor(np.expand_dims(time_value_enc,axis=0)).float()
+            time_value_dec=tensor(np.expand_dims(time_value_dec,axis=0)).float()
+            return begin,label,time_value_enc,time_value_dec
+        if self.get_cat_value:
+            mat_cat_data=tensor(np.expand_dims(mat_cat_data,axis=0)).float()
+            return begin,label,mat_cat_data
+        else:
+            return begin,label
+
+
+
+from utils.constante_skeleton import Liste_set_membre
+class time_serie_NTU_particular_body:
+
+    """ Classe de Time_series qui va être la base de notre dataset"""
+    """ File to display the lementary objects used in Dataset. """
+
+
+    def __init__(self,input_len:int=30,output_len:int=30,data_path='./dataset/NTU_RGB+D/numpyed/',file_extension='.skeleton.npy',get_cat_value=True,get_time_value=False,categorical_columns=['nbodys', 'actor', 'acti', 'camera', 'scene', 'repet'],preprocess:int=1,quoi_pred:str="all") -> None:
+        """_summary_
+
+        Parameters
+        ----------
+        row : df
+            un row d'un pandas dataframe qui contient les informations d'un squelettes
+         seq_len : int, optional
+            longueur de la séquence d'entrée, by default 30
+        out_len : int, optional
+            longueur de la séquence de sortie, by default 30
+        data_path : str, optional
+            path qui contient tous les .npy des skeletons , by default './dataset/NTU_RGB+D/numpyed/'
+
+        file_extension : str, optional
+            _description_, by default '.skeleton.npy'
+        get_cat_value : bool, optional
+            true si on veut les valeurs catégoriques, by default True
+        get_time_value : bool, optional
+            renvoie en plus un array avec le différents temps, by default False
+        categorical_columns : list, optional
+            ensembles des données catégoriques que l'on veut garder ou non, by default ['nbodys', 'actor', 'acti', 'camera', 'scene', 'repet']
+        """
+
+        self.input_len=input_len
+        self.output_len=output_len
+
+        self.data_path=data_path
+        self.file_extension=file_extension
+        self.get_cat_value=get_cat_value
+        self.categorical_columns=categorical_columns
+        self.get_time_value=get_time_value
+        self.intervalle_frame=1/30 #* On suppose que c'est du 30 fps
+        self.preprocess=preprocess
+        if quoi_pred=="body":
+            self.liste_membre=Liste_set_membre['3_partie:'][0]
+        if quoi_pred=="arm":
+             self.liste_membre=Liste_set_membre['3_partie:'][1]
+        
+        if quoi_pred=="leg":
+             self.liste_membre=Liste_set_membre['3_partie:'][2]
     def __len__(self) -> int:
         return len(self.row)
     
@@ -90,6 +233,10 @@ class time_serie_NTU:
         mean=np.mean(begin[:,reference,:],axis=0)
         begin=begin-mean # On recentre le squelette par rapport à la frame de référence
         label=label-mean
+        #* On sélectionne uniquement les membres qui nous intéressent: 
+        begin=begin[:,self.liste_membre,:]        
+        label=label[:,self.liste_membre,:]
+
         #! Détail technique: à priori les données sont de la formes [nb_frames,nb_joints,3] mais les réseauxde neurones acceptent un format [nb_frames,nb_features] donc on va faire un reshape
         begin=begin.reshape(begin.shape[0],-1)
         label=label.reshape(label.shape[0],-1)
@@ -161,9 +308,6 @@ class time_serie_NTU:
 
 
 
-
-       
-    
  
 import re
 def extract_integers(file_name):
@@ -183,7 +327,7 @@ def extract_integers(file_name):
     
 
 import ruptures as rpt
-def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:str='./dataset/NTU_RGB+D/summary_NTU/',name_csv="summary_NTU.csv",beta=3.6,preproccess=1):
+def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:str='./dataset/NTU_RGB+D/summary_NTU/',name_csv="summary_NTU.csv",beta=3.6,preprocess=1):
     """créer un .csv qui permet à partir des differents .npy de résumer les valeurs importantes
 
     Parameters

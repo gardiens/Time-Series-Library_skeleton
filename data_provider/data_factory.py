@@ -2,8 +2,8 @@ from data_provider.data_loader import Dataset_ETT_hour, Dataset_ETT_minute, Data
     MSLSegLoader, SMAPSegLoader, SMDSegLoader, SWATSegLoader, UEAloader,dataset_NTURGBD
 from data_provider.uea import collate_fn
 from torch.utils.data import DataLoader
-from utils.NTU_RGB.utils_dataset import time_serie_NTU
 
+from functools import partial
 data_dict = {
     'ETTh1': Dataset_ETT_hour,
     'ETTh2': Dataset_ETT_hour,
@@ -17,7 +17,10 @@ data_dict = {
     'SMD': SMDSegLoader,
     'SWAT': SWATSegLoader,
     'UEA': UEAloader,
-    'NTU': dataset_NTURGBD
+    'NTU': dataset_NTURGBD,
+    'NTU_leg':partial(dataset_NTURGBD,quoi_pred='leg'),
+    'NTU_body':partial(dataset_NTURGBD,quoi_pred='body'),
+    'NTU_arm':partial(dataset_NTURGBD,quoi_pred='arm')
 }
 
 
@@ -74,15 +77,17 @@ def data_provider(args, flag):
         if args.data == 'm4':
             drop_last = False
         #* Cas NTU_RGBD
-        if args.data == 'NTU':
+        if  'NTU' in args.data:
+            
             data_set= Data(
                 root_path=args.root_path,
                 data_path=args.data_path,
                 flag=flag,
                 size=[args.seq_len, args.label_len, args.pred_len],
                 get_time_value=args.get_time_value ,#!
-                get_cat_value=args.get_cat_value, #!,
-                preproccess=args.preprocess #!
+                get_cat_value=args.get_cat_value, #!
+                preprocess=args.preprocess, #! Ne pas changer pls 
+                split_train_test=args.split_train_test #!
             )
         else:
             #* Cas générique

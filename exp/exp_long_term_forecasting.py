@@ -42,6 +42,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
     def _get_data(self, flag):
         data_set, data_loader = data_provider(self.args, flag)
+        
         return data_set, data_loader
 
     def _select_optimizer(self):
@@ -100,11 +101,13 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
     def train(self, setting):
         """ Les sauvegardes ont lieu dans early stopping ( dans le dossier/ results/settings, en revanche on a pas le nom du checkpoint clair à priori...)"""
-        print("-----loading du dataset ---",flush=True)
+        print("-----loading du dataset ---")
         train_data, train_loader = self._get_data(flag='train')
         vali_data, vali_loader = self._get_data(flag='val')
         test_data, test_loader = self._get_data(flag='test')
-        print("vérification du dataset:",train_data.liste_path[["filename","debut_frame"]].head())
+
+        print("vérification du dataset:",train_data.liste_path[["filename","debut_frame"]].head(2))
+        print("longueur des différents dataset:",len(train_data),"longueur de validation:",len(vali_data),"longueur du dataset de test",len(test_data))
         print("-----fin du loading du dataset ---",flush=True)
         writer=self.writer
         path = os.path.join(self.args.checkpoints, setting)
@@ -178,10 +181,10 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
 
                 if (i + 1) % 100 == 0:
-                    print("\titers: {0}, epoch: {1} | loss: {2:.7f}".format(i + 1, epoch + 1, loss.item(),),flush=True)
+                    print("\titers: {0}, epoch: {1} | loss: {2:.7f}".format(i + 1, epoch + 1, loss.item(),))
                     speed = (time.time() - time_now) / iter_count
                     left_time = speed * ((self.args.train_epochs - epoch) * train_steps - i)
-                    print('\tspeed: {:.4f}s/iter; left time: {:.4f}s'.format(speed, left_time),flush=True)
+                    print('\tspeed: {:.4f}s/iter; left time: {:.4f}s'.format(speed, left_time))
                     iter_count = 0
                     time_now = time.time()
                     break #!!!!!!!!

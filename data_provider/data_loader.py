@@ -10,7 +10,7 @@ from utils.timefeatures import time_features
 #from data_provider.m4 import M4Dataset, M4Meta
 from data_provider.uea import subsample, interpolate_missing, Normalizer
 from sktime.datasets import load_from_tsfile_to_dataframe
-from utils.NTU_RGB.utils_dataset import time_serie_NTU, data_rentrer_dans_DATASET_NTU
+from utils.NTU_RGB.utils_dataset import time_serie_NTU,time_serie_NTU_particular_body, data_rentrer_dans_DATASET_NTU
 import warnings
 warnings.filterwarnings('ignore')
 from sklearn.model_selection import train_test_split
@@ -25,7 +25,7 @@ class dataset_NTURGBD(Dataset):
     
     def __init__(self, root_path:str="./dataset/NTU_RGB+D/",data_path:str='numpyed/', flag='train', size:list=None,
                  features:str='MS',transform=None,item=time_serie_NTU,csv_path='./dataset/NTU_RGB+D/summary_NTU/liste_NTU_skeleton_4.csv',
-                 get_time_value=False,get_cat_value=False,train_size=0.60,test_size=0.20,preproccess:int=0) -> None:
+                 get_time_value=False,get_cat_value=False,train_size=0.80,test_size=0.10,preprocess:int=1,split_train_test:str="action",quoi_pred="all") -> None:
 
         if size==None:
             
@@ -48,19 +48,29 @@ class dataset_NTURGBD(Dataset):
             self.out_len=self.label_len
         #* les autres paras sont globalement inutiles
         self.data_path=os.path.join(root_path,data_path)
-        self.preproccess=preproccess
+        self.preprocess=preprocess
         self.csv_path=csv_path
+        self.split_train_test=split_train_test
         self.input_len=self.seq_len #* longueur de la time_series en entrée
         self.nb_joints=25 #* nombre de joints dans la time_series
         self.get_cat_value=get_cat_value #* si on veut les catégories
         self.get_time_value=get_time_value #* si on veut les time_values
+        if quoi_pred=="all":
+            self.item=time_serie_NTU(data_path=self.data_path,input_len=self.input_len,output_len=self.out_len,get_cat_value=self.get_cat_value,get_time_value=self.get_time_value,preprocess=self.preprocess) #* Classe de base du data'set qui va renvoyer la time series voulu 
+        if quoi_pred=="leg":
+            self.item=time_serie_NTU_particular_body(input_len=self.input_len,output_len=self.out_len,get_cat_value=self.get_cat_value,get_time_value=self.get_time_value,preprocess=self.preprocess,quoi_pred="leg")
 
-        self.item=time_serie_NTU(data_path=self.data_path,input_len=self.input_len,output_len=self.out_len,get_cat_value=self.get_cat_value,get_time_value=self.get_time_value,preproccess=self.preproccess) #* Classe de base du data'set qui va renvoyer la time series voulu 
+        if quoi_pred=="arm":
+            self.item=time_serie_NTU_particular_body(input_len=self.input_len,output_len=self.out_len,get_cat_value=self.get_cat_value,get_time_value=self.get_time_value,preprocess=self.preprocess,quoi_pred="arm")
+
+        if quoi_pred=="body":
+            self.item=time_serie_NTU_particular_body(input_len=self.input_len,output_len=self.out_len,get_cat_value=self.get_cat_value,get_time_value=self.get_time_value,preprocess=self.preprocess,quoi_pred="body")
+
         self.test_size=test_size
         self.train_size=train_size
         self.vali_size=1-self.train_size-self.test_size
         self.liste_path=self.get_df() #* Ici liste_path correspond au dataset où on va prendre les données voulues! On va d'abord
-
+        
     def __len__(self) -> int:
         return len(self.liste_path)
     
@@ -80,25 +90,27 @@ class dataset_NTURGBD(Dataset):
         
     def get_df(self):
         """ Renvoie le pandas dataframe prétraité  et correspondant bien au bon dataset"""
-        df=data_rentrer_dans_DATASET_NTU(path_csv=self.csv_path,seq_len=self.seq_len,out_len=self.out_len,path_data_npy=self.data_path,preprocess=self.preproccess) # c'est un pandas dataframe qui devriat tous avoir normalement
+        df=data_rentrer_dans_DATASET_NTU(path_csv=self.csv_path,seq_len=self.seq_len,out_len=self.out_len,path_data_npy=self.data_path,preprocess=self.preprocess) # c'est un pandas dataframe qui devriat tous avoir normalement
 
         #* On split entre les trois datasets
-        if self.preproccess==0: #* On split le dataset de manière équilibrée
+        if self.split_train_test=="action":#* le test_set correspond aux acti de 110 à 120 et le validation set correspond au set de 100 à 110
+            
+            if self.set_type==0: #* Training one
+                return df.where(df['acti']<100).dropna()
+            elif self.set_type==2: #* Validation one
+                return df.where((df['acti']>=100) & (df['acti']<110)).dropna()
+            else: #* Test one
+                return df.where(df['acti']>=110).dropna()
+            
+  
+        elif self.split_train_test=="random":
             if self.set_type==0:
                 return pd.DataFrame(train_test_split(df,test_size=1-self.train_size)[self.set_type])
             else:
                 df2=pd.DataFrame(train_test_split(df,train_size=self.train_size)[1])
                 #print(self.test_size/self.train_size)
                 return pd.DataFrame(train_test_split(df2,test_size=self.test_size/(1-self.train_size))[self.set_type-1])
-        elif self.preproccess==1:
-            #* le test_set correspond aux acti de 110 à 120 et le validation set correspond au set de 100 à 110
-            if self.set_type==0: #* Training one
-                return df.where(df['acti']<100).dropna()
-            elif self.set_type==1: #* Validation one
-                return df.where((df['acti']>=100) & (df['acti']<110)).dropna()
-            else: #* Test one
-                return df.where(df['acti']>=110).dropna()
-            
+   
     def get_data_from_sample_name(self,name_skeleton:str,num_body=0):
       
         """ name_skeleton doit être de la forme 'S001C001P001R001A001'
