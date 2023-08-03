@@ -7,7 +7,7 @@ batch_size=256
 
 i=3
 epoch=14
-model_id_name=NTU02-08${model_name}leg-lr-${i}-bs${batch_size}
+model_id_name=NTU02-08FEDformerleg-lr-${i}-bs${batch_size}
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 0 \
