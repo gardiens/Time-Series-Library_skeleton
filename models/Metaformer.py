@@ -26,6 +26,7 @@ dict_l_membre={
 def transfo_inverse_NTU(x,liste_membre):
     if x is None:
         return None
+    print(x.shape)
     xprime=torch.reshape(x,(x.shape[0],x.shape[1],25,3)) # Reshape de la bonne manière
     xprime=xprime[:,:,liste_membre,:] 
     xprime=torch.reshape(xprime,(xprime.shape[0],xprime.shape[1],xprime.shape[2]*xprime.shape[3]))
@@ -81,7 +82,6 @@ class Model(nn.Module):
                 new_state_dict[name] = v
             
             
-            print("avant l'erreur",new_state_dict)
             ajouter.load_state_dict(new_state_dict)
             self.liste_modele_partie.append(ajouter)
 
