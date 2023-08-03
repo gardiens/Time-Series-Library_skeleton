@@ -14,7 +14,7 @@ python -u run.py \
   --root_path './dataset/NTU_RGB+D/' \
   --data_path 'numpyed/'\
   --model_id ${model_id_name} \
-  --model FEDformer \
+  --model Meta \
   --data ${data} \
   --features M \
   --seq_len 16 \
