@@ -81,8 +81,8 @@ class Model(nn.Module):
                 new_state_dict[name] = v
             
             
-            
-            ajouter.load_state_dict(state_dict)
+            print("avant l'erreur",new_state_dict)
+            ajouter.load_state_dict(new_state_dict)
             self.liste_modele_partie.append(ajouter)
 
     def forward(self, x_enc, x_mark_enc, x_dec, x_mark_dec, mask=None):
