@@ -1,8 +1,33 @@
 import os
 import torch
-from models import Autoformer, Transformer, TimesNet, Nonstationary_Transformer, DLinear, FEDformer, \
-    Informer, LightTS, Reformer, ETSformer, Pyraformer, PatchTST, MICN, Crossformer, FiLM
+
 from utils.constantes import model_dict
+from models import Autoformer, Transformer, TimesNet, Nonstationary_Transformer, DLinear, FEDformer, \
+    Informer, LightTS, Reformer, ETSformer, Pyraformer, PatchTST, MICN, Crossformer, FiLM,Metaformer
+from models import FEDformer_wavelet
+
+#used in exp_basic.
+model_dict = {
+        'TimesNet': TimesNet,
+        'Autoformer': Autoformer,
+        'Transformer': Transformer,
+        'Nonstationary_Transformer': Nonstationary_Transformer,
+        'DLinear': DLinear,
+        'FEDformer': FEDformer,
+        'Informer': Informer,
+        'LightTS': LightTS,
+        'Reformer': Reformer,
+        'ETSformer': ETSformer,
+        'PatchTST': PatchTST,
+        'Pyraformer': Pyraformer,
+        'MICN': MICN,
+        'Crossformer': Crossformer,
+        'FiLM': FiLM,
+        'NonstationaryTransformer':Nonstationary_Transformer,
+        'NTS':Nonstationary_Transformer,
+        'FEDWav':FEDformer_wavelet,
+        'Meta':Metaformer
+}
 
 class Exp_Basic(object):
     def __init__(self, args):

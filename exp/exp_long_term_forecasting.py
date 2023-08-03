@@ -27,11 +27,11 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         self.writer=SummaryWriter(log_dir=f"runs/{setting}") #* tensorboard
         writer=self.writer
         #print("les args",vars(args))
-        add_hparams(self.writer,args) #* tensorboard
+        #add_hparams(self.writer,args) #* tensorboard
 
         # Add in the writer every parameter which are float,int,str or bool
         #writer.add_hparams({k:v for k,v in vars(args).items() if type(v) in [float,int,str,bool]},{})
-        writer.flush()
+        #"writer.flush()
         
     def _build_model(self):
         model = self.model_dict[self.args.model].Model(self.args).float()
@@ -219,7 +219,8 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             #* Wandb things
            
         best_model_path = path + '/' + 'checkpoint.pth'
-        self.model.load_state_dict(torch.load(best_model_path))
+        if self.args.model_name!= "Meta":
+            self.model.load_state_dict(torch.load(best_model_path))
         writer.flush()
         return self.model   
 
@@ -248,6 +249,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             os.makedirs(folder_path)
 
         self.model.eval()
+        print("on commence l'évaluation:")
         with torch.no_grad():
             for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(test_loader):
                 batch_x = batch_x.float().to(self.device)

@@ -19,7 +19,7 @@ data_dict = {
 }
 #used in data_factory
 from models import Autoformer, Transformer, TimesNet, Nonstationary_Transformer, DLinear, FEDformer, \
-    Informer, LightTS, Reformer, ETSformer, Pyraformer, PatchTST, MICN, Crossformer, FiLM
+    Informer, LightTS, Reformer, ETSformer, Pyraformer, PatchTST, MICN, Crossformer, FiLM,Metaformer
 from models import FEDformer_wavelet
 
 #used in exp_basic.
@@ -41,8 +41,8 @@ model_dict = {
         'FiLM': FiLM,
         'NonstationaryTransformer':Nonstationary_Transformer,
         'NTS':Nonstationary_Transformer,
-        'FEDWav':FEDformer_wavelet,
-}
+        'FEDWav':FEDformer_wavelet
+} #! Il manque Metaformer
 
 
 
@@ -229,6 +229,10 @@ connexion_tuples = np.array([[Joints.SPINEBASE, Joints.SPINEMID],
 def get_settings(args):
     """ Sachant des args, permets de renvoyer un setting de manière automatiser,
     REMPLACE AUTOMATQIEUEMNT _ PAR - """
+    try:
+        args.num_itr
+    except:
+        args.num_itr=0
     return '{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_fc{}_eb{}_dt{}_{}_{}_cv{}_tvv{}_p{}'.format(
                 args.task_name,
                 args.model_id.replace("_","-"),

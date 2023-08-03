@@ -10,7 +10,8 @@ import random
 import numpy as np
 import sys
 from utils.constantes import get_settings
-
+import copy
+from utils.constante_skeleton import dict_set_membre
 if __name__ == '__main__':
     
     #print("version de cuda",torch.version.cuda)
@@ -103,12 +104,12 @@ if __name__ == '__main__':
     parser.add_argument('--get_time_value', type=int, default=0, help='get time value,0 if not, 1 if yes')
     parser.add_argument('--get_cat_value', type=int, default=0, help='get cat value,0 if not, 1 if yes')
     parser.add_argument('--preprocess', type=int, default=1, help='preprocess data,0 if 1 or more we do sth')
-    #parser.add_argument('--sous_model', type=str, default='FED', help='sous-Model pour metaformer')
-    #parser.add_argument('--quel_membre', type=str, default='buste', help='quel membre pour metaformer')
+    parser.add_argument('--sous_model', type=str, default='FEDformer', help='sous-Model pour metaformer')
+    parser.add_argument('--quel_membre', type=str, default='3_partie:', help='quel ensemble de membre pour Metaformer')
     parser.add_argument('--no_test', action='store_true', help='permet de ne pas faire de test', default=False)
     #* challenge test_hypothèse
     parser.add_argument('--split_train_test',type=str,default='action',help='split train test selon action ou au hasard. Possible value: [action,random]')
-    
+ 
     args = parser.parse_args()
     print("use_gpu: ce quon demande ", args.use_gpu, "cuda est-il disponible:", torch.cuda.is_available(), flush=True)
     args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
@@ -142,8 +143,26 @@ if __name__ == '__main__':
             setting = get_settings(args)
             print("batch_size",args.batch_size)   
             exp = Exp(args)  # set experiments
+            
+            
             print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting),flush=True)
-            exp.train(setting)
+            if args.model=="Meta":
+                ssargs=copy.deepcopy(args)
+                ssargs.model=args.sous_model
+                liste_sous_membre=dict_set_membre[args.quel_membre]
+                for membre in liste_sous_membre:
+                    n=len(liste_sous_membre[membre])
+                    ssargs.enc_in=n*3
+                    ssargs.enc_out=n*3
+                    ssargs.c_out=n*3
+                    ssargs.data=f"NTU_{membre}"
+                    
+                    
+                    settingprime=get_settings(ssargs)
+                    exp.train(setting=settingprime)
+
+            else:
+                exp.train(setting)
 
             print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting),flush=True)
             if args.no_test:
@@ -156,6 +175,7 @@ if __name__ == '__main__':
         ii = 0
         args.num_itr=ii
         setting = get_settings(args)
+        print(setting)
         exp = Exp(args)  # set experiments
         print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting),flush=True)
         exp.test(setting, test=1)
