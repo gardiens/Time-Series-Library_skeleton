@@ -156,7 +156,7 @@ if __name__ == '__main__':
                     ssargs.enc_out=n*3
                     ssargs.c_out=n*3
                     ssargs.data=f"NTU_{membre}"
-                    
+                    ssargs.model=args.sous_model
                     
                     settingprime=get_settings(ssargs)
                     exp.train(setting=settingprime)

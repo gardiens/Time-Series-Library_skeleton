@@ -62,10 +62,12 @@ class Model(nn.Module):
             configprime.dec_out=len(liste_membre)*3
             configprime.c_out=len(liste_membre)*3
             configprime.data=f"NTU-{key}"
+            configprime.model=self.nom_sous_model
         
        
             ajouter=model_dict[self.nom_sous_model].Model(configprime)  
             settingprime=get_settings(configprime)
+            print("on load le modèle avec comme setting",settingprime)
             sous_model_path=os.path.join(self.path,settingprime,'checkpoint.pth')
             # original saved file with DataParallel
         
