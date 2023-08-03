@@ -1,7 +1,7 @@
 #!/bin/bash
 model_name=Meta
 pred_len=32
-data=NTU-leg
+data=NTU
 
 batch_size=256
 
