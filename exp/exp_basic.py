@@ -1,7 +1,7 @@
 import os
 import torch
 
-from utils.constantes import model_dict
+
 from models import Autoformer, Transformer, TimesNet, Nonstationary_Transformer, DLinear, FEDformer, \
     Informer, LightTS, Reformer, ETSformer, Pyraformer, PatchTST, MICN, Crossformer, FiLM,Metaformer
 from models import FEDformer_wavelet
