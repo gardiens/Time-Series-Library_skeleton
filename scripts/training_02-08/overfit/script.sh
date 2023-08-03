@@ -9,7 +9,7 @@ batch_size=256
 
 i=3
 epoch=14
-model_id_name=NTU02-08${model_name}Action-lr-${i}-bs${batch_size}
+model_id_name=NTU03-08${model_name}Action-lr-${i}-bs${batch_size}
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 1 \
@@ -44,7 +44,7 @@ python -u run.py \
 
 
 
-model_id_name=NTU02-08${model_name}random-lr-${i}-bs${batch_size}
+model_id_name=NTU03-08${model_name}random-lr-${i}-bs${batch_size}
 
 python -u run.py \
   --task_name long_term_forecast \

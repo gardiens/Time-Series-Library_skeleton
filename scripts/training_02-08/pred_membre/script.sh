@@ -8,7 +8,7 @@ batch_size=256
 
 i=3
 epoch=14
-model_id_name=NTU02-08${model_name}leg-lr-${i}-bs${batch_size}
+model_id_name=NTU03-08${model_name}leg-lr-${i}-bs${batch_size}
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 1 \
@@ -45,7 +45,7 @@ python -u run.py \
 
 data=NTU-body
 
-model_id_name=NTU02-08${model_name}leg-lr-${i}-bs${batch_size}
+model_id_name=NTU03-08${model_name}leg-lr-${i}-bs${batch_size}
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 1 \
@@ -82,7 +82,7 @@ python -u run.py \
 
 data=NTU-arm
 
-model_id_name=NTU02-08${model_name}leg-lr-${i}-bs${batch_size}
+model_id_name=NTU03-08${model_name}leg-lr-${i}-bs${batch_size}
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 1 \
@@ -98,9 +98,9 @@ python -u run.py \
   --e_layers 2 \
   --d_layers 1 \
   --factor 3 \
-  --enc_in 75 \
-  --dec_in 75 \
-  --c_out 75 \
+  --enc_in 36 \
+  --dec_in 36 \
+  --c_out 36 \
   --des 'Exp' \
   --itr 1      \
   --dropout 0.1 \
