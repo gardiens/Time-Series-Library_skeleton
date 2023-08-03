@@ -84,3 +84,11 @@ Liste_set_membre={
     "2_partie":[dict_membre["buste"]+dict_membre["bras_gauche"]+dict_membre["bras_droit"],dict_membre["jambe_gauche"]+dict_membre["jambe_droite"]],
 }
 # pour 3 partie: on en a 5*3 buste, 12*3 bras, 8*3 jambe
+
+dict_set_membre={
+    "3_partie:":{
+        "body":Liste_set_membre["3_partie:"][0],
+        "arm":Liste_set_membre["3_partie:"][1],
+        "leg":Liste_set_membre["3_partie:"][2]
+    }
+}
