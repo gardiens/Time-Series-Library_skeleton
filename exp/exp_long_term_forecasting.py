@@ -187,7 +187,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     print('\tspeed: {:.4f}s/iter; left time: {:.4f}s'.format(speed, left_time))
                     iter_count = 0
                     time_now = time.time()
-                    break #!!!!!!!!
                 if self.args.use_amp:
                     scaler.scale(loss).backward()
                     scaler.step(model_optim)

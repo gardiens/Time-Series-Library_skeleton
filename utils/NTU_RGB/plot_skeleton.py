@@ -190,7 +190,6 @@ def plot_skeleton(path_skeleton:str=None,save_name='skeleton',title=None,write=T
 
     if path_skeleton.strip().endswith('.skeleton'):
         skeleton = read_xyz(path_skeleton) # l'ouput est `(3 {x, y, z}, max_frame, num_joint, 2 {n_subjects})
-        print(skeleton.transpose(3, 2, 0, 1).shape)
         nv_skeleton=skeleton.transpose(3, 2, 0, 1)[num_body] #! Il st de la forme (nb_joints,3,nb_frames)
 
     elif path_skeleton.strip().endswith('.npy'):

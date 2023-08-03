@@ -1,5 +1,8 @@
 {
     "doki.background.path": "C:\\Users\\lix\\Pictures\\dokithem\\H7.png",
-    "doki.statusbar.name": "C:\\Users\\lix\\Pictures\\dokithem\\H7.png",
-    "doki.wallpaper.path": "C:\\Users\\lix\\Pictures\\dokithem\\H7.png"
+    "doki.statusbar.name": "kaguya",
+    "doki.wallpaper.path": "C:\\Users\\lix\\Pictures\\dokithem\\H7.png",
+    "doki.background.enabled": true,
+    "doki.sticker.css": "  ",
+    "doki.wallpaper.enabled": true
 }
