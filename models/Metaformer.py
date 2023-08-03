@@ -74,14 +74,13 @@ class Model(nn.Module):
             state_dict = torch.load(sous_model_path)
             # create new OrderedDict that does not contain `module.`
 
-            """"new_state_dict = OrderedDict()
+            new_state_dict = OrderedDict()
             for k, v in state_dict.items():
-                if "module."==k[7:]:
-                    name = k[7:] # remove `module.`
-                    new_state_dict[name] = v
-                else:
-                    break 
-            """"
+                
+                name = k[7:] # remove `module.`
+                new_state_dict[name] = v
+            
+            
             
             ajouter.load_state_dict(state_dict)
             self.liste_modele_partie.append(ajouter)
