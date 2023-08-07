@@ -6,7 +6,7 @@ model_name=FEDformer
 pred_len=32
 data=NTU
 batch_size=256
-
+# Variation dans action et random dans pslit_train_test
 i=3
 epoch=14
 model_id_name=NTU03-08${model_name}Action-lr-${i}-bs${batch_size}

@@ -124,7 +124,6 @@ class dataset_NTURGBD(Dataset):
             print("Bugg sur le nom du skeleton et body",name_skeleton,num_body)
             print(self.liste_path.where( (self.liste_path['filename']==name_skeleton) & (self.liste_path["num_body"]==num_body)).dropna())
             raise ValueError("bug num_body ou name_skeleton dans get_data_from_sample_name")
-        #print(row)
         time_series=self.item
         return time_series.get_data(row=row)
     
@@ -139,6 +138,38 @@ class dataset_NTURGBD(Dataset):
     def get_input_model(self,entry):
         """ depuis un X obtenu de get_data ou get_data_from_sample_name, renvoie un input de la bonne forme pour le modèle"""
         return self.item.get_input_model(entry)
+
+def apply_transfo(entry,k,transfo):
+
+    return transfo(entry[k].reshape(entry[k].shape[0],entry[k].shape[1]//3,3)).reshape(entry[k].shape[0],entry[k].shape[1])
+def apply_transfo2(entry,k,transfo,entry2):
+    return transfo(entry[k].reshape(entry[k].shape[0],entry[k].shape[1]//3,3),entry2.reshape(entry2.shape[0],entry2.shape[1]//3,3)).reshape(entry[k].shape[0],entry[k].shape[1])
+
+class dataset_augmenter_augalone(Dataset):
+    def __init__(self,dataset_ini:dataset_NTURGBD,transfo,prop=0.05):
+        self.data_ini=dataset_ini #SUPPOSER NTU_RGB 
+        self.transfo=transfo 
+        self.l_ind=torch.randint(low=0,high=len(self.data_ini),size=(int(len(self.data_ini)*prop),))
+    
+    def __getitem__(self, index) :
+        entry=self.data_ini.__getitem__(int(self.l_ind[index])) #* Renvoie un élément de la forme :return begin,label,time_value_enc,time_value_dec
+        
+        return [apply_transfo(entry,0,self.transfo),apply_transfo(entry,1,self.transfo)]+list(entry[2:])
+    def __len__(self):
+        return len(self.l_ind)
+
+class dataset_augmenter_augmix(Dataset):
+    def __init__(self,dataset_ini:dataset_NTURGBD,transfo,prop=0.05):
+        self.data_ini=dataset_ini #SUPPOSER NTU_RGB 
+        self.transfo=transfo 
+        self.l_ind=torch.randint(low=0,high=len(self.data_ini),size=(int(len(self.data_ini)*prop),))
+        self.l_ind2=torch.randint(low=0,high=len(self.data_ini),size=(int(len(self.data_ini)*prop),))
+    def __getitem__(self, index) :
+        entry=self.data_ini.__getitem__(int(self.l_ind[index])) #* Renvoie un élément de la forme :return begin,label,time_value_enc,time_value_dec
+        entry2,label2=self.data_ini.__getitem__(int(self.l_ind2[index]))[:2] #* Renvoie un élément de la forme :return begin,label,time_value_enc,time_value_dec
+        return [apply_transfo2(entry,0,self.transfo,entry2),apply_transfo2(entry,1,self.transfo,label2)]+list(entry[2:])
+    def __len__(self):
+        return len(self.l_ind)
 
 class Dataset_ETT_hour(Dataset):
     def __init__(self, root_path, flag='train', size=None,

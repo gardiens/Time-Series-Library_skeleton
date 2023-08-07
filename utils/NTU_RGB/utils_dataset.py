@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from torch import tensor
 import ruptures as rpt  # Package for changepoint detection
-
+import torch
 
 def normaliser_input_unpoint(x,y,point_ref:int=None):
     """ le but est de normaliser par rapport à un point le squelette pour être plus stable"""
@@ -73,13 +73,11 @@ class time_serie_NTU:
         entry_data, label, cat_data, time_value si les valeurs sont bien bonne
         entry_data est de la forme (nb_frames,nb_joints nb_dim ( 3 ici))'''
         mat_path=os.path.join(self.data_path,row['filename']+self.file_extension) #! WARNING ON THE EXTENSION OF THE .NPY
-        data=np.load(mat_path,allow_pickle=True).item()
         #* On récupère la valeur du body intéressant
         num_body=row['num_body']
         data=np.load(mat_path,allow_pickle=True).item()[f'skel_body{int(num_body)}'] #* C'est une matrice de la forme [frames,nb_joints,3]
         
         debut_frame=int(row['debut_frame'])
-        #print(debut_frame)
         #* On récupère le début et la fin de la séquence
         # data est de la frome [nb_frames,nb_joints,3]
         debut=debut_frame  

@@ -105,8 +105,10 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         train_data, train_loader = self._get_data(flag='train')
         vali_data, vali_loader = self._get_data(flag='val')
         test_data, test_loader = self._get_data(flag='test')
-
-        print("vérification du dataset:",train_data.liste_path[["filename","debut_frame"]].head(2))
+        try:
+            print("vérification du dataset:",train_data.liste_path[["filename","debut_frame"]].head(2))
+        except:
+            print("le dataset n'a pas de pandas dataframe sous_jacent. Il est probablement augmenté")
         print("longueur des différents dataset:",len(train_data),"longueur de validation:",len(vali_data),"longueur du dataset de test",len(test_data))
         print("-----fin du loading du dataset ---",flush=True)
         writer=self.writer
@@ -128,6 +130,12 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         for epoch in range(self.args.train_epochs):
             iter_count = 0
             train_loss = []
+            train_mae=[]
+            train_mse=[]
+            train_rmse=[]
+            train_mape=[]
+            train_mspe=[]
+
 
             self.model.train()
             epoch_time = time.time()
@@ -141,7 +149,8 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 batch_y_mark = batch_y_mark.float().to(self.device)
 
                 # decoder input
-                dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
+                #dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
+                dec_inp= torch.zeros((batch_y.shape[0],self.args.pred_len,batch_y.shape[2])).float() #! Modifié moi même 
                 dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
 
                 # encoder - decoder
@@ -166,18 +175,20 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
                     f_dim = -1 if self.args.features == 'MS' else 0
                     outputs = outputs[:, -self.args.pred_len:, f_dim:]
-                    #print(" la len",self.args.pred_len)
                     
                     batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
-                    #print("la len",self.args.pred_len)
-                    #print("les batchs",outputs.shape,batch_y.shape)
+
                     loss = criterion(outputs, batch_y)
                     train_loss.append(loss.item())
-                
-                """metrics = {'train_loss': train_loss,'epoch': epoch}
-                if i+1<n_steps_per_epoch:
-                    wandb.log(metrics)"""
-                
+                    with torch.no_grad():
+                        
+                        mae, mse, rmse, mape, mspe=metric(np.array(outputs),np.array(batch_y))
+                        train_mae.append(mae)
+                        train_mse.append(mse)
+                        train_rmse.append(rmse)
+                        train_mape.append(mape)
+                        train_mspe.append(mspe)
+         
 
 
                 if (i + 1) % 100 == 0:
@@ -198,16 +209,31 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
             print("Epoch: {} cost time: {}".format(epoch + 1, time.time() - epoch_time))
             train_loss = np.average(train_loss)
+            #* On rajoute les nouveaux critères:
+            mae_val = np.average(train_mae)
+            mse_loss = np.average(train_mse)
+            rmse_loss = np.average(train_rmse)
+            mae_val=np.average(train_mae)
+            mape_val=np.average(train_mape)
+            mspe_loss=np.average(train_mspe)
+            #* Fin nouveaux critères
+
             
             vali_loss = self.vali(vali_data, vali_loader, criterion)
             test_loss = self.vali(test_data, test_loader, criterion)
             writer.add_scalar("Loss/train",train_loss,epoch)
+            
             print(vali_loss)
             writer.add_scalar("Loss/vali",vali_loss,epoch)
             writer.add_scalar("Loss/test",test_loss,epoch)
+            # On rajoute les nouveaux critères: 
+            writer.add_scalar("MAE/train",mae_val,epoch)
+            writer.add_scalar("MSE/train",mse_loss,epoch)
+            writer.add_scalar("RMSE/train",rmse_loss,epoch)
+            writer.add_scalar("mape/train",mape_val,epoch)
+            writer.add_scalar("mspe/train",mspe_loss,epoch)
             print("Epoch: {0}, Steps: {1} | Train Loss: {2:.7f} Vali Loss: {3:.7f} Test Loss: {4:.7f}".format(
                 epoch + 1, train_steps, train_loss, vali_loss, test_loss))
-            #* Wandb things 
             early_stopping(vali_loss, self.model, path) #C'est ici qu'on sauvegarde le modèle !!!! avec le path. Il est sauvegardé de la frome path/SETTING !!
             
             if early_stopping.early_stop:

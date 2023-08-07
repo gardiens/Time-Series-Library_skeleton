@@ -109,7 +109,11 @@ if __name__ == '__main__':
     parser.add_argument('--no_test', action='store_true', help='permet de ne pas faire de test', default=False)
     #* challenge test_hypothèse
     parser.add_argument('--split_train_test',type=str,default='action',help='split train test selon action ou au hasard. Possible value: [action,random]')
- 
+    #* Augmentation des données 
+    parser.add_argument('--augment',default=False, action='store_true', help='on fait augmentation ou non')
+    parser.add_argument('--prop',type=str,default=1;0.05;0.05;0.05;0.05,help="proportion du dataset qu'on va rajouter")
+
+
     args = parser.parse_args()
     print("use_gpu: ce quon demande ", args.use_gpu, "cuda est-il disponible:", torch.cuda.is_available(), flush=True)
     args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
