@@ -244,7 +244,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             #* Wandb things
            
         best_model_path = path + '/' + 'checkpoint.pth'
-        if self.args.model_name!= "Meta":
+        if self.args.model != "Meta":
             self.model.load_state_dict(torch.load(best_model_path))
         writer.flush()
         return self.model   
