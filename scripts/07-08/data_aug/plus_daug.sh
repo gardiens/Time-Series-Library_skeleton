@@ -10,7 +10,7 @@ batch_size=256
 local moving_value="0.2"
 for i in 1 2 3 4
 do 
-  local output=""
+  output=""
   for ((j=1;j<=4;j++));do
       if ((j == i)); then output+=";$moving_value" else output+=";0" fi
         
