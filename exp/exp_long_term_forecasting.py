@@ -150,7 +150,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
                 # decoder input
                 #dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
-                dec_inp= torch.zeros((batch_y.shape[0],self.args.pred_len,batch_y.shape[2])).float() #! Modifié moi même 
+                dec_inp= torch.zeros((batch_y.shape[0],self.args.pred_len,batch_y.shape[2])).float().to(self.device) #! Modifié moi même 
                 dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
 
                 # encoder - decoder
