@@ -7,30 +7,15 @@ from torch import tensor
 import ruptures as rpt  # Package for changepoint detection
 import torch
 
-def normaliser_input_unpoint(x,y,point_ref:int=None):
-    """ le but est de normaliser par rapport à un point le squelette pour être plus stable"""
-    """ x,y sont de la forme [nb_frames,nb_joints,3]"""
-    if point_ref is None:
-        point_ref=20 #Spine Shoulder
-    
-    mean_x=np.mean(x[:,point_ref,1],axis=0)
-    mean_y= np.mean(x[:,point_ref,2],axis=0)
-    mean_z= np.mean(x[:,point_ref,2],axis=0)
-    x=x[:,:,1]-mean_x
-    x=x[:,:,2]-mean_y
-    x=x[:,:,3]-mean_z
-    y=y[:,:,1]-mean_x
-    y=y[:,:,2]-mean_y
-    y=y[:,:,3]-mean_z
-    return x,y
+
 class time_serie_NTU:
 
-    """ Classe de Time_series qui va être la base de notre dataset"""
+    """ Classe de Time_series qui va être la brique de basse de notre dataset"""
     """ File to display the lementary objects used in Dataset. """
 
 
     def __init__(self,input_len:int=30,output_len:int=30,data_path='./dataset/NTU_RGB+D/numpyed/',file_extension='.skeleton.npy',get_cat_value=True,get_time_value=False,categorical_columns=['nbodys', 'actor', 'acti', 'camera', 'scene', 'repet'],preprocess:int=1) -> None:
-        """_summary_
+        """initialisation de la classe
 
         Parameters
         ----------
@@ -42,7 +27,7 @@ class time_serie_NTU:
             longueur de la séquence de sortie, by default 30
         data_path : str, optional
             path qui contient tous les .npy des skeletons , by default './dataset/NTU_RGB+D/numpyed/'
-
+        
         file_extension : str, optional
             _description_, by default '.skeleton.npy'
         get_cat_value : bool, optional
@@ -51,8 +36,10 @@ class time_serie_NTU:
             renvoie en plus un array avec le différents temps, by default False
         categorical_columns : list, optional
             ensembles des données catégoriques que l'on veut garder ou non, by default ['nbodys', 'actor', 'acti', 'camera', 'scene', 'repet']
+        preprocces:int,optional
+            si on veut préprocesser les données ou non. recommandé à 1
         """
-
+        #stockage des paramètres
         self.input_len=input_len
         self.output_len=output_len
 
@@ -68,10 +55,38 @@ class time_serie_NTU:
     
     
     def get_data(self,row):
-        ''' FONCTION UTILISE DANS LES DATASET/DATALOADER
-        Renvoie une sortie de la forme :
-        entry_data, label, cat_data, time_value si les valeurs sont bien bonne
-        entry_data est de la forme (nb_frames,nb_joints nb_dim ( 3 ici))'''
+        """permet de récupérer les données d'une ligne d'un dataframe de ??? et de les renvoyer dans le bon format.
+        très important pour NTU_RGB car utilisé dans __getitem()__ de NTU_RGB_dataset.py
+        les opérations de preprocessing éfféctuées ici sont:
+            - recentrage du squelette par rapport à la frame de début de la séquence pour "spine shoulder"
+
+        Parameters
+        ----------
+        row : row dataframe
+            correspond à un row d'un dataframe. Il doit contenir les informations suivantes:*
+            filename: str
+                nom du fichier ( sans.skeleton ou .npy)
+            num_body: int
+                numéro du body dans le filename que l'on veut récupérer
+            debut_frame: int
+                frame de début de prédiction de la séquence
+            fin_frame: int
+
+        Returns
+        -------
+        il peut renvoyer plusieurs données. L'usage basique est détaillé dans le cas où get_time_value vaut 1
+        begin
+            np.array qui correspond à l'input de la séquence
+            begin est de la forme (nb_frames,nb_joints*3)
+        label,
+            np.array qui correspond à la séquence à prédire. 
+            label est de la forme (nb_frames,nb_joints*3)
+            Attention si preprocess vaut 1 il est de laforme [begin,sequence inconnue]. dans le cas contraire il est de la forme [sequence inconnue]
+        time_value_enc,
+            np.array qui correspond à l'encoding du temps. non utilisé à priori
+        time_value_dec
+            np.array qui correspond à l'encoding du temps. non utilisé à priori
+        """
         mat_path=os.path.join(self.data_path,row['filename']+self.file_extension) #! WARNING ON THE EXTENSION OF THE .NPY
         #* On récupère la valeur du body intéressant
         num_body=row['num_body']
@@ -79,20 +94,22 @@ class time_serie_NTU:
         
         debut_frame=int(row['debut_frame'])
         #* On récupère le début et la fin de la séquence
-        # data est de la frome [nb_frames,nb_joints,3]
         debut=debut_frame  
         begin=data[debut:debut+self.input_len]
         label=data[debut:debut+self.output_len]#* On prend les output_len suivantes
-        #! A CHANGER ICI 
+
+        #* On recentre le squelette par rapport à la frame de référence
         reference=20 # Correspond à Spine shoulder ! 
         mean=np.mean(begin[:,reference,:],axis=0)
         begin=begin-mean # On recentre le squelette par rapport à la frame de référence
         label=label-mean
-        #! Détail technique: à priori les données sont de la formes [nb_frames,nb_joints,3] mais les réseauxde neurones acceptent un format [nb_frames,nb_features] donc on va faire un reshape
+
+        #! Détail technique: à priori les données sont de la formes [nb_frames,nb_joints,3] mais les réseauxde neurones acceptent un format [nb_frames,nb_features]
         begin=begin.reshape(begin.shape[0],-1)
         label=label.reshape(label.shape[0],-1)
-        
         #* Maintenant , begin est de la forme( nb_frames,nb_joints*3) et label est de la forme (nb_frames,nb_joints*3
+
+        #* récupération des données catégoriques ou temporelles si besoin
         if self.get_time_value:
             time_value_enc=np.arange(debut_frame,debut_frame+self.input_len)*self.intervalle_frame #* Encoding du temps, représente x_mark_enc pour FEDformers
             time_value_dec=np.arange(debut_frame,debut_frame+self.output_len)*self.intervalle_frame #* Decoding du temps entre deux frames , représente x_mark_dec pour FedFormers
@@ -107,26 +124,45 @@ class time_serie_NTU:
         #*  renvoie la solution de la bonne forme ! 
         if self.get_time_value and self.get_cat_value:
             return begin,label,time_value_enc,time_value_dec,mat_cat_data
-    
         if self.get_time_value:
-            
-                
-              
             return begin,label,time_value_enc,time_value_dec
         if self.get_cat_value:
             return begin,label,mat_cat_data
         else:
             return begin,label
-    def inverse_transform(self,x,entry=None,preprocessing=1):
-        """Renvoie les données dans le bon format pour pouvoir les afficher
-        renvoie de la forme [nb_frames,nb_joints,3]"""
-        if not preprocessing:
-            return x.reshape(x.shape[0],int(x.shape[1]//3),3)
-        else:
-            return (x).reshape(x.shape[0],int(x.shape[1]//3),3)
+        
+    def inverse_transform(self,x,preprocessing=1):
+        """renvoie une matrice de type begin [nb_frame,nb_channel] de la forme [nb_frames,nb_joints,3]
+
+        Parameters
+        ----------
+        x : torch.tensor ou np.array
+            de la forme [nb_frames,nb_channel]
+        entry : _type_, optional
+            _description_, by default None
+        preprocessing : int, optional
+            , by default 1
+
+        Returns
+        -------
+        np.array ou torch.tensor
+            array de la forme [nb_frames,nb_joints,3]
+        """
+        return (x).reshape(x.shape[0],int(x.shape[1]//3),3)
 
     def get_input_model(self,entry):
-        """ depuis un X obtenu de get_data ou get_data_from_sample_name, renvoie un input de la bonne forme pour le modèle"""
+        """depuis un X obtenu de get_data ou get_data_from_sample_name, renvoie un input de la bonne forme pour le modèle
+
+        Parameters
+        ----------
+        entry : np.array ou torch.tensor
+            array de la forme [nb_frames,nb_channel]
+
+        Returns
+        -------
+        batch
+            torch.tensor de la forme [1,nb_frames,nb_channels]
+        """
         
         if self.get_time_value and self.get_cat_value:
             begin,label,time_value_enc,time_value_dec,mat_cat_data=entry
@@ -164,7 +200,7 @@ class time_serie_NTU_particular_body:
 
 
     def __init__(self,input_len:int=30,output_len:int=30,data_path='./dataset/NTU_RGB+D/numpyed/',file_extension='.skeleton.npy',get_cat_value=True,get_time_value=False,categorical_columns=['nbodys', 'actor', 'acti', 'camera', 'scene', 'repet'],preprocess:int=1,quoi_pred:str="all") -> None:
-        """_summary_
+        """attention, ici il sert juste à pouvoir récupérer dans les données uniquement les membres qui nous intéressent.
 
         Parameters
         ----------

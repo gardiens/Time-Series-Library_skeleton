@@ -21,10 +21,43 @@ data_dict = {
     'NTU-leg':partial(dataset_NTURGBD,quoi_pred='leg'),
     'NTU-body':partial(dataset_NTURGBD,quoi_pred='body'),
     'NTU-arm':partial(dataset_NTURGBD,quoi_pred='arm')
-}
+} # Dictionnaire qui va récupérer le dataset en fonction du string d'entrée de args.data
 
 
 def data_provider(args, flag):
+    """Permet de récupérer le dataset et data_loader en fonction des donnée d'entrée et du flag    
+
+    Parameters
+    ----------
+    args : argparse ( ou classe)
+        argument qui permettent de définir les paramètres du modèle. 
+        arguments utilisés: 
+            args.data: nom du dataset
+            args.root_path:str chemin vers le dossier contenant les données
+            args.seq_len:int longueur de la séquence d'entrée
+            args.label_len:int longueur de la séquence de sortie
+            args.pred_len:int longueur de la séquence de prédiction
+            args.batch_size:int taille du batch
+            args.num_workers: int nombre de workers pour le chargement des données
+
+            args.augment:bool pour inclure ou non l'augmentation de données
+            args.prop: [1.0,0,0,0] proportion de données qui va être augmenter  
+
+    flag : str
+        vaut 'train', 'vali' ou 'test'. Il change le comportement de shuffle ou du drop_laste du data_loader
+
+    Returns
+    -------
+    data_set : torch.utils.data.Dataset
+        dataset contenant les données
+        
+
+    Raises
+    ------
+    Exception
+        Il peut y avoir une exception si la syntaxe de args.prop n'est pas respecté
+  
+    """
     if "augment" in args.data:
         Data=data_dict[args.data.replace("-augment","")]
     else:
@@ -77,11 +110,11 @@ def data_provider(args, flag):
             collate_fn=lambda x: collate_fn(x, max_len=args.seq_len)
         )
         return data_set, data_loader
-    else: #* CAS LONG TIME FORECAST
+    else: #* Cas Long_Time Forecast, ce qui devrait arriver 99% du temps
         if args.data == 'm4':
             drop_last = False
-        #* Cas NTU_RGBD
-        if  'NTU' in args.data:
+        
+        if  'NTU' in args.data:#* Cas spécial pour le Dataset NTU_RGB
             
             data_set= Data(
                 root_path=args.root_path,
@@ -92,13 +125,13 @@ def data_provider(args, flag):
                 get_cat_value=args.get_cat_value, #!
                 preprocess=args.preprocess, #! Ne pas changer pls 
                 split_train_test=args.split_train_test #!
-            )
+            ) # Récupère le dataset
         
 
 
         else:
             #* Cas générique
-            print("hein")
+            print("cela n'est normalement pas débugger lors du stage de monsieur bournez ( data_factory.py)")
             data_set = Data(
                 root_path=args.root_path,
                 data_path=args.data_path,

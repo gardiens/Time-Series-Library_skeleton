@@ -19,6 +19,7 @@ from sklearn.model_selection import train_test_split
 #* DATA_LOADER A IMPLEMENTER JIMAGINE
 
 class dataset_NTURGBD(Dataset):
+    
     """Made by Phillipe rambaud and Pierrick Bournez 
     a bit debugged by Pierrick """
     """Dataset for the NTU RGB+D dataset, les items sont de la forme (time_serie, label) pas comme ETT """
@@ -26,8 +27,42 @@ class dataset_NTURGBD(Dataset):
     def __init__(self, root_path:str="./dataset/NTU_RGB+D/",data_path:str='numpyed/', flag='train', size:list=None,
                  features:str='MS',transform=None,item=time_serie_NTU,csv_path='./dataset/NTU_RGB+D/summary_NTU/liste_NTU_skeleton_4.csv',
                  get_time_value=False,get_cat_value=False,train_size=0.80,test_size=0.10,preprocess:int=1,split_train_test:str="action",quoi_pred="all") -> None:
+        """Dataset de NTU_RGB+D120 et NTU_RGB+D60 implémenté par pierrick
 
-        if size==None:
+        Parameters
+        ----------
+        root_path : str, optional
+            path où les données vont être stockés, by default "./dataset/NTU_RGB+D/"
+        data_path : str, optional
+            path relatif à root_path où les .npy des squelettes sont stockés, by default 'numpyed/'
+        flag : str, optional
+            peut valoir [train,test,vali] et permets de récupérer le dataset correspondant, by default 'train'
+        size : list, optional
+            contient les tailles des longueurs à prédire.Il est de la forme [args.seq_len,args.pred_len,args.label_len], by default None
+        features : str, optional
+            non utilisé, by default 'MS'
+        transform : _type_, optional
+            non utilisé, by default None
+        item : _type_, optional
+            Une fois le dataframe des données construites, permets de récupérer la matrice avec les transformations adéquates, by default time_serie_NTU
+        csv_path : str, optional
+            path du csv qui contient pour chaque ligne le nom du fichier, le nom du squelette correspondant et le début du temps à prédire. Voir ??, by default './dataset/NTU_RGB+D/summary_NTU/liste_NTU_skeleton_4.csv'
+        get_time_value : bool, optional
+            indique si on veut obtenir en sortie un encodage temporel. Il n'a pas d'incidence sur le modèle et permets juste de reprendre l'architecture des autres datasets, by default False
+        get_cat_value : bool, optional
+            vaut True si on veut obtenir en sortie en plus un encodage des données catégoriques. voir ??? et n'a pas été implémenté sérieusement, by default False
+        train_size : float, optional
+            taille du dataset de train. N'est utilise que si args.split_train_test vaut random, by default 0.80
+        test_size : float, optional
+            taille du dataset de test. N'est utiliser que si args.split_train_test vaut random, by default 0.10
+        preprocess : int, optional
+            vaut 1 si on effectue des opérations sur le dataset. Il est recommandé de ne pas y toucher, by default 1
+        split_train_test : str, optional
+            indique si le partage entre le dataset de test et train est selon les actions où au hasard. Pour les actions, le dataset de train sont les actions <=100, pour la validation entre 100 et 110 et test sont ceux de plus de 110. Choix entre [action,random], by default "action"
+        quoi_pred : str, optional
+            indique si on veut prédire tous les membres ou seulement une proportion. Les choix possibles sont [all,body,arm,leg] utile que lorsque le modèle est Metaformer, by default "all"
+        """
+        if size==None: # Initialisation des tailles par défaut pour débugger
             
             #TODO: A MODIFIEr
             self.seq_len = 16
@@ -37,24 +72,25 @@ class dataset_NTURGBD(Dataset):
         else:
             self.seq_len = size[0]
 
-            self.label_len=size[1] #* longueur de la time_series en sortie
-            self.pred_len=size[2] #* longueur de la time_series à prédire
+            self.label_len=size[1] #* longueur des labels
+            self.pred_len=size[2] #* longueur de prédiction des times_series
         assert flag in ['train', 'test', 'val']
         type_map = {'train': 0, 'val': 1, 'test': 2}
         self.set_type = type_map[flag]
         if flag=='test':
             self.out_len=size[1] #!
         else:
-            self.out_len=self.label_len
+            self.out_len=self.label_len #* Longueur des labels, paramètre le plus important de size
         #* les autres paras sont globalement inutiles
-        self.data_path=os.path.join(root_path,data_path)
-        self.preprocess=preprocess
+        self.data_path=os.path.join(root_path,data_path) #* path où sont stockés les .npy
+        self.preprocess=preprocess 
         self.csv_path=csv_path
         self.split_train_test=split_train_test
         self.input_len=self.seq_len #* longueur de la time_series en entrée
         self.nb_joints=25 #* nombre de joints dans la time_series
         self.get_cat_value=get_cat_value #* si on veut les catégories
         self.get_time_value=get_time_value #* si on veut les time_values
+        #* Ici, on va initialisater la classe qui sert à récupérer les données.
         if quoi_pred=="all":
             self.item=time_serie_NTU(data_path=self.data_path,input_len=self.input_len,output_len=self.out_len,get_cat_value=self.get_cat_value,get_time_value=self.get_time_value,preprocess=self.preprocess) #* Classe de base du data'set qui va renvoyer la time series voulu 
         if quoi_pred=="leg":
@@ -65,21 +101,37 @@ class dataset_NTURGBD(Dataset):
 
         if quoi_pred=="body":
             self.item=time_serie_NTU_particular_body(input_len=self.input_len,output_len=self.out_len,get_cat_value=self.get_cat_value,get_time_value=self.get_time_value,preprocess=self.preprocess,quoi_pred="body")
-
+        # ne sert que lorsque split_train_test vaut random
         self.test_size=test_size
         self.train_size=train_size
         self.vali_size=1-self.train_size-self.test_size
+        # attribut qui correspond au dataframe. Il est initialisé dans get_df
         self.liste_path=self.get_df() #* Ici liste_path correspond au dataset où on va prendre les données voulues! On va d'abord
         
     def __len__(self) -> int:
+        """longueur du dataset
+
+        Returns
+        -------
+        int
+            longueur du dataset
+        """
         return len(self.liste_path)
     
 
     def __getitem__(self, index: int):
-        """ renvoie la time_series à l'index donné, en particulier donnée,label!
-         Il renvoie un tuple de la forme:
-          (time_series: Numpy, le label qui est np.array aussi
-          et possible un time_value qui est un numpy array du temps entre deux frames et un np.array qui sont les données catégoriques ) """
+        """fonction qui va permettre de récupérer les données importantes du dataset
+
+        Parameters
+        ----------
+        index : int
+            entier correspondant à la place dans le dataset
+
+        Returns
+        -------
+        _type_
+            _description_
+        """
         time_series=self.item
         row=self.liste_path.iloc[index] #C'est la row du dataframe 
 
