@@ -8,11 +8,11 @@ batch_size=256
 
 
 moving_value="0.2"
-for i in 1 2 3 4
+for i in 1 2 3 4;
 do 
   output=""
   for ((j=1;j<=4;j++));do
-      if ((j == i)); then output+=";$moving_value" else output+=";0" fi
+      if ((j == i)); then output+=",$moving_value" else output+=",0" fi
         
     done
   echo "${output:1}" done 
