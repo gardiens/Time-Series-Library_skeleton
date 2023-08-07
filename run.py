@@ -111,7 +111,7 @@ if __name__ == '__main__':
     parser.add_argument('--split_train_test',type=str,default='action',help='split train test selon action ou au hasard. Possible value: [action,random]')
     #* Augmentation des données 
     parser.add_argument('--augment',default=False, action='store_true', help='on fait augmentation ou non')
-    parser.add_argument('--prop',type=str,default=1;0.05;0.05;0.05;0.05,help="proportion du dataset qu'on va rajouter")
+    parser.add_argument('--prop',type=str,default="1;0.05;0.05;0.05",help="proportion du dataset qu'on va rajouter")
 
 
     args = parser.parse_args()
