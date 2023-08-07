@@ -119,12 +119,13 @@ def data_provider(args, flag):
             drop_last=drop_last)
     
        
-    
+
     if args.augment and flag=='train':
         l_dataset = [data_set]
         l_transfo_a=[backward(),rotate_data()]
         l_transfo_2=[Mixup(),CutMix()]
-        str_prop=args.prop.split(";") #* Les données sont stockés de la forme 1.0;0.05;0.05;0.05 avec la même logique que pour l_transfo 
+        str_prop=args.prop.strip().split(";") #* Les données sont stockés de la forme 1.0;0.05;0.05;0.05 avec la même logique que pour l_transfo 
+        print("le str de prop",str_prop," la théorie")
         l_prop=[float(i) for i in str_prop] #! Technique
         for k in range(len(l_transfo_a)):
             try:
