@@ -182,7 +182,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     train_loss.append(loss.item())
                     with torch.no_grad():
                         
-                        mae, mse, rmse, mape, mspe=metric(np.array(outputs),np.array(batch_y))
+                        mae, mse, rmse, mape, mspe=metric(outputs.detach().cpu().numpy(),batch_y.detach().cpu().numpy())
                         train_mae.append(mae)
                         train_mse.append(mse)
                         train_rmse.append(rmse)
