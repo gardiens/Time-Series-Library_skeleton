@@ -5,7 +5,7 @@ pred_len=32
 label_len=32
 data=NTU
 batch_size=256
-model_id_name=07-08-daug-${1-0-0-0}
+model_id_name=07-08-daug-1-0-0-0
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 1 \
@@ -38,5 +38,5 @@ python -u run.py \
   --learning_rate $(echo "scale=10; 10^-3" | bc)\
   --split_train_test action \
   --augment \
-  --prop 1;0;0;0\
+  --prop 1,0,0,0\
 
