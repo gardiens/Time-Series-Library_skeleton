@@ -38,7 +38,7 @@ do
     --batch_size ${batch_size}\
     --learning_rate $(echo "scale=10; 10^-3" | bc)\
     --split_train_test action 
-  sleep 60
+  wait
 
 
 done 
