@@ -43,7 +43,7 @@ class dataset_NTURGBD(Dataset):
         type_map = {'train': 0, 'val': 1, 'test': 2}
         self.set_type = type_map[flag]
         if flag=='test':
-            self.out_len=size[&]
+            self.out_len=size[1] #!
         else:
             self.out_len=self.label_len
         #* les autres paras sont globalement inutiles
