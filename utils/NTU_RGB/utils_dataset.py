@@ -513,7 +513,8 @@ def data_rentrer_dans_DATASET_NTU(path_csv:str='./dataset/NTU_RGB+D/summary_NTU/
         excel_sheet=pd.read_excel(path_excel)
         row_to_keep=excel_sheet["A"].where((excel_sheet["good_data"]=="x")|(excel_sheet["average_data"]=="x")).dropna()#* On récupère uniquement les rows labéllisés comme bonne ou moyens dans l'excel
 
-        nvdf=df[(df['nb_frames']>=seq_len+out_len+df['debut_frame']) & (df['num_body']<=2)].dropna() #* CEST ICI QUON RECUPERE SEULEMENT CEUX QUI ONT UN NOMBRE DE FRAME SUFFISANT, A CHANGER SI BESOIn!!
+        nvdf=df[(df['nb_frames']>=out_len+df['debut_frame']) & (df['num_body']<=2)].dropna() #* CEST ICI QUON RECUPERE SEULEMENT CEUX QUI ONT UN NOMBRE DE FRAME SUFFISANT, A CHANGER SI BESOIn!!
+        #! Attention, on suppose ici que out_len comprend seq_len !                                                                                                                                                                                                                            
         nvdf=nvdf.where((nvdf['acti'].isin(row_to_keep)) &(nvdf["nb_chp"]>0)).dropna() #! nb_chp doitbien être à 0 
         nvdf["debut_frame"] =np.where(nvdf["chp"]+seq_len+out_len<nvdf["nb_frames"],nvdf["chp"], nvdf["debut_frame"])
         #nvdf["debut_frame"]=nvdf["debut_frame"] if nvdf["chp"].str[1]+seq_len+out_len>int(nvdf["nb_frames"]) else nvdf["chp"].str[1]

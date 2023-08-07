@@ -30,7 +30,7 @@ class dataset_NTURGBD(Dataset):
         if size==None:
             
             #TODO: A MODIFIEr
-            self.seq_len = 32
+            self.seq_len = 16
             self.label_len=32
             self.pred_len=32
 
@@ -43,7 +43,7 @@ class dataset_NTURGBD(Dataset):
         type_map = {'train': 0, 'val': 1, 'test': 2}
         self.set_type = type_map[flag]
         if flag=='test':
-            self.out_len=size[2]
+            self.out_len=size[&]
         else:
             self.out_len=self.label_len
         #* les autres paras sont globalement inutiles
