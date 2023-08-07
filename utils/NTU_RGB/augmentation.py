@@ -55,8 +55,8 @@ class rotate_data(object):
     """ issu de https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=7450165&casa_token=eZoq-Qw-lnsAAAAA:1W-2G3buqD3yElf70CnF8biljnTEKIL0af1x_O9Ujhd6Y0RAy0NDzjgxxMKmucjGVFkTfAVh5fqx&tag=1"""
     def __init__(self,up=-17,down=17) -> None:
         """ up et down sont les bornes sup et inf des rotations en degré !"""
-        self.up=up*torch.pi/180
-        self.down=down*torch.pi/180
+        self.up=up*np.pi/180
+        self.down=down*np.pi/180
         pass
 
     def __call__(self,mat) -> Any:
@@ -66,6 +66,7 @@ class rotate_data(object):
         theta,alpha,gamma=torch.rand([3])
         if type(mat).__module__=='numpy':
             mat=torch.from_numpy(mat.copy())
+        
         return torch.einsum("ab,deb -> dea",
                             self.Rx(theta),
                             torch.einsum("ab,deb -> dea",
