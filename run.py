@@ -114,7 +114,7 @@ if __name__ == '__main__':
     parser.add_argument('--prop',type=str,default="1.05,0.05,0.05",help="proportion du dataset qu'on va rajouter")
     
     #Si on rerun un modèle à partir d'un checkpoint
-    parser.add_agument('--start_checkpoint',default=False,action='store_true',help='on rerun un modèle à partir d un checkpoint si on écrit cet argument')
+    parser.add_argument('--start_checkpoint',default=False,action='store_true',help='on rerun un modèle à partir d un checkpoint si on écrit cet argument')
     parser.add_argument('--setting_start_checkpoint',type=str,default="test",help="si on redémarre, c'est le nom du setting du checkpoint duquel on repart!")
 
     args = parser.parse_args()
