@@ -45,8 +45,9 @@ def plot_video_skeletons(mat_skeletons,title=None,write=True,animate=False,path_
     """
     liste_color_skeleton=["b","r","c","m","y","k","w"]
     #* définit les constantes globales de cette fonction
-    nb_framestotal= mat_skeletons[0].shape[2]
-    check_nombre_frames(mat_skeletons) # Check si toutes les skeletons ont le même nombre de frames, sinon renvoie une erreur.
+    liste_nb_framestotal=[mat_skeleton.shape[2] for mat_skeleton in mat_skeletons]
+    nb_framestotal= max(liste_nb_framestotal)
+    #check_nombre_frames(mat_skeletons) # Check si toutes les skeletons ont le même nombre de frames, sinon renvoie une erreur. Updated the 08/08
     nb_skeletons=len(mat_skeletons)
     x_coord = int(0)
     y_coord = int(2)
@@ -104,6 +105,8 @@ def plot_video_skeletons(mat_skeletons,title=None,write=True,animate=False,path_
             point=pointss[k]
             invariant=invariants[k]
             data=mat_skeletons[k]
+            if iteration>=liste_nb_framestotal[k]: #!!!
+                continue
             for i,line in enumerate(ligneaplot):
 
                 x1,z1,y1=data[connexion_tuples[i][0]][:,iteration]

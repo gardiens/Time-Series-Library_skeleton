@@ -355,6 +355,9 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             nom technique du modèle à tester, les données importantes seront sauvegardé dans test_results/setting ou results/setings
         test : int, optional
             vaut 0 si le modèle vient d'être entrainé, sinon vaut 1 pour load le checkpoints dans checkpoints/setting/checkpoint.pth, by default 0
+        détail technique: 
+        le plot des squelettes est sauvegardé dans test_results/setting/ et le pandas dataframe est sauvegardé dans results/setting/
+        Le plot des squelettes ne "coupe" pas les prédictions, il se peut donc qu'il y a une différence de longueur entre la prédiction et les labels.
         """        
         train_data,train_loader = self._get_data(flag='train')
         test_data, test_loader = self._get_data(flag='test')
@@ -420,10 +423,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 preds.append(pred)
                 trues.append(true)
                 if i % 400 == 0: # METTRE 200 sinon 
-                    """input = batch_x.detach().cpu().numpy()
-                    gt = np.concatenate((input[0, :, -1], true[0, :, -1]), axis=0) # On récupère lesignal avec le DERNIER CHANNEL UNIQUEMENT
-                    pd = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0) #ON RECUPERE LE SIGNAL AVEC LE DERNIER CHANNEL UNIQUEMENT
-                    visual(gt, pd, os.path.join(folder_path, str(i) + '.pdf'))"""
                     input = batch_x.detach().cpu().numpy()
                     y_out=pred[0,:,:]
                     y_true=batch_y[0,:,:]
@@ -437,8 +436,9 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     X_pred=X_pred.transpose(1,2,0)
                     X_true=X_true.transpose(1,2,0)
                     #* On va plot les résultats. On plot en bleu le vrai et en rouge le prédit. On plot aussi le comportement global du modèle initial.
-                    plot_video_skeletons(mat_skeletons=[X_true,X_pred],save_name="label:"+self.args.model_id+str(i),path_folder_save=os.path.join(folder_path))
                     filename=str(test_data.liste_path["filename"].iloc[i]) # ???
+                    plot_video_skeletons(mat_skeletons=[X_true,X_pred],save_name="label:"+self.args.model_id+filename,path_folder_save=os.path.join(folder_path))
+                    
                     plot_skeleton(path_skeleton=os.path.join(self.args.root_path,"raw/",filename+".skeleton"),save_name=str(i)+filename,path_folder_save=folder_path)
 
         preds = np.array(preds)
