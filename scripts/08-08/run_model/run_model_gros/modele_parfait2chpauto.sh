@@ -1,11 +1,11 @@
 #!/bin/bash
 
-model_name=FEDformer
+model_name=Autoformer
 pred_len=32
 label_len=32
 data=NTU
 batch_size=256
-model_id_name=08-08-run-model-30ep
+model_id_name=08-08-run-model-2chp-100ep
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 1 \
@@ -25,16 +25,18 @@ python -u run.py \
   --dec_in 75 \
   --c_out 75 \
   --des 'Exp' \
-  --itr 4      \
+  --itr 3      \
   --dropout 0.1 \
   --embed timeNTU \
   --get_cat_value 0 \
   --get_time_value 1 \
   --use_gpu 1 \
-  --train_epochs 30\
-  --lradj constant \
-  --patience 20 \
+  --train_epochs 100\
+  --lradj cosine \
+  --patience 100 \
   --batch_size ${batch_size}\
   --learning_rate $(echo "scale=10; 10^-3" | bc)\
   --split_train_test action \
+  --augment \
+  --prop 0.1,0.1,0.1,0.1\
 

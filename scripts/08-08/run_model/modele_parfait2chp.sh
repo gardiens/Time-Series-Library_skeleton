@@ -5,7 +5,7 @@ pred_len=32
 label_len=32
 data=NTU
 batch_size=256
-model_id_name=08-08-run-model-2chp
+model_id_name=08-08-run-model
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 1 \

@@ -19,9 +19,9 @@ def adjust_learning_rate(optimizer, epoch, args):
         else:  
             lr_adjust = {epoch: args.learning_rate/10}
     if args.lradj =='cosine':
-        eta_min=10**-5
+        eta_min=10**-4
         eta_max=args.learning_rate
-        T_max=15
+        T_max=20
         lr_adjust = {epoch: eta_min + 0.5 * (eta_max - eta_min) * (1 + np.cos((epoch-1) / T_max * np.pi))}
     if args.lradj == 'type1':
         

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-model_name=Auto
+model_name=Autoformer
 pred_len=32
 label_len=32
 data=NTU
@@ -25,15 +25,15 @@ python -u run.py \
   --dec_in 75 \
   --c_out 75 \
   --des 'Exp' \
-  --itr 1      \
+  --itr 3      \
   --dropout 0.1 \
   --embed timeNTU \
   --get_cat_value 0 \
   --get_time_value 1 \
   --use_gpu 1 \
-  --train_epochs 14\
+  --train_epochs 100\
   --lradj sem_constant \
-  --patience 4 \
+  --patience 100 \
   --batch_size ${batch_size}\
   --learning_rate $(echo "scale=10; 10^-3" | bc)\
   --split_train_test action \
