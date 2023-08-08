@@ -11,7 +11,7 @@ do
   model_id_name=07-08-pred-len-${pred_len}
   python -u run.py \
     --task_name long_term_forecast \
-    --is_training 1 \
+    --is_training 0 \
     --root_path './dataset/NTU_RGB+D/' \
     --data_path 'numpyed/'\
     --model_id ${model_id_name} \
@@ -38,7 +38,6 @@ do
     --batch_size ${batch_size}\
     --learning_rate $(echo "scale=10; 10^-3" | bc)\
     --split_train_test action \
-    --no_test
   wait
 
 
