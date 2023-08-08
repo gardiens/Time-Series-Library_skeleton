@@ -40,5 +40,5 @@ batch_size=256
     --learning_rate $(echo "scale=10; 10^-3" | bc) \
     --split_train_test action \
     --augment \
-    --prop "${output:1}"
+    --prop 0,0.2,0.2,0.2
   
