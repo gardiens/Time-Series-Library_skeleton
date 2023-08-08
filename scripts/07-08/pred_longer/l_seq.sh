@@ -37,8 +37,8 @@ do
     --train_epochs 14\
     --batch_size ${batch_size}\
     --learning_rate $(echo "scale=10; 10^-3" | bc)\
-    --split_train_test action \
-  wait
+    --split_train_test action 
+  
 
 
 done 
