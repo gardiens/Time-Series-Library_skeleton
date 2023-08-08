@@ -104,8 +104,8 @@ if __name__ == '__main__':
     parser.add_argument('--get_time_value', type=int, default=0, help='get time value,0 if not, 1 if yes')
     parser.add_argument('--get_cat_value', type=int, default=0, help='get cat value,0 if not, 1 if yes')
     parser.add_argument('--preprocess', type=int, default=1, help='preprocess data,0 if 1 or more we do sth')
-    parser.add_argument('--sous_model', type=str, default='FEDformer', help='sous-Model pour metaformer')
-    parser.add_argument('--quel_membre', type=str, default='3_partie:', help='quel ensemble de membre pour Metaformer')
+    #parser.add_argument('--sous_model', type=str, default='FEDformer', help='sous-Model pour metaformer')
+    #parser.add_argument('--quel_membre', type=str, default='3_partie:', help='quel ensemble de membre pour Metaformer')
     parser.add_argument('--no_test', action='store_true', help='permet de ne pas faire de test', default=False)
     #* challenge test_hypothèse
     parser.add_argument('--split_train_test',type=str,default='action',help='split train test selon action ou au hasard. Possible value: [action,random]')

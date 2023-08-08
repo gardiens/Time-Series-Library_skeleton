@@ -10,6 +10,8 @@ plt.switch_backend('agg')
 
 def adjust_learning_rate(optimizer, epoch, args):
     # lr = args.learning_rate * (0.2 ** (epoch // 2))
+    if args.lradj=="constant":
+        lr_adjust = {epoch: args.learning_rate}
     if args.lradj =='sem_constant':
         if epoch <7:
 
