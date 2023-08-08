@@ -32,7 +32,7 @@ python -u run.py \
   --get_time_value 1 \
   --use_gpu 1 \
   --train_epochs 14\
-  --lradj sem_constant \
+  --lradj constant \
   --patience 8 \
   --batch_size ${batch_size}\
   --learning_rate $(echo "scale=10; 10^-3" | bc)\
