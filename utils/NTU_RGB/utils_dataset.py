@@ -495,7 +495,7 @@ def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:st
                 l_std.append(sum_std)
                 if preprocess:
                     t=model.fit_predict(array_k,pen=beta)# Calcul du nombre de change point
-                    liste_chp.append(t[0] if len(t)>1 else 0) # le dernier correspond à la longueur de la liste ,détail technique
+                    liste_chp.append(t[1] if len(t)>2 else t[0] if len(t)==1 else 0) # le dernier correspond à la longueur de la liste ,détail technique
                     l_num_chp.append(len(t)-1)
             # Mise à jour dans les listes pour l'incorporer au dataframe
             result.append([nbodys,filename,actor,acti,camera,scene,repet,njoints])
