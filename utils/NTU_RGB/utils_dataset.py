@@ -245,10 +245,30 @@ class time_serie_NTU_particular_body:
     
     
     def get_data(self,row,preprocessing:int=1):
-        ''' FONCTION UTILISE DANS LES DATASET/DATALOADER
-        Renvoie une sortie de la forme :
-        entry_data, label, cat_data, time_value si les valeurs sont bien bonne
-        entry_data est de la forme (nb_frames,nb_joints nb_dim ( 3 ici))'''
+        """initialisation de la classe
+
+        Parameters
+        ----------
+        row : df
+            un row d'un pandas dataframe qui contient les informations d'un squelettes
+         seq_len : int, optional
+            longueur de la séquence d'entrée, by default 30
+        out_len : int, optional
+            longueur de la séquence de sortie, by default 30
+        data_path : str, optional
+            path qui contient tous les .npy des skeletons , by default './dataset/NTU_RGB+D/numpyed/'
+        
+        file_extension : str, optional
+            _description_, by default '.skeleton.npy'
+        get_cat_value : bool, optional
+            true si on veut les valeurs catégoriques, by default True
+        get_time_value : bool, optional
+            renvoie en plus un array avec le différents temps, by default False
+        categorical_columns : list, optional
+            ensembles des données catégoriques que l'on veut garder ou non, by default ['nbodys', 'actor', 'acti', 'camera', 'scene', 'repet']
+        preprocces:int,optional
+            si on veut préprocesser les données ou non. recommandé à 1
+        """
         mat_path=os.path.join(self.data_path,row['filename']+self.file_extension) #! WARNING ON THE EXTENSION OF THE .NPY
         data=np.load(mat_path,allow_pickle=True).item()
         #* On récupère la valeur du body intéressant
@@ -268,6 +288,7 @@ class time_serie_NTU_particular_body:
         begin=begin-mean # On recentre le squelette par rapport à la frame de référence
         label=label-mean
         #* On sélectionne uniquement les membres qui nous intéressent: 
+        #! CHANGEMENT DE LA CLASSE ICI
         begin=begin[:,self.liste_membre,:]        
         label=label[:,self.liste_membre,:]
 
@@ -293,11 +314,7 @@ class time_serie_NTU_particular_body:
         #*  renvoie la solution de la bonne forme ! 
         if self.get_time_value and self.get_cat_value:
             return begin,label,time_value_enc,time_value_dec,mat_cat_data
-    
         if self.get_time_value:
-            
-                
-              
             return begin,label,time_value_enc,time_value_dec
         if self.get_cat_value:
             return begin,label,mat_cat_data
@@ -340,12 +357,20 @@ class time_serie_NTU_particular_body:
         else:
             return begin,label
 
-
-
- 
 import re
 def extract_integers(file_name):
-    """ Extract the parameters from the scene file name."""
+    """Extract the integers from a scene filename
+
+    Parameters
+    ----------
+    file_name : str
+        filename of a skeleton file or npy file
+
+    Returns
+    -------
+    np.array
+        array where each element is an integer extracted from the filename
+    """
     file_name=file_name.split(".")[0]
     pattern = r'S(\d{3})C(\d{3})P(\d{3})R(\d{3})A(\d{3})'
     match = re.match(pattern, file_name)
@@ -362,7 +387,9 @@ def extract_integers(file_name):
 
 import ruptures as rpt
 def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:str='./dataset/NTU_RGB+D/summary_NTU/',name_csv="summary_NTU.csv",beta=3.6,preprocess=1):
-    """créer un .csv qui permet à partir des differents .npy de résumer les valeurs importantes
+    """créer un .csv qui permet à partir des differents .npy de résumer les valeurs importantes.
+    Attention, ce fichier centrale n'est pas build lors d'une run, il faut le construire en amont ( il peut prendre du temps).
+    Voir papier mais nous calculons aussi le nombre de points de rupture et le premier points de rupture à l'aide d'un kernel CPD
 
     Parameters
     ----------
@@ -372,15 +399,50 @@ def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:st
         path où on va stocker le .csv, by default './dataset/NTU_RGB+D/summary_NTU/'
     name_csv : str, optional
         nom du .csv qu'on va sauvegarder, by default "summary_NTU.csv"
+    beta : float, optional
+        paramètre pour le calcul du nombre de changepoint, by default 3.6
+    preprocess : int, optional
+        si on veut préprocesser les données ou non. recommandé à 1, by default 1.Il est recommandé d'être à 1
 
     Returns
     -------
     df  
         le dataframe correspondant au .csv
+    ces rows sont:
+        nbodys : int
+            nombre de body dans le fichier
+        filename : str
+            nom du fichier ( sans .skeleton ou .npy)
+        actor : int
+            numéro de l'acteur
+        acti : int
+            numéro de l'activité
+        camera : int
+            numéro de la camera
+        scene : int
+            numéro de la scene
+        repet : int
+            numéro de la répétition
+        njoints : int
+            nombre de joints dans le fichier
+        nb_frames_body_k : int
+            nombre de frames du body k
+        debut_frame_body_k : int
+            frame de début du body k
+        sum_mean_body_k : float
+            somme des moyennes du body k
+        sum_std_body_k : float
+            somme des std du body k
+        nb_chp_body_k : int
+            nombre de changepoint du body k
+        chp_body_k : list
+            liste des changepoints du body k
+        
     path_csv
         le path du .csv
     """
-    model=rpt.KernelCPD(kernel="linear",min_size=2)
+    if preprocess:
+        model=rpt.KernelCPD(kernel="linear",min_size=2) 
     print('----création d un .csv résumant les données NTU RGB+D---',flush=True)
     if not  os.path.exists(path_csv):
         os.mkdir(path_csv)
@@ -390,8 +452,9 @@ def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:st
     result_debut_frame=[]
     result_mean=[]
     result_std=[]
-    result_l_chp=[]
-    result_n_chp=[]
+    if preprocess:
+        result_l_chp=[]
+        result_n_chp=[]
     maxnbodys=0
     
     for file in os.listdir(path_data_npy): # Pour chaque fichier dans le dossier
@@ -410,8 +473,9 @@ def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:st
             debut_frame=[] # liste des débuts de frame de chaque body. A priori a sera à virer plus tard
             mean=[] # liste des moyennes de chaque body
             l_std=[] # liste des standards deviation de chaque body
-            l_num_chp=[] # liste du nombre de changepoint de chaque body
-            liste_chp=[] # liste des changepoints de chaque body 
+            if preprocess:
+                l_num_chp=[] # liste du nombre de changepoint de chaque body
+                liste_chp=[] # liste des changepoints de chaque body 
             array=np.array(nbodys)
             reference=20 # Correspond à Spine shoulder ! 
             for k in range(nbodys):
@@ -429,9 +493,10 @@ def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:st
                 std=np.std(array_k,axis=0)
                 sum_std=np.sum(std,axis=0)
                 l_std.append(sum_std)
-                t=model.fit_predict(array_k,pen=beta)# Calcul du nombre de change point
-                liste_chp.append(t[0] if len(t)>1 else 0) # le dernier correspond à la longueur de la liste ,détail technique
-                l_num_chp.append(len(t)-1)
+                if preprocess:
+                    t=model.fit_predict(array_k,pen=beta)# Calcul du nombre de change point
+                    liste_chp.append(t[0] if len(t)>1 else 0) # le dernier correspond à la longueur de la liste ,détail technique
+                    l_num_chp.append(len(t)-1)
             # Mise à jour dans les listes pour l'incorporer au dataframe
             result.append([nbodys,filename,actor,acti,camera,scene,repet,njoints])
             result_nb_frames.append(nb_frames)
@@ -449,11 +514,14 @@ def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:st
     df3=pd.DataFrame(result_debut_frame,columns=[f'debut_frame_body_{k}' for k in range(maxnbodys)])
     df4=pd.DataFrame(result_mean,columns=[f'sum_mean_body_{k}' for k in range(maxnbodys)])
     df5=pd.DataFrame(result_std,columns=[f'sum_std_body_{k}' for k in range(maxnbodys)])
-    df6=pd.DataFrame(result_n_chp,columns=[f'nb_chp_body_{k}' for k in range(maxnbodys)])
-    df7=pd.DataFrame(result_l_chp,columns=[f'chp_body_{k}' for k in range(maxnbodys)])
+    if preprocess:
+        df6=pd.DataFrame(result_n_chp,columns=[f'nb_chp_body_{k}' for k in range(maxnbodys)])
+        df7=pd.DataFrame(result_l_chp,columns=[f'chp_body_{k}' for k in range(maxnbodys)])
     dfaconcat=[]
-
-    dfaconcat=[df1,df2,df3,df4,df5,df6,df7]
+    if preprocess:
+        dfaconcat=[df1,df2,df3,df4,df5,df6,df7]
+    else:
+        dfaconcat=[df1,df2,df3,df4,df5]
     df=pd.concat(dfaconcat,axis=1)
     df.infer_objects()
     df.to_csv(os.path.join(path_csv,name_csv),index=False )
@@ -461,9 +529,9 @@ def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:st
     return df ,os.path.join(path_csv,name_csv)
 
 def preprocess_csv_RGB_to_skeletondf(seq_len:int=30,out_len:int=30,path_csv="./dataset/NTU_RGB+D/summary_NTU/summary_NTU.csv",path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',preprocess=1):
-    """récupère un .csv plus ou moins preprocess pour le transformer en un autre .csv qui va être plus facile à utiliser . 
-    il est de la forme [ des données catégorielles, num_body,nb_frames, des données de preprocessing]
-    il ne fait aucune modification sur la séquence d'entrée ou de sortie
+    """récupère un issu de summary_csv_NTU et le transforme en un dataframe qui correspond à un .csv qui va être utilisé par le dataset.
+    Il est de la forme [num_body,filename, nb_frames, données catégoriques ou de preprocessing] 
+    il ne fait aucune modification sur la séquence d'entrée ou de sortie et ne fait que concaténer les différents body pour être lisible plus facilement par le dataset
     Parameters
     ----------
     seq_len : int, optional
@@ -474,11 +542,42 @@ def preprocess_csv_RGB_to_skeletondf(seq_len:int=30,out_len:int=30,path_csv="./d
         path vers le csv initial qui contient bcp d'informations, by default "./dataset/NTU_RGB+D/summary_NTU/summary_NTU.csv"
     path_data_npy : str, optional
         path qui contient tous les .npy des skeletons , by default './dataset/NTU_RGB+D/numpyed/'
+    preprocess : int, optional
+        inutilisé
 
     Returns
     -------
     df  
         le dataframe correspondant au .csv
+    ces rows sont: 
+        nbodys : int
+            nombre de body dans le fichier
+        filename : str
+            nom du fichier ( sans .skeleton ou .npy)
+        actor : int
+            numéro de l'acteur
+        acti : int
+            numéro de l'activité
+        camera : int
+            numéro de la camera
+        scene : int
+            numéro de la scene
+        repet : int
+            numéro de la répétition
+        num_body : int
+            numéro du body dans le filename. Il y a donc plusieurs lignes pour un même filename
+        nb_frames : int
+            nombre de frames du body k d'apparition. Dans le cas de NTU_RGB, le nb_frames coincident pour tous les bodys
+        debut_frame : int
+            frame de début du body k. dans le cas de NTU_RGB,ils sont tous à 0
+        sum_mean,sum_std, : float
+            somme des moyennes du body k
+            somme des std du body k
+        nb_chp : int
+            nombre de changepoint du body k
+        chp : int
+            indice du premier changepoint du body k 
+        
     path_csv
         le path du .csv
     """
@@ -519,8 +618,8 @@ def preprocess_csv_RGB_to_skeletondf(seq_len:int=30,out_len:int=30,path_csv="./d
 
 
 def data_rentrer_dans_DATASET_NTU(path_csv:str='./dataset/NTU_RGB+D/summary_NTU/liste_NTU_skeleton_4.csv',seq_len:int=30,out_len:int=30,path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',preprocess=1,path_excel:str='./dataset/NTU_RGB+D/summary_NTU/data_quality.xlsx'):
-    """Fonction qu'on va faire rentrer dans le torch Dataset de NTU RGB+D
-    CEST ICI QUON FAIT NOS OPERATIONS DE PREPROCESSING :!!!!
+    """ sachant  le .csv issu de summary_csv_NTU, on va le filtrer pour ne garder que les données intéressantes.
+    Le preprocessing a donc lieu majoritairement ici
     Parameters
     ----------
     path_csv : str, optional
@@ -529,11 +628,57 @@ def data_rentrer_dans_DATASET_NTU(path_csv:str='./dataset/NTU_RGB+D/summary_NTU/
         longueur de la séquence d'entrée, by default 30
     out_len : int, optional
         longueur de la sortie à prédire, by default 30
-    #TODO: Rajouter des conditions ici si on veut garder des donées plus spécifiques? 
+    #TODO:Rajouter des conditions pour du preprocessing plus précis
     Returns
     -------
     un dataframe de la même forme que le précédent mais uniquement avec ceux qui vérifient les bonnes conditions 
+
+
+   
+    path_data_npy : str, optional
+        _description_, by default './dataset/NTU_RGB+D/numpyed/'
+    preprocess : int, optional
+        vaut 1 si on veut faire un preprocessing. ici cela ne revient à filtrer les données jugés bonne ou moyenne uniquement selon la donnée du excel dans path_excel, by default 1
+    path_excel : str, optional
+        path de l'excel qui va filtrer les données correctes et moyenne. Il doit contenir deux colonnes: "good_data" et "average_data" et les données qui sont dans ces colonnes sont annotés par un x,
+          by default './dataset/NTU_RGB+D/summary_NTU/data_quality.xlsx'
+
+    Returns
+    -------
+    nvdf: pd dataframe
+        les rows de ce dataframe auront toujours un nb_frames plus grand que seq_len+out_len (ou out_len dans le cas spécifique entrée dans sortie) et le num_body <= 2 car les bodys plus grands auraient des problèmes.
+        si preprocessing vaut 1. On ne garde que ceux qui ont une action jugée bonne ou moyenne dans le path_excel et qui ont au moins un changepoint
+        ces rows sont: 
+            nbodys : int
+                nombre de body dans le fichier
+            filename : str
+                nom du fichier ( sans .skeleton ou .npy)
+            actor : int
+                numéro de l'acteur
+            acti : int
+                numéro de l'activité
+            camera : int
+                numéro de la camera
+            scene : int
+                numéro de la scene
+            repet : int
+                numéro de la répétition
+            num_body : int
+                numéro du body dans le filename. Il y a donc plusieurs lignes pour un même filename
+            nb_frames : int
+                nombre de frames du body k d'apparition. Dans le cas de NTU_RGB, le nb_frames coincident pour tous les bodys
+            debut_frame : int
+                frame de début du body k. dans le cas de NTU_RGB,ils sont tous à 0
+            sum_mean,sum_std, : float
+                somme des moyennes du body k
+                somme des std du body k
+            nb_chp : int
+                nombre de changepoint du body k
+            chp : int
+                indice du premier changepoint du body k 
+        
     """
+    
     if not os.path.exists(path_csv):
         _,path= preprocess_csv_RGB_to_skeletondf(seq_len,out_len,os.path.join(os.path.dirname(path_csv),'summary_NTU.csv'),path_data_npy=path_data_npy)
          

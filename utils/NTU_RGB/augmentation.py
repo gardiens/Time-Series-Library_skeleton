@@ -47,19 +47,45 @@ class slice_data(object):
     
 
 
-#* Les matrices sont de la forme : [nb_frames,nb_joints,3] 
 #!!!!
 class rotate_data(object):
+    """Fonction de base pour dataset_augmenter. Il va faire une rotation des données de +- 17 degrés sur l'axe x et y et z
+
+    Parameters
+    ----------
+    object : _type_
+        _description_
+
+    cette opération peut être relativement longue
+    """    
     """ S'occupe de la rotation des matrices d'entrée/sorties d'un angle théta qui est sur l'axe x/y
      Relativement long! """
     """ issu de https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=7450165&casa_token=eZoq-Qw-lnsAAAAA:1W-2G3buqD3yElf70CnF8biljnTEKIL0af1x_O9Ujhd6Y0RAy0NDzjgxxMKmucjGVFkTfAVh5fqx&tag=1"""
     def __init__(self,up=-17,down=17) -> None:
-        """ up et down sont les bornes sup et inf des rotations en degré !"""
+        """définit rotate_data. Il va faire une rotation des données de entre up et down en degré sur l'axe x et y et z
+
+        Parameters
+        ----------
+        up : int, optional
+            borne supérieur de la rotation, by default -17
+        down : int, optional
+            borne inférieure de la rotation, by default 17
+        """        
         self.up=up*np.pi/180
         self.down=down*np.pi/180
-        pass
-
     def __call__(self,mat) -> Any:
+        """fonction qui va faire la rotation des données
+
+        Parameters
+        ----------
+        mat : np.array ou torch.tensor
+            matrice en entrée auquel on va faire l'opération
+
+        Returns
+        -------
+        array
+            np.array. matrice de sortie auquel on a fait la rotation
+        """        
         """ mat supposé de la forme (nb_frames,nb_joints,3)"""
         #theta,alpha,gamma= torch.rand(3)
         """ Calcul normalement RxRyRz(mat) """

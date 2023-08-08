@@ -6,7 +6,7 @@ from models import Autoformer, Transformer, TimesNet, Nonstationary_Transformer,
     Informer, LightTS, Reformer, ETSformer, Pyraformer, PatchTST, MICN, Crossformer, FiLM,Metaformer
 from models import FEDformer_wavelet
 
-#used in exp_basic.
+
 model_dict = {
         'TimesNet': TimesNet,
         'Autoformer': Autoformer,
@@ -28,12 +28,26 @@ model_dict = {
         'FEDWav':FEDformer_wavelet,
         'Meta':Metaformer
 }
-
+#used in exp_basic. pour des raisons techniques, je n'ai pas pu le déplacer dans les constantes.
 class Exp_Basic(object):
     def __init__(self, args):
+        """initialise exp_basic qui est utilisé dans tous les exp. Il permet de récupérer les arguments et de construire le modèle
+
+        Parameters
+        ----------
+        args : argparse ou classe
+            ici ce qui est utilisé:
+            - args.use_gpu: bool, si on utilise le gpu
+            - args.gpu: int, numéro du gpu
+            - args.use_multi_gpu: bool, si on utilise plusieurs gpu.
+                Si oui, il faut indiquer les numéros de gpus ( essayer (0,1) ou plus si on veut plus de gpus)
+                la seul implémentation réelle est nn.DataParallel, donc il faut que le modèle soit compatible avec nn.DataParallel et que pytorch ait bien été build avec le bon cuda
+            - args.devices: str, numéros des gpus séparés par des virgules
+            - args.model: str, nom du modèle. Il doit être dans le dictionnaire model_dict
+        """
         self.args = args
         self.model_dict =model_dict
-        self.device = self._acquire_device() #* Est-ce que ça autorise le multi-gpu?
+        self.device = self._acquire_device() 
         self.model = self._build_model().to(self.device)
 
     def _build_model(self):
@@ -50,7 +64,7 @@ class Exp_Basic(object):
             device = torch.device('cpu')
             print('Use CPU')
         return device
-
+    #* Ces fonctions vont être spécifiés dans les autres expériences
     def _get_data(self):
         pass
 

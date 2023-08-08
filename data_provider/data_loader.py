@@ -141,7 +141,13 @@ class dataset_NTURGBD(Dataset):
             return time_series.get_data(row=row)
         
     def get_df(self):
-        """ Renvoie le pandas dataframe prétraité  et correspondant bien au bon dataset"""
+        """permet de récupérer le dataframe correspondant au dataset voulu
+
+        Returns
+        -------
+        df
+            dataframe issu de data_rentrer_dans_DATASET_NTU mais slicer en foncttion si on est en train/vali/test
+        """     
         df=data_rentrer_dans_DATASET_NTU(path_csv=self.csv_path,seq_len=self.seq_len,out_len=self.out_len,path_data_npy=self.data_path,preprocess=self.preprocess) # c'est un pandas dataframe qui devriat tous avoir normalement
 
         #* On split entre les trois datasets
@@ -164,6 +170,25 @@ class dataset_NTURGBD(Dataset):
                 return pd.DataFrame(train_test_split(df2,test_size=self.test_size/(1-self.train_size))[self.set_type-1])
    
     def get_data_from_sample_name(self,name_skeleton:str,num_body=0):
+        """Fonction pratique de débuggage uqi permet de récupérer les données d'un squelette uniquement à partir de son nom
+
+        Parameters
+        ----------
+        name_skeleton : str
+            nom du skeleton ( sans le .npy ou .skeleton)
+        num_body : int, optional
+            numéro du body correspondant, by default 0
+
+        Returns
+        -------
+        entry
+            sortie  de la fonction get_data de la classe time_serie_NTU. généralement de la forme entrée,label,time_value_enc,time_value_dec
+
+        Raises
+        ------
+        ValueError
+            vérifie si le squelette est bien dans le dataset. Cela peut arriver si son nombre de frame est plus petit que la séquence à prédire ou si le numéro de body est incorrect
+        """        
       
         """ name_skeleton doit être de la forme 'S001C001P001R001A001'
         permet de récupérer la data sachant uniquement le nom du skeleton."""
@@ -198,20 +223,49 @@ def apply_transfo2(entry,k,transfo,entry2):
     return transfo(entry[k].reshape(entry[k].shape[0],entry[k].shape[1]//3,3),entry2.reshape(entry2.shape[0],entry2.shape[1]//3,3)).reshape(entry[k].shape[0],entry[k].shape[1])
 
 class dataset_augmenter_augalone(Dataset):
+    """brique de base pour augmenter un dataset initial. Il suffit de lui donner un dataset et une transformation et il va renvoyer un dataset augmenté. La transformation ne doit prendre en entrée qu'une seule entrée du dataset
+
+    Parameters
+    ----------
+    Dataset : Dataset
+        dataset d'entrée dans le modèle
+    """
     def __init__(self,dataset_ini:dataset_NTURGBD,transfo,prop=0.05):
+        """initialisationde dataset_augmenter
+
+        Parameters
+        ----------
+        dataset_ini : dataset_NTURGBD
+            dataset où on va faire la data augmentation.les entrées doivent être de la forme (nb_frames, nb_channels)
+        transfo : fonction
+            fonction sur une entrée begin ou label qui va renvoyer une nouvelle entrée . la fonction doit prendre en entrée une matrice de la forme (nb_frames,nb_joints,3) et renvoyer une matrice de la forme (nb_frames,nb_joints*3
+        prop : float, optional
+            nombre de nouvelles données crées parce processus, by default 0.05
+        """        
         self.data_ini=dataset_ini #SUPPOSER NTU_RGB 
         self.transfo=transfo 
-        self.l_ind=torch.randint(low=0,high=len(self.data_ini),size=(int(len(self.data_ini)*prop),))
+        self.l_ind=torch.randint(low=0,high=len(self.data_ini),size=(int(len(self.data_ini)*prop),)) #* les indices des données où on va appliquer la transformation
     
     def __getitem__(self, index) :
         entry=self.data_ini.__getitem__(int(self.l_ind[index])) #* Renvoie un élément de la forme :return begin,label,time_value_enc,time_value_dec
-        
+        #* apply_transfo reshape 
         return [apply_transfo(entry,0,self.transfo),apply_transfo(entry,1,self.transfo)]+list(entry[2:])
     def __len__(self):
         return len(self.l_ind)
 
 class dataset_augmenter_augmix(Dataset):
     def __init__(self,dataset_ini:dataset_NTURGBD,transfo,prop=0.05):
+        """initialisationde dataset_augmenter
+
+        Parameters
+        ----------
+        dataset_ini : dataset_NTURGBD
+            dataset où on va faire la data augmentation.les entrées doivent être de la forme (nb_frames, nb_channels)
+        transfo : fonction
+            fonction sur deux entrée begin ou label qui va renvoyer une nouvelle entrée . la fonction doit prendre en entrée une matrice de la forme (nb_frames,nb_joints,3) et renvoyer une matrice de la forme (nb_frames,nb_joints*3
+        prop : float, optional
+            nombre de nouvelles données crées parce processus, by default 0.05
+        """    
         self.data_ini=dataset_ini #SUPPOSER NTU_RGB 
         self.transfo=transfo 
         self.l_ind=torch.randint(low=0,high=len(self.data_ini),size=(int(len(self.data_ini)*prop),))
@@ -223,6 +277,7 @@ class dataset_augmenter_augmix(Dataset):
     def __len__(self):
         return len(self.l_ind)
 
+#* Ancienne classe de dataset déjà présente
 class Dataset_ETT_hour(Dataset):
     def __init__(self, root_path, flag='train', size=None,
                  features='S', data_path='ETTh1.csv',

@@ -19,21 +19,41 @@ warnings.filterwarnings('ignore')
 
 from utils.NTU_RGB.tensorboard import add_hparams
 class Exp_Long_Term_Forecast(Exp_Basic):
+    """Expérience principalement utilisé au cours du stage
+
+    Parameters
+    ----------
+    Exp_Basic : classe
+        classe qui permet de construire le modèle, récupérer les datasets  et de s'occuper du multiègpu si nécessaire
+    """
     def __init__(self, args):
         super(Exp_Long_Term_Forecast, self).__init__(args)
         setting = get_settings(args)
                 
         self.setting=setting
-        self.writer=SummaryWriter(log_dir=f"runs/{setting}") #* tensorboard
+        self.writer=SummaryWriter(log_dir=f"runs/{setting}") #* Permets de setup tensorboard
         writer=self.writer
         #print("les args",vars(args))
-        #add_hparams(self.writer,args) #* tensorboard
+        #add_hparams(self.writer,args) inutilisé car il ne semblait pas réussi àfaire fonctionner le hparmars mais dédouble les expériences.
 
         # Add in the writer every parameter which are float,int,str or bool
         #writer.add_hparams({k:v for k,v in vars(args).items() if type(v) in [float,int,str,bool]},{})
         #"writer.flush()
         
     def _build_model(self):
+        """construit le modèle
+
+        Returns
+        -------
+        model : nn.Module
+            model présent dans le model_dict de Exp_basic.
+            les args utilisés lors de la construction du modèle sont :
+            
+        remarque:
+        model_dict est stocké dans Exp_basic pour des raisons techniques de circular imports
+
+        """
+        #TODO: mettre à jour les args utilisés
         model = self.model_dict[self.args.model].Model(self.args).float()
 
         if self.args.use_multi_gpu and self.args.use_gpu:
@@ -41,15 +61,53 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         return model
 
     def _get_data(self, flag):
+        """permet de récpérer le dataset et data_loader en fonction des donnée d'entrée et du flag
+
+        Parameters
+        ----------
+        flag : bool
+            vaut 'train', 'vali' ou 'test'. Il change le comportement de shuffle ou du drop_laste du data_loader
+        les args utilisés:
+        -#TODO: A FAIRE proprement
+        Returns
+        -------
+        dataset : torch.utils.data.Dataset
+            le dataset contenant les données
+        data_loader : torch.utils.data.DataLoader
+            le data_loader contenant les données
+        """
         data_set, data_loader = data_provider(self.args, flag)
         
         return data_set, data_loader
 
     def _select_optimizer(self):
+        """Construit l'optimiszer 
+
+        Returns
+        -------
+        model_optim : torch.optim
+            optimiseur construit à partir des paramètres de args
+        args utilisés:
+        - args.learning_rate: float
+            le learning_rate appliqué sur adam
+        
+        """
         model_optim = optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
         return model_optim
 
     def _select_criterion(self,loss_name="MSE"):
+        """sélection de la loss
+
+        Parameters
+        ----------
+        loss_name : str, optional
+            choix entre "MSE" "SMAPE"., by default "MSE"
+
+        Returns
+        -------
+        _type_loss : nn.Module
+            soit nn.MSELoss soit smape_loss
+        """
         if  loss_name == 'MSE':
             criterion=nn.MSELoss()
             
@@ -61,6 +119,23 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         return criterion
 
     def vali(self, vali_data, vali_loader, criterion):
+        """permet la validation du modèle. Principalement utilisé dans le train pour connaitre la loss de validation.
+
+        Parameters
+        ----------
+        vali_data : dataset
+            dataset de validation
+        vali_loader : dataloader
+            dataloader de validation
+        criterion : _type_loss
+            loss utilisé pour la validation, il correspond souvent à la loss de train
+
+        Returns
+        -------
+        total_loss : float
+            loss_moyenne sur le dataset de validation
+        remarque: il faut faire attention au label_len et pred_len.
+        """
         total_loss = []
         self.model.eval()
         with torch.no_grad():
@@ -100,7 +175,28 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         return total_loss
 
     def train(self, setting):
-        """ Les sauvegardes ont lieu dans early stopping ( dans le dossier/ results/settings, en revanche on a pas le nom du checkpoint clair à priori...)"""
+        """boucle de train du modèle. Il sauvegarde uniquement le meilleur modèle en validation et envoie les principaux critères sur tensorboard
+        les sauvegardes ont lieu dans "early_stopping" et sont sauvegardé dans checkpoints/setting.
+        les données actuellement envoyé sur tensorboard sont:
+        - Loss/train
+        - Loss/vali
+        - Loss/test
+        - MAE/train
+        - MSE/train
+        - RMSE/train
+        - mape/train
+        - mspe/train
+
+        Parameters
+        ----------
+        setting : str
+            nom technique du fichier pour sauvegarder le checkpoint
+
+        Returns
+        -------
+        _type_model
+            meilleur modèle entrainé au cours du train.
+        """
         print("-----loading du dataset ---")
         train_data, train_loader = self._get_data(flag='train')
         vali_data, vali_loader = self._get_data(flag='val')
@@ -250,6 +346,16 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         return self.model   
 
     def test(self, setting, test=0):
+        """fonction de test. Il permet de regarder plus finement les différentes métriques sur le dataset de test. 
+        Il permet actuellement de visualiser le comportement du modèle sur différents squelettes, d'avoir accès à un pandas dataframe de la loss de chaque sample et de récupérer les métriques principales.
+
+        Parameters
+        ----------
+        setting : str
+            nom technique du modèle à tester, les données importantes seront sauvegardé dans test_results/setting ou results/setings
+        test : int, optional
+            vaut 0 si le modèle vient d'être entrainé, sinon vaut 1 pour load le checkpoints dans checkpoints/setting/checkpoint.pth, by default 0
+        """        
         train_data,train_loader = self._get_data(flag='train')
         test_data, test_loader = self._get_data(flag='test')
         if test:
@@ -330,7 +436,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     
                     X_pred=X_pred.transpose(1,2,0)
                     X_true=X_true.transpose(1,2,0)
-                    #* On va plot les résultats
+                    #* On va plot les résultats. On plot en bleu le vrai et en rouge le prédit. On plot aussi le comportement global du modèle initial.
                     plot_video_skeletons(mat_skeletons=[X_true,X_pred],save_name="label:"+self.args.model_id+str(i),path_folder_save=os.path.join(folder_path))
                     filename=str(test_data.liste_path["filename"].iloc[i]) # ???
                     plot_skeleton(path_skeleton=os.path.join(self.args.root_path,"raw/",filename+".skeleton"),save_name=str(i)+filename,path_folder_save=folder_path)
@@ -346,7 +452,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         folder_path = './results/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
-        
+        #* Sauvegarde du dataframe et des metrics
         mae, mse, rmse, mape, mspe = metric(preds, trues)
         print('mse:{}, mae:{}'.format(mse, mae))
         df=test_data.liste_path
