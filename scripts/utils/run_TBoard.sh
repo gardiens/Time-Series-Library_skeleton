@@ -1,3 +1,4 @@
+#!/bin/bash
 # Fichier.sh qui permets de lancer automatiquement  le tensorboard et envoie le fichier
 # Function to stop TensorBoard gracefully
 stop_tensorboard() {

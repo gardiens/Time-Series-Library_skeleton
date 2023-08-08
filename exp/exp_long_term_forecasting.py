@@ -177,7 +177,8 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
     def train(self, setting):
         """boucle de train du modèle. Il sauvegarde uniquement le meilleur modèle en validation et envoie les principaux critères sur tensorboard
-        les sauvegardes ont lieu dans "early_stopping" et sont sauvegardé dans checkpoints/setting.
+        les sauvegardes ont lieu dans "early_stopping" et sont sauvegardé dans checkpoints/setting. 
+        Le early stopping est en fonction du validation set
         les données actuellement envoyé sur tensorboard sont:
         - Loss/train
         - Loss/vali
