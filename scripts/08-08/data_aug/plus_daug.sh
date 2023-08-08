@@ -44,18 +44,17 @@ for i in  2 3 4; do
     --get_cat_value 0 \
     --get_time_value 1 \
     --use_gpu 1 \
-    --train_epochs 20 \
-    --lradj sem_constant \
-    --patience 4 \
+    --train_epochs 14 \
+    --lradj constant \
+    --patience 7 \
     --batch_size ${batch_size} \
     --learning_rate $(echo "scale=10; 10^-3" | bc) \
     --split_train_test action \
     --augment \
     --prop "${output:1}"
-  sleep 60
+  sleep 1800
 done
 
-sleep 3600
 
 moving_value="1"
 for i in  2 3 4; do
@@ -95,13 +94,13 @@ for i in  2 3 4; do
     --get_cat_value 0 \
     --get_time_value 1 \
     --use_gpu 1 \
-    --train_epochs 20 \
+    --train_epochs 14 \
     --lradj sem_constant \
-    --patience 4 \
+    --patience 7 \
     --batch_size ${batch_size} \
     --learning_rate $(echo "scale=10; 10^-3" | bc) \
     --split_train_test action \
     --augment \
     --prop "${output:1}"
-  sleep 60
+  sleep 1800
 done
