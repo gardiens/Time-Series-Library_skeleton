@@ -1,5 +1,5 @@
 from data_provider.data_loader import Dataset_ETT_hour, Dataset_ETT_minute, Dataset_Custom, Dataset_M4, PSMSegLoader, \
-    MSLSegLoader, SMAPSegLoader, SMDSegLoader, SWATSegLoader, UEAloader,dataset_NTURGBD,dataset_augmenter_augalone,dataset_augmenter_augmix
+    MSLSegLoader, SMAPSegLoader, SMDSegLoader, SWATSegLoader, UEAloader,dataset_NTURGBD,dataset_augmenter_augalone,dataset_augmenter_augmix,dataset_augmenter_backward
 from data_provider.uea import collate_fn
 from torch.utils.data import DataLoader,ConcatDataset
 
@@ -167,11 +167,13 @@ def data_provider(args, flag):
             except:
                 print(transfo,prop)
                 raise Exception("Problème de taille entre l_transfo et l_prop,Attention à la syntaxe de args.prop")
-            data=dataset_augmenter_augalone(dataset_ini=data_set, transfo=transfo, prop=prop) #* On récupère le dataset augmenter
+            if transfo==backward():
+                data=dataset_augmenter_backward(dataset_ini=data_set,pred_len=args.pred_len,seq_len=args.seq_len) #* On récupère le dataset augmenter
+            else:
+                data=dataset_augmenter_augalone(dataset_ini=data_set, transfo=transfo, prop=prop) #* On récupère le dataset augmenter
             if len(data)>0:
                 l_dataset.append(data)
         
-        #* A débugger!  
         for k in range(len(l_transfo_2)):
             try:
                 transfo=l_transfo_2[k]

@@ -17,7 +17,7 @@ from sklearn.model_selection import train_test_split
 
 
 #* DATA_LOADER A IMPLEMENTER JIMAGINE
-
+#todo: changer apply_transfo et les classes pour qu'ils s'appliquent directement aux entrées du dataset et non avoir besoin de passer par autant de fonctions intermédiaires
 class dataset_NTURGBD(Dataset):
     
     """Made by Phillipe rambaud and Pierrick Bournez 
@@ -253,6 +253,18 @@ class dataset_augmenter_augalone(Dataset):
     def __len__(self):
         return len(self.l_ind)
 
+class dataset_augmenter_backward(Dataset):
+
+    def __init__(self,dataset_init,pred_len,seq_len) -> None:
+        self.pred_len=pred_len
+        self.seq_len=seq_len
+        self.dataset_init=dataset_init
+    def __getitem__(self, index) :
+        entry=self.dataset_init.__getitem__(index)
+        vrai_seq=np.flip(np.concatenate(entry[0],entry[1],axis=0),axis=0) # On concatène pour obtenir la séquence global, puis on flip pour avoir le retour
+        nv_begin=vrai_seq[:self.seq_len]
+        nv_label= vrai_seq[:self.pred_len]
+        return [nv_begin,nv_label]+list(entry[2:])
 class dataset_augmenter_augmix(Dataset):
     def __init__(self,dataset_ini:dataset_NTURGBD,transfo,prop=0.05):
         """initialisationde dataset_augmenter
