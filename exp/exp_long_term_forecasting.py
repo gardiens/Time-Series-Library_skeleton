@@ -364,20 +364,32 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         if test:
             print('loading model')
             if "Meta" not in setting:
+                if torch.cuda.is_available():
+                    state_dict = torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth'))
+                else:
+                    state_dict = torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth'),map_location=torch.device('cpu'))
+                # create new OrderedDict that does not contain `module.`
+
+                new_state_dict = OrderedDict()
+                for k, v in state_dict.items():
+                    
+                    name = k[7:] # remove `module.`
+                    new_state_dict[name] = v
+                
                 try: #* On load le check 
 
                     if torch.cuda.is_available():
-                        self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth')))
+                        self.model.load_state_dict(new_state_dict)
                     else:
-                        self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth'),map_location=torch.device('cpu')))
+                        self.model.load_state_dict(new_state_dict)
                 except FileNotFoundError:
                     args1=get_args_from_filename(setting,self.args)
                     args1.get_cat_value="_"+str(args1.get_cat_value)
                     setting1=get_settings(args1)
                     if torch.cuda.is_available():
-                        self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting1, 'checkpoint.pth')))
+                        self.model.load_state_dict(new_state_dict)
                     else:
-                        self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting1, 'checkpoint.pth'),map_location=torch.device('cpu')))
+                        self.model.load_state_dict(new_state_dict)
         preds = []
         trues = []
         folder_path = './test_results/' + setting + '/'
