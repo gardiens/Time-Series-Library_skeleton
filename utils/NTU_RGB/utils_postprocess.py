@@ -28,3 +28,7 @@ def get_args_from_file(file,args_technique=Args_technique_CPU):
             self.ii = int(parser[19])
             self.get_cat_value = int(parser[20][2:])
             self.get_time_value = int(parser[21][3:])
+
+
+
+

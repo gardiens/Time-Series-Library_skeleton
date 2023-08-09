@@ -94,8 +94,7 @@ The goal of this project is to predict skeleton using Deep-learning architecture
 If you want to set up 
 To get a local copy up and running follow these simple  steps.
 
-### Prerequisites
-
+### Installation
 1. Clone the repo 
 
    ```sh
@@ -103,21 +102,19 @@ To get a local copy up and running follow these simple  steps.
    ```
 2. install python requirement
   ```py
-   git clone https://github.com/gardiens/Time-Series-Library_babygarches.git
+   pip install requirements.txt
    ```
-
-### Installation
-
-1. Get a free API Key at [https://example.com](https://example.com)
-
-3. Install NPM packages
-   ```sh
-   npm install
+3. If you want to use NTU_RGB download the dataset [here](https://rose1.ntu.edu.sg/dataset/actionRecognition/)
+4. run txt2npy. 
+the file .npy should be stored in dataset/NTU_RGB+D/numpyed/ and the raw data should be in dataset/NTU_RGB+D/raw/
+5. build the csv for the data. it may take a while
+ ```py
+   python3 build_csv.py
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
+6. then run the main.py with your argument :)
+
+
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -126,9 +123,26 @@ To get a local copy up and running follow these simple  steps.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Install Python 3.8. For convenience, execute the following command.
+pip install -r requirements.txt
+Prepare Data. You can obtained the well pre-processed datasets from [Google Drive], [Tsinghua Cloud] or [Baidu Drive]. Then place the downloaded data under the folder ./dataset. Here is a summary of supported datasets.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+
+Train and evaluate model. We provide the experiment scripts of all benchmarks under the folder ./scripts/. You can reproduce the experiment results as the following examples:
+# long-term forecast
+bash ./scripts/long_term_forecast/ETT_script/TimesNet_ETTh1.sh
+# short-term forecast
+bash ./scripts/short_term_forecast/TimesNet_M4.sh
+# imputation
+bash ./scripts/imputation/ETT_script/TimesNet_ETTh1.sh
+# anomaly detection
+bash ./scripts/anomaly_detection/PSM/TimesNet.sh
+# classification
+bash ./scripts/classification/TimesNet.sh
+Develop your own model.
+Add the model file to the folder ./models. You can follow the ./models/Transformer.py.
+Include the newly added model in the Exp_Basic.model_dict of ./exp/exp_basic.py.
+Create the corresponding scripts under the folder ./scripts
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

@@ -209,19 +209,34 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             print("le dataset n'a pas de pandas dataframe sous_jacent. Il est probablement augmenté")
         print("longueur des différents dataset:",len(train_data),"longueur de validation:",len(vali_data),"longueur du dataset de test",len(test_data))
         print("-----fin du loading du dataset ---",flush=True)
+        #* Création des items nécessaires aux trains
         writer=self.writer
         path = os.path.join(self.args.checkpoints, setting)
         if not os.path.exists(path):
             os.makedirs(path)
 
         time_now = time.time()
-        n_steps_per_epoch = len(train_data)//self.args.batch_size #* A VERIFIEr
+        n_steps_per_epoch = len(train_data)//self.args.batch_size 
         train_steps = len(train_loader)
         early_stopping = EarlyStopping(patience=self.args.patience, verbose=True)
 
         model_optim = self._select_optimizer()
         criterion = self._select_criterion()
         
+        if self.args.start_checkpoint:
+            print("on load le modèle")
+            if torch.cuda.is_available():
+                state_dict = torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth'))
+            else:
+                state_dict = torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth'),map_location=torch.device('cpu'))
+            # create new OrderedDict that does not contain `module.`
+
+            new_state_dict = OrderedDict()
+            for k, v in state_dict.items():
+                
+                name = k[7:]
+                new_state_dict[name] = v
+
         if self.args.use_amp:
             scaler = torch.cuda.amp.GradScaler()
         print("----- début du training-----",flush=True)

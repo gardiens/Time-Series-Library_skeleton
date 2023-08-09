@@ -479,12 +479,31 @@ def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:st
             array=np.array(nbodys)
             reference=20 # Correspond à Spine shoulder ! 
             for k in range(nbodys):
-                array_k=data[f'skel_body{k}'] #* c'est le déplacement du squelette k 
+                array_k=data[f'skel_body{k}'] #* c'est le déplacement du squelette k  de la forme (nb_frames,nb_joints,3)
                 array_k=array_k-np.mean(array_k[:,reference,:],axis=0) # On recentre le squelette par rapport à la frame de référence
                 array_k=array_k.reshape(array_k.shape[0],array_k.shape[1]*array_k.shape[2])
+                #* On récupère le nombre de frame avant la disparition de la personne
+                marqueur=False
                 
-                nb_frames.append(array_k.shape[0]) # Nombre de frame pour chaque body!
-                debut_frame.append(np.argmax(array>k)) #! A CHANGER 
+                for i in range(array_k.shape[0],0,-1):
+                    if not (np.abs(array_k[i-1])==0).all():
+                        nb_frames.append(i)
+                        marqueur=True
+                        break 
+                    else:#* le body a disparu 
+                        continue
+                if marqueur==False:
+                    print(array_k[0],"il y a un problème possiblement sur le calcul du body")
+                marqueur=False
+                for i in range(array_k.shape[0]):
+                    if not (np.abs(array_k[i])==0).all():
+                        marqueur=True
+                        debut_frame.append(i)
+                        break 
+                    else:#* le body a disparu 
+                        continue
+                if marqueur ==False:
+                    print("un possible problème de début?")
                 # Calcul de la moyenne par body 
                 moyenne=np.mean(array_k,axis=0)
                 sum_moy=np.sum(moyenne,axis=0)
@@ -495,7 +514,7 @@ def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:st
                 l_std.append(sum_std)
                 if preprocess:
                     t=model.fit_predict(array_k,pen=beta)# Calcul du nombre de change point
-                    liste_chp.append(t[1] if len(t)>2 else t[0] if len(t)==1 else 0) # le dernier correspond à la longueur de la liste ,détail technique
+                    liste_chp.append(t[1] if len(t)>3 else t[0] if (len(t)==1 or len(t)==2) else 0) # le dernier correspond à la longueur de la liste ,détail technique
                     l_num_chp.append(len(t)-1)
             # Mise à jour dans les listes pour l'incorporer au dataframe
             result.append([nbodys,filename,actor,acti,camera,scene,repet,njoints])
@@ -525,7 +544,8 @@ def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:st
     df=pd.concat(dfaconcat,axis=1)
     df.infer_objects()
     df.to_csv(os.path.join(path_csv,name_csv),index=False )
-
+    print("---------------fin de summary csv--------------")
+    print("exemple du dataframe constitué:",df.head(2))
     return df ,os.path.join(path_csv,name_csv)
 
 def preprocess_csv_RGB_to_skeletondf(seq_len:int=30,out_len:int=30,path_csv="./dataset/NTU_RGB+D/summary_NTU/summary_NTU.csv",path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',preprocess=1):
