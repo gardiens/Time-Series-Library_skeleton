@@ -26,27 +26,27 @@ if __name__ == '__main__':
 
     # basic config
     parser.add_argument('--task_name', type=str, required=True, default='long_term_forecast',
-                        help='task name, options:[long_term_forecast, short_term_forecast, imputation, classification, anomaly_detection]')
-    parser.add_argument('--is_training', type=int, required=True, default=1, help='status')
-    parser.add_argument('--model_id', type=str, required=True, default='test', help='model id')
+                        help='task name,usually long_term_forecast, options:[long_term_forecast, short_term_forecast, imputation, classification, anomaly_detection]')
+    parser.add_argument('--is_training', type=int, required=True, default=1, help='status.if 1 the training is done, if 0 we load the checkpoint on setting')
+    parser.add_argument('--model_id', type=str, required=True, default='test', help='model id. The name of your experiment/id')
     parser.add_argument('--model', type=str, required=True, default='Autoformer',
-                        help='model name, options: [Autoformer, Transformer, TimesNet]')
+                        help='model name. See the list on Exp_basic,model_dict, options: [Autoformer, Transformer, TimesNet]')
 
     # data loader
-    parser.add_argument('--data', type=str, required=True, default='ETTm1', help='dataset type')
-    parser.add_argument('--root_path', type=str, default='./data/ETT/', help='root path of the data file')
-    parser.add_argument('--data_path', type=str, default='ETTh1.csv', help='data file')
+    parser.add_argument('--data', type=str, required=True, default='ETTm1', help='dataset type. The data you want to use, type NTU for NTU_RGB+D')
+    parser.add_argument('--root_path', type=str, default='./data/ETT/', help='root path of the data file. For NTU it is ./dataset/NTU_RGB+D/')
+    parser.add_argument('--data_path', type=str, default='ETTh1.csv', help='data file. for NTU it is numpyed/')
     parser.add_argument('--features', type=str, default='M',
-                        help='forecasting task, options:[M, S, MS]; M:multivariate predict multivariate, S:univariate predict univariate, MS:multivariate predict univariate')
-    parser.add_argument('--target', type=str, default='OT', help='target feature in S or MS task')
+                        help='forecasting task,for NTU it is M options:[M, S, MS]; M:multivariate predict multivariate, S:univariate predict univariate, MS:multivariate predict univariate')
+    parser.add_argument('--target', type=str, default='OT', help='target feature in S or MS task. Do not change it')
     parser.add_argument('--freq', type=str, default='h',
-                        help='freq for time features encoding, options:[s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly], you can also use more detailed freq like 15min or 3h')
+                        help='freq for time features encoding in the first layer of the model, didnt used them, options:[s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly], you can also use more detailed freq like 15min or 3h')
     parser.add_argument('--checkpoints', type=str, default='./checkpoints/', help='location of model checkpoints')
 
     # forecasting task
     parser.add_argument('--seq_len', type=int, default=96, help='input sequence length')
-    parser.add_argument('--label_len', type=int, default=48, help='start token length')
-    parser.add_argument('--pred_len', type=int, default=96, help='prediction sequence length')
+    parser.add_argument('--label_len', type=int, default=48, help='length of  labels')
+    parser.add_argument('--pred_len', type=int, default=96, help='prediction sequence length,must be greater than label_len')
     parser.add_argument('--seasonal_patterns', type=str, default='Monthly', help='subset for M4')
 
     # inputation task
@@ -58,14 +58,14 @@ if __name__ == '__main__':
     # model define
     parser.add_argument('--top_k', type=int, default=5, help='for TimesBlock')
     parser.add_argument('--num_kernels', type=int, default=6, help='for Inception')
-    parser.add_argument('--enc_in', type=int, default=7, help='encoder input size')
-    parser.add_argument('--dec_in', type=int, default=7, help='decoder input size')
-    parser.add_argument('--c_out', type=int, default=7, help='output size')
-    parser.add_argument('--d_model', type=int, default=512, help='dimension of model')
+    parser.add_argument('--enc_in', type=int, default=7, help='encoder input size ( so the number of channels input of the model).For NTU it is 75')
+    parser.add_argument('--dec_in', type=int, default=7, help='decoder input size. to me , the same as encoder input size, For NTU it is 75')
+    parser.add_argument('--c_out', type=int, default=7, help='output size, For NTU it is 75')
+    parser.add_argument('--d_model', type=int, default=512, help='dimension of model between encoder layer')
     parser.add_argument('--n_heads', type=int, default=8, help='num of heads')
-    parser.add_argument('--e_layers', type=int, default=2, help='num of encoder layers')
-    parser.add_argument('--d_layers', type=int, default=1, help='num of decoder layers')
-    parser.add_argument('--d_ff', type=int, default=2048, help='dimension of fcn')
+    parser.add_argument('--e_layers', type=int, default=2, help='num of encoder layers. Usually 2')
+    parser.add_argument('--d_layers', type=int, default=1, help='num of decoder layers. Usually 1')
+    parser.add_argument('--d_ff', type=int, default=2048, help='dimension of fcn.')
     parser.add_argument('--moving_avg', type=int, default=25, help='window size of moving average')
     parser.add_argument('--factor', type=int, default=1, help='attn factor')
     parser.add_argument('--distil', action='store_false',
@@ -73,7 +73,7 @@ if __name__ == '__main__':
                         default=True)
     parser.add_argument('--dropout', type=float, default=0.1, help='dropout')
     parser.add_argument('--embed', type=str, default='timeF',
-                        help='time features encoding, options:[timeF, fixed, learned]')
+                        help='time features encoding. Not used in NTU, options:[timeF, fixed, learned]')
     parser.add_argument('--activation', type=str, default='gelu', help='activation')
     parser.add_argument('--output_attention', action='store_true', help='whether to output attention in ecoder')
 
@@ -85,15 +85,15 @@ if __name__ == '__main__':
     parser.add_argument('--patience', type=int, default=3, help='early stopping patience')
     parser.add_argument('--learning_rate', type=float, default=0.0001, help='optimizer learning rate')
     parser.add_argument('--des', type=str, default='test', help='exp description')
-    parser.add_argument('--loss', type=str, default='MSE', help='loss function')
-    parser.add_argument('--lradj', type=str, default='type1', help='adjust learning rate')
+    parser.add_argument('--loss', type=str, default='MSE', help='loss function. Chose wether MSE or MAE')
+    parser.add_argument('--lradj', type=str, default='type1', help='adjust learning rate. options:[constant, sem_constant, cosine, type1, type2]')
     parser.add_argument('--use_amp', action='store_true', help='use automatic mixed precision training', default=False)
 
     # GPU
     parser.add_argument('--use_gpu', type=bool, default=True, help='use gpu')
     parser.add_argument('--gpu', type=int, default=0, help='gpu')
     parser.add_argument('--use_multi_gpu', action='store_true', help='use multiple gpus', default=True)
-    parser.add_argument('--devices', type=str, default='0,1', help='device ids of multile gpus')
+    parser.add_argument('--devices', type=str, default='0,1', help='device ids of multiple gpus')
 
     # de-stationary projector params
     parser.add_argument('--p_hidden_dims', type=int, nargs='+', default=[128, 128],
@@ -106,18 +106,19 @@ if __name__ == '__main__':
     parser.add_argument('--preprocess', type=int, default=1, help='preprocess data,0 if 1 or more we do sth')
     #parser.add_argument('--sous_model', type=str, default='FEDformer', help='sous-Model pour metaformer')
     #parser.add_argument('--quel_membre', type=str, default='3_partie:', help='quel ensemble de membre pour Metaformer')
-    parser.add_argument('--no_test', action='store_true', help='permet de ne pas faire de test', default=False)
+    parser.add_argument('--no_test', action='store_true', help='if used, we dont do the test after training', default=False)
     #* challenge test_hypothèse
     parser.add_argument('--split_train_test',type=str,default='action',help='split train test selon action ou au hasard. Possible value: [action,random]')
     #* Augmentation des données 
-    parser.add_argument('--augment',default=False, action='store_true', help='on fait augmentation ou non')
-    parser.add_argument('--prop',type=str,default="1.05,0.05,0.05",help="proportion du dataset qu'on va rajouter")
+    parser.add_argument('--augment',default=False, action='store_true', help='use of data augmentation or not')
+    parser.add_argument('--prop',type=str,default="1.05,0.05,0.05",help="proportion of dataset size that we will augment. separate the value by ,")
     
     #Si on rerun un modèle à partir d'un checkpoint
-    parser.add_argument('--start_checkpoint',default=False,action='store_true',help='on rerun un modèle à partir d un checkpoint si on écrit cet argument')
-    parser.add_argument('--setting_start_checkpoint',type=str,default="test",help="si on redémarre, c'est le nom du setting du checkpoint duquel on repart!")
+    parser.add_argument('--start_checkpoint',default=False,action='store_true',help='ask if we want to restart from a checkpoit')
+    parser.add_argument('--setting_start_checkpoint',type=str,default="test",help="if start_checkpoint, ask the name of the last checkpoint settings ")
 
     args = parser.parse_args()
+    #* Verification GPU/MultiGPU
     print("use_gpu: ce quon demande ", args.use_gpu, "cuda est-il disponible:", torch.cuda.is_available(), flush=True)
     args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
     print("use_gpu: selon l'ordi après ", args.use_gpu, flush=True)
@@ -143,7 +144,7 @@ if __name__ == '__main__':
     else:
         Exp = Exp_Long_Term_Forecast
 
-    if args.is_training:
+    if args.is_training: # training
         for ii in range(args.itr):
             # setting record of experiments
             args.num_itr=ii
@@ -173,7 +174,7 @@ if __name__ == '__main__':
 
             print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting),flush=True)
             if args.no_test:
-                print(" On ne test pas")
+                print(" No test")
                 continue
             exp.test(setting)
             torch.cuda.empty_cache()
