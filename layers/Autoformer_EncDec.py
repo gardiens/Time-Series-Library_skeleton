@@ -14,8 +14,9 @@ class my_Layernorm(nn.Module):
 
     def forward(self, x):
         x_hat = self.layernorm(x)
-        bias = torch.mean(x_hat, dim=1).unsqueeze(1).repeat(1, x.shape[1], 1)
-        return x_hat - bias
+        #bias = torch.mean(x_hat, dim=1).unsqueeze(1).repeat(1, x.shape[1], 1)
+        #! Changer ici 
+        return x_hat #- bias
 
 
 class moving_avg(nn.Module):
@@ -102,7 +103,9 @@ class EncoderLayer(nn.Module):
         y = x
         y = self.dropout(self.activation(self.conv1(y.transpose(-1, 1))))
         y = self.dropout(self.conv2(y).transpose(-1, 1))
-        res, _ = self.decomp2(x + y)
+        #res, _ = self.decomp2(x + y) #! A REMETTRE
+        #! Ce que moi j'aurai fait 
+        res,_=self.decomp2(y)+x 
         return res, attn
 
 
@@ -164,17 +167,17 @@ class DecoderLayer(nn.Module):
             attn_mask=x_mask
         )[0])
         x, trend1 = self.decomp1(x)
-        x = x + self.dropout(self.cross_attention(
+        """x = x + self.dropout(self.cross_attention(
             x, cross, cross,
             attn_mask=cross_mask
         )[0])
-        x, trend2 = self.decomp2(x)
+        x, trend2 = self.decomp2(x)"""
         y = x
         y = self.dropout(self.activation(self.conv1(y.transpose(-1, 1))))
         y = self.dropout(self.conv2(y).transpose(-1, 1))
-        x, trend3 = self.decomp3(x + y)
+        x, trend3 = x+self.decomp3(y) #! self.decomp3(x+y)
 
-        residual_trend = trend1 + trend2 + trend3
+        residual_trend = trend1 +trend3 #! +trend2
         residual_trend = self.projection(residual_trend.permute(0, 2, 1)).transpose(1, 2)
         return x, residual_trend
 

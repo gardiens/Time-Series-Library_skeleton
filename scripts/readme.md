@@ -23,6 +23,6 @@ scp -r bournez@slurm-ext:/mnt/beegfs/home/bournez/babygarches_rambaud/Time-Serie
 
 pour envoyer summary_csv:
 
-scp -r ./dataset/NTU_RGB+D/summary_NTU/summary_NTU.csv slurm-ext:./dataset/NTU_RGB+D/summary_NTU/
+scp  ./dataset/NTU_RGB+D/summary_NTU/summary_NTU.csv slurm-ext:./dataset/NTU_RGB+D/summary_NTU/
 
-scp -r ./dataset/NTU_RGB+D/summary_NTU/liste_NTU_skeleton_4.csv slurm-ext:./dataset/NTU_RGB+D/summary_NTU/
+scp  ./dataset/NTU_RGB+D/summary_NTU/liste_NTU_skeleton_4.csv slurm-ext:./dataset/NTU_RGB+D/summary_NTU/
