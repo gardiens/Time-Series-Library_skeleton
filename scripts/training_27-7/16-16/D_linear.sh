@@ -1,5 +1,4 @@
 #!/bin/bash
-export CUDA_VISIBLE_DEVICES=2
 
 model_name=DLinear
 pred_len=32
