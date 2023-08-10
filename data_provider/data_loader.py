@@ -155,9 +155,12 @@ class dataset_NTURGBD(Dataset):
             
             if self.set_type==0: #* Training one
                 return df.where(df['acti']<100).dropna()
+                print("ta mere la cheinne?")
             elif self.set_type==2: #* Validation one
+                print("heo?")
                 return df.where((df['acti']>=100) & (df['acti']<110)).dropna()
             else: #* Test one
+                print("bah la?")
                 return df.where(df['acti']>=110).dropna()
             
   

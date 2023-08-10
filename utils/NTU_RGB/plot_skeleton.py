@@ -108,10 +108,8 @@ def plot_video_skeletons(mat_skeletons,title=None,write=True,animate=False,path_
             if iteration>=liste_nb_framestotal[k]: #!!!
                 continue
             for i,line in enumerate(ligneaplot):
-
                 x1,z1,y1=data[connexion_tuples[i][0]][:,iteration]
                 x2,z2,y2=data[connexion_tuples[i][1]][:,iteration]
-                #print(y1,z1)
                 x1,x2=min(x1,x2),max(x1,x2)
                 line.set_data(np.linspace(x1,x2,num=20),np.linspace(y1,y2,num=20))
                 line.set_3d_properties(np.linspace(z1,z2,num=20))

@@ -8,7 +8,7 @@ pred_len=32
 label_len=32
 data=NTU
 batch_size=256
-model_id_name=09-08-d_ff-$(echo "scale=10; 2^3" | bc)
+model_id_name=10-08-d_ff-$(echo "scale=10; 2^3" | bc)
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 1 \
@@ -40,7 +40,7 @@ python -u run.py \
   --batch_size ${batch_size}\
   --learning_rate $(echo "scale=10; 10^-3" | bc)\
   --split_train_test action \
-  --d_ff $(echo "scale=10; 2^3" | bc)
+  --d_ff $(echo "scale=10; 2^i" | bc)
 
 sleep 1800
 done 
