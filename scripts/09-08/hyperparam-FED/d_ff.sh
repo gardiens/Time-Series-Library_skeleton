@@ -80,7 +80,7 @@ python -u run.py \
   --batch_size ${batch_size}\
   --learning_rate $(echo "scale=10; 10^-3" | bc)\
   --split_train_test action \
-  --d_ff 512 \
+  --d_ff 1024 \
 
 sleep 1800
 model_name=FEDformer
@@ -120,6 +120,6 @@ python -u run.py \
   --batch_size ${batch_size}\
   --learning_rate $(echo "scale=10; 10^-3" | bc)\
   --split_train_test action \
-  --d_ff 512 \
+  --d_ff 2048 \
 
 sleep 1800
