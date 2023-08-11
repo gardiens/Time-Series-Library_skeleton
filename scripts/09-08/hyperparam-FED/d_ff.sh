@@ -34,6 +34,7 @@ python -u run.py \
   --use_gpu 1 \
   --train_epochs 14\
   --lradj sem_constant \
+  --no_test \
   --patience 4 \
   --batch_size ${batch_size}\
   --learning_rate $(echo "scale=10; 10^-3" | bc)\
@@ -77,6 +78,7 @@ python -u run.py \
   --train_epochs 14\
   --lradj sem_constant \
   --patience 4 \
+  --no_test \
   --batch_size ${batch_size}\
   --learning_rate $(echo "scale=10; 10^-3" | bc)\
   --split_train_test action \
@@ -118,6 +120,7 @@ python -u run.py \
   --lradj sem_constant \
   --patience 4 \
   --batch_size ${batch_size}\
+  --no_test \
   --learning_rate $(echo "scale=10; 10^-3" | bc)\
   --split_train_test action \
   --d_ff 2048 \
