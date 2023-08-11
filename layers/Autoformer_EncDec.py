@@ -163,7 +163,6 @@ class DecoderLayer(nn.Module):
         self.activation = F.relu if activation == "relu" else F.gelu
 
     def forward(self, x, cross, x_mask=None, cross_mask=None):
-        print("on passe par là ")
         x = x + self.dropout(self.self_attention(
             x, x, x,
             attn_mask=x_mask
