@@ -76,7 +76,7 @@ class series_decomp_multi(nn.Module):
         moving_mean = sum(moving_mean) / len(moving_mean)
         return sea, moving_mean
 
-
+print("TEST AUTOFORMER")
 class EncoderLayer(nn.Module):
     """
     Autoformer encoder layer with the progressive decomposition architecture
