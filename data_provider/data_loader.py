@@ -132,13 +132,11 @@ class dataset_NTURGBD(Dataset):
         _type_
             _description_
         """
-        time_series=self.item
+        if self.preprocess==0 or self.preprocess==1:
+            time_series=self.item
         row=self.liste_path.iloc[index] #C'est la row du dataframe 
 
-        if self.set_type==2:
-            return time_series.get_data(row=row)
-        else:
-            return time_series.get_data(row=row)
+        return time_series.get_data(row=row)
         
     def get_df(self):
         """permet de récupérer le dataframe correspondant au dataset voulu
@@ -155,12 +153,9 @@ class dataset_NTURGBD(Dataset):
             
             if self.set_type==0: #* Training one
                 return df.where(df['acti']<100).dropna()
-                print("ta mere la cheinne?")
             elif self.set_type==2: #* Validation one
-                print("heo?")
                 return df.where((df['acti']>=100) & (df['acti']<110)).dropna()
             else: #* Test one
-                print("bah la?")
                 return df.where(df['acti']>=110).dropna()
             
   

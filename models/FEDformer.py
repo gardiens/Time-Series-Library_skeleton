@@ -81,6 +81,7 @@ class Model(nn.Module):
             norm_layer=my_Layernorm(configs.d_model)
         )
         # Decoder
+        self.projection_chan=nn.Linear(in_features=configs.dec_in,out_features=configs.c_out,bias=True) #* On modifie dans le cas où le channel de sortie est différent du channel d'entrée de le l'encodeur/decodeur.
         self.decoder = Decoder(
             [
                 DecoderLayer(
@@ -100,7 +101,8 @@ class Model(nn.Module):
                 for l in range(configs.d_layers)
             ],
             norm_layer=my_Layernorm(configs.d_model),
-            projection=nn.Linear(configs.d_model, configs.c_out, bias=True)
+            projection=nn.Linear(configs.d_model, configs.c_out, bias=True),
+            projection_chan=self.projection_chan
         )
 
         if self.task_name == 'imputation':
@@ -145,6 +147,7 @@ class Model(nn.Module):
         dec_out = self.dec_embedding(seasonal_init, x_mark_dec)
         enc_out, attns = self.encoder(enc_out, attn_mask=None)
         # dec
+        print(dec_out.shape,enc_out.shape)
         seasonal_part, trend_part = self.decoder(dec_out, enc_out, x_mask=None, cross_mask=None, trend=trend_init)
         # final
         dec_out = trend_part + seasonal_part

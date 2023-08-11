@@ -14,7 +14,7 @@ class time_serie_NTU:
     """ File to display the lementary objects used in Dataset. """
 
 
-    def __init__(self,input_len:int=30,output_len:int=30,data_path='./dataset/NTU_RGB+D/numpyed/',file_extension='.skeleton.npy',get_cat_value=True,get_time_value=False,categorical_columns=['nbodys', 'actor', 'acti', 'camera', 'scene', 'repet'],preprocess:int=1) -> None:
+    def __init__(self,input_len:int=30,output_len:int=30,data_path='./dataset/NTU_RGB+D/numpyed/',file_extension='.skeleton.npy',get_cat_value=True,get_time_value=False,categorical_columns=[ 'actor', 'acti', 'camera'],preprocess:int=1) -> None:
         """initialisation de la classe
 
         Parameters
@@ -110,24 +110,23 @@ class time_serie_NTU:
         #* Maintenant , begin est de la forme( nb_frames,nb_joints*3) et label est de la forme (nb_frames,nb_joints*3
 
         #* récupération des données catégoriques ou temporelles si besoin
-        if self.get_time_value:
-            time_value_enc=np.arange(debut_frame,debut_frame+self.input_len)*self.intervalle_frame #* Encoding du temps, représente x_mark_enc pour FEDformers
-            time_value_dec=np.arange(debut_frame,debut_frame+self.output_len)*self.intervalle_frame #* Decoding du temps entre deux frames , représente x_mark_dec pour FedFormers
-            time_value_enc=np.tile(time_value_enc,(begin.shape[1],1)).transpose((1,0)) #* On fait un tile pour avoir la même valeur pour chaque joint]))
-            time_value_dec=np.tile(time_value_dec,(label.shape[1],1)).transpose((1,0)) #* On fait un tile pour avoir la même valeur pour chaque joint]))
         if self.get_cat_value:
             mat_cat_data=row[self.categorical_columns].values #* C'est un np.array avec les différentes 
             #* change the type to be float64 , MAY BE BUGGY HERE
             mat_cat_data=mat_cat_data.astype(np.float64)
+            begin=np.concatenate((begin,np.expand_dims(mat_cat_data,axis=0).repeat(begin.shape[0],axis=0)),axis=1)
+        if self.get_time_value:
+            time_value_enc=np.arange(debut_frame,debut_frame+begin.shape[0])*self.intervalle_frame #* Encoding du temps, représente x_mark_enc pour FEDformers
+            time_value_dec=np.arange(debut_frame,debut_frame+label.shape[0])*self.intervalle_frame #* Decoding du temps entre deux frames , représente x_mark_dec pour FedFormers
+            time_value_enc=np.tile(time_value_enc,(begin.shape[1],1)).transpose((1,0)) #* On fait un tile pour avoir la même valeur pour chaque joint]))
+            time_value_dec=np.tile(time_value_dec,(label.shape[1],1)).transpose((1,0)) #* On fait un tile pour avoir la même valeur pour chaque joint]))
+        
 
         
         #*  renvoie la solution de la bonne forme ! 
-        if self.get_time_value and self.get_cat_value:
-            return begin,label,time_value_enc,time_value_dec,mat_cat_data
-        if self.get_time_value:
+        if self.get_time_value :
+            print(begin.shape,label.shape,time_value_enc.shape)
             return begin,label,time_value_enc,time_value_dec
-        if self.get_cat_value:
-            return begin,label,mat_cat_data
         else:
             return begin,label
         
@@ -164,29 +163,18 @@ class time_serie_NTU:
             torch.tensor de la forme [1,nb_frames,nb_channels]
         """
         
-        if self.get_time_value and self.get_cat_value:
-            begin,label,time_value_enc,time_value_dec,mat_cat_data=entry
-    
-        elif self.get_time_value:
+      
+        if self.get_time_value:
              begin,label,time_value_enc,time_value_dec=entry
-        elif self.get_cat_value:
-             begin,label,mat_cat_data=entry
+
         else:
              begin,label=entry 
         begin=tensor(np.expand_dims(begin,axis=0)).float()
         label=tensor(np.expand_dims(label,axis=0)).float()
-        if self.get_time_value and self.get_cat_value:
-            time_value_enc=tensor(np.expand_dims(time_value_enc,axis=0)).float()
-            time_value_dec=tensor(np.expand_dims(time_value_dec,axis=0)).float()
-            mat_cat_data=tensor(np.expand_dims(mat_cat_data,axis=0)).float()
-            return begin,label,time_value_enc,time_value_dec,mat_cat_data
         if self.get_time_value:
             time_value_enc=tensor(np.expand_dims(time_value_enc,axis=0)).float()
             time_value_dec=tensor(np.expand_dims(time_value_dec,axis=0)).float()
             return begin,label,time_value_enc,time_value_dec
-        if self.get_cat_value:
-            mat_cat_data=tensor(np.expand_dims(mat_cat_data,axis=0)).float()
-            return begin,label,mat_cat_data
         else:
             return begin,label
 
@@ -480,7 +468,6 @@ def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:st
             reference=20 # Correspond à Spine shoulder ! 
             for k in range(nbodys):
                 array_k=data[f'skel_body{k}'] #* c'est le déplacement du squelette k  de la forme (nb_frames,nb_joints,3)
-                array_k=array_k-np.mean(array_k[:,reference,:],axis=0) # On recentre le squelette par rapport à la frame de référence
                 array_k=array_k.reshape(array_k.shape[0],array_k.shape[1]*array_k.shape[2])
                 #* On récupère le nombre de frame avant la disparition de la personne
                 marqueur=False
@@ -504,7 +491,10 @@ def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:st
                         continue
                 if marqueur ==False:
                     print("un possible problème de début?")
-                # Calcul de la moyenne par body 
+                # Calcul de la moyenne par body
+                #* AFAIRE APRES
+                array_k=array_k-np.mean(array_k[:,reference,:],axis=0) # On recentre le squelette par rapport à la frame de référence
+ 
                 moyenne=np.mean(array_k,axis=0)
                 sum_moy=np.sum(moyenne,axis=0)
                 mean.append(sum_moy)
@@ -720,3 +710,7 @@ def data_rentrer_dans_DATASET_NTU(path_csv:str='./dataset/NTU_RGB+D/summary_NTU/
         nvdf["debut_frame"] =np.where(nvdf["chp"]+seq_len+out_len<nvdf["nb_frames"],nvdf["chp"], nvdf["debut_frame"])
         #nvdf["debut_frame"]=nvdf["debut_frame"] if nvdf["chp"].str[1]+seq_len+out_len>int(nvdf["nb_frames"]) else nvdf["chp"].str[1]
     return nvdf 
+
+
+def show_grads(model,tol=1e-2):
+    return sorted([(name, 100.0 * float(torch.sum(torch.abs(param) <= tol)) / float(param.nelement())) for name, param in model.named_parameters() if param.requires_grad], key=lambda t: t[1], reverse=True)

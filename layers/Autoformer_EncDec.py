@@ -163,6 +163,7 @@ class DecoderLayer(nn.Module):
         self.activation = F.relu if activation == "relu" else F.gelu
 
     def forward(self, x, cross, x_mask=None, cross_mask=None):
+        print("on passe par là ")
         x = x + self.dropout(self.self_attention(
             x, x, x,
             attn_mask=x_mask
@@ -180,6 +181,7 @@ class DecoderLayer(nn.Module):
 
         residual_trend = trend1 +trend3 #! +trend2
         residual_trend = self.projection(residual_trend.permute(0, 2, 1)).transpose(1, 2)
+        
         return x, residual_trend
 
 
@@ -188,15 +190,17 @@ class Decoder(nn.Module):
     Autoformer encoder
     """
 
-    def __init__(self, layers, norm_layer=None, projection=None):
+    def __init__(self, layers, norm_layer=None, projection=None,projection_chan=None):
         super(Decoder, self).__init__()
         self.layers = nn.ModuleList(layers)
         self.norm = norm_layer
         self.projection = projection
-
+        self.projection_chan=projection_chan
     def forward(self, x, cross, x_mask=None, cross_mask=None, trend=None):
         for layer in self.layers:
             x, residual_trend = layer(x, cross, x_mask=x_mask, cross_mask=cross_mask)
+            if self.projection_chan is not None:
+                trend=self.projection_chan(trend)
             trend = trend + residual_trend
 
         if self.norm is not None:

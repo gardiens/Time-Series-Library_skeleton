@@ -19,6 +19,7 @@ from collections import OrderedDict
 warnings.filterwarnings('ignore')
 
 from utils.NTU_RGB.tensorboard import add_hparams
+from utils.NTU_RGB.utils_dataset import show_grads
 class Exp_Long_Term_Forecast(Exp_Basic):
     """Expérience principalement utilisé au cours du stage
 
@@ -502,7 +503,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         np.save(folder_path + 'pred_test.npy', preds)
         np.save(folder_path + 'true_test.npy', trues)
 
-
+        print("verification des paramètres du modèle", show_grads(self.model))
         #* On plot aussi le train 
         preds = []
         trues = []
