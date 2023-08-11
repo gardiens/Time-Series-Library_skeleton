@@ -147,7 +147,6 @@ class Model(nn.Module):
         dec_out = self.dec_embedding(seasonal_init, x_mark_dec)
         enc_out, attns = self.encoder(enc_out, attn_mask=None)
         # dec
-        print(dec_out.shape,enc_out.shape)
         seasonal_part, trend_part = self.decoder(dec_out, enc_out, x_mask=None, cross_mask=None, trend=trend_init)
         # final
         dec_out = trend_part + seasonal_part
