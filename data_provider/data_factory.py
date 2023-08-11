@@ -168,7 +168,6 @@ def data_provider(args, flag):
                 print(transfo,prop)
                 raise Exception("Problème de taille entre l_transfo et l_prop,Attention à la syntaxe de args.prop")
             if transfo==backward():
-                print(" le backward")
                 data=dataset_augmenter_backward(dataset_ini=data_set,pred_len=args.pred_len,seq_len=args.seq_len) #* On récupère le dataset augmenter
             else:
                 data=dataset_augmenter_augalone(dataset_ini=data_set, transfo=transfo, prop=prop) #* On récupère le dataset augmenter

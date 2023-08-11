@@ -337,7 +337,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             test_loss = self.vali(test_data, test_loader, criterion)
             writer.add_scalar("Loss/train",train_loss,epoch)
             
-            print(vali_loss)
             writer.add_scalar("Loss/vali",vali_loss,epoch)
             writer.add_scalar("Loss/test",test_loss,epoch)
             # On rajoute les nouveaux critères: 
