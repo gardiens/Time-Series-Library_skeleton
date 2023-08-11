@@ -134,23 +134,19 @@ class Model(nn.Module):
         Tensor
             la série temporelle prédite
         """
-        #print(self.pred_len,x_enc,x_enc.shape)
         mean = torch.mean(x_enc, dim=1).unsqueeze(1).repeat(1, self.pred_len, 1)
         seasonal_init, trend_init = self.decomp(x_enc)  # x - moving_avg, moving_avg
         # decoder input
         trend_init = torch.cat([trend_init[:, -self.label_len:, :], mean], dim=1)
         seasonal_init = F.pad(seasonal_init[:, -self.label_len:, :], (0, 0, 0, self.pred_len))
         # enc
-        #print('dans FEDFORMERS debug',x_enc.shape,x_mark_enc.shape)
         enc_out = self.enc_embedding(x_enc, x_mark_enc)
-        #print('dans FEDFORMERS debug',seasonal_init.shape,x_mark_dec.shape)
         dec_out = self.dec_embedding(seasonal_init, x_mark_dec)
         enc_out, attns = self.encoder(enc_out, attn_mask=None)
         # dec
         seasonal_part, trend_part = self.decoder(dec_out, enc_out, x_mask=None, cross_mask=None, trend=trend_init)
         # final
         dec_out = trend_part + seasonal_part
-        #print("dec_out",dec_out.shape)
         return dec_out
 
     def imputation(self, x_enc, x_mark_enc, x_dec, x_mark_dec, mask):
