@@ -286,8 +286,7 @@ def get_args_from_filename(file,args_inherit=None ):
                 self.distil = parser[17][2:] == "True"
                 self.des = str(parser[18])
                 self.ii = int(parser[19])
-                print(parser[18])
-                print(parser[20][2:])
+
                 if len(parser[20][2:])==0:
                     #print("frérot t'as encore oublié cv_NOMBRe alors qu'il fallait faire cvN")
                     self.get_cat_value = int(parser[21])
@@ -321,8 +320,6 @@ def get_args_from_filename(file,args_inherit=None ):
                 self.distil = parser[17][2:] == "True"
                 self.des = str(parser[18])
                 self.ii = int(parser[19])
-                print(parser[18])
-                print(parser[20][2:])
                 if len(parser[20][2:])==0:
                     #print("frérot t'as encore oublié cv_NOMBRe alors qu'il fallait faire cvN")
                     self.get_cat_value = int(parser[21])
