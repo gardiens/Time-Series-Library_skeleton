@@ -164,7 +164,6 @@ class dataset_NTURGBD(Dataset):
                 return pd.DataFrame(train_test_split(df,test_size=1-self.train_size)[self.set_type])
             else:
                 df2=pd.DataFrame(train_test_split(df,train_size=self.train_size)[1])
-                #print(self.test_size/self.train_size)
                 return pd.DataFrame(train_test_split(df2,test_size=self.test_size/(1-self.train_size))[self.set_type-1])
    
     def get_data_from_sample_name(self,name_skeleton:str,num_body=0):

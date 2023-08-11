@@ -125,7 +125,7 @@ class time_serie_NTU:
         
         #*  renvoie la solution de la bonne forme ! 
         if self.get_time_value :
-            print(begin.shape,label.shape,time_value_enc.shape)
+            #print(begin.shape,label.shape,time_value_enc.shape)
             return begin,label,time_value_enc,time_value_dec
         else:
             return begin,label

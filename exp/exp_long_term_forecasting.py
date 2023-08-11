@@ -243,6 +243,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         print("----- début du training-----",flush=True)
 
         for epoch in range(self.args.train_epochs):
+
             iter_count = 0
             train_loss = []
             train_mae=[]
@@ -262,12 +263,10 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 batch_y = batch_y.float().to(self.device)
                 batch_x_mark = batch_x_mark.float().to(self.device)
                 batch_y_mark = batch_y_mark.float().to(self.device)
-
                 # decoder input
                 #dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
                 dec_inp= torch.zeros((batch_y.shape[0],self.args.pred_len,batch_y.shape[2])).float().to(self.device) #! Modifié moi même 
                 dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
-
                 # encoder - decoder
                 if self.args.use_amp: #*Jamais utilisé en pratique
                     with torch.cuda.amp.autocast():
@@ -283,12 +282,10 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                         train_loss.append(loss.item())
 
                 else:
-                    print("ouput pré passage modèle")
                     if self.args.output_attention:
                         outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)[0]
                     else:
                         outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
-                    print("ouput post modèle")
                     f_dim = -1 if self.args.features == 'MS' else 0
                     outputs = outputs[:, -self.args.label_len:, f_dim:]
                     
