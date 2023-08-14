@@ -18,6 +18,7 @@ if torch.cuda.is_available():
 else:
     import numpy as np 
 from setuptools import distutils
+import distutils.version
 from utils.NTU_RGB.plot_skeleton import plot_video_skeletons,plot_skeleton
 from utils.constantes import get_settings,get_args_from_filename
 from torch.utils.tensorboard import SummaryWriter
