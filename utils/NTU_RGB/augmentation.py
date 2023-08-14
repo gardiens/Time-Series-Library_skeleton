@@ -12,7 +12,7 @@ import copy
 
 class load_data(object):
     def __init__(self,input_len:int=30,output_len:int=30,data_path='./dataset/NTU_RGB+D/numpyed/',file_extension='.skeleton.npy',get_cat_value=True,get_time_value=False,categorical_columns=['nbodys', 'actor', 'acti', 'camera', 'scene', 'repet']):
-
+        pass
     def __call__(self, row):
          # data est de la frome [nb_frames,nb_joints,3] à la fin 
         mat_path=os.path.join(self.data_path,row['filename']+self.file_extension) #! WARNING ON THE EXTENSION OF THE .NPY
