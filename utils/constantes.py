@@ -18,12 +18,12 @@ data_dict = {
     'NTU': dataset_NTURGBD
 } # Dict des différentes données. Il n'est pas utilisé pour l'instant à cause de problème de circular import."""
 #used in data_factory
-"""from models import Autoformer, Transformer, TimesNet, Nonstationary_Transformer, DLinear, FEDformer, \
+from models import Autoformer, Transformer, TimesNet, Nonstationary_Transformer, DLinear, FEDformer, \
     Informer, LightTS, Reformer, ETSformer, Pyraformer, PatchTST, MICN, Crossformer, FiLM
 from models import FEDformer_wavelet
-"""
+
 #used in exp_basic.
-"""model_dict = {
+model_dict = {
         'TimesNet': TimesNet,
         'Autoformer': Autoformer,
         'Transformer': Transformer,
@@ -43,7 +43,7 @@ from models import FEDformer_wavelet
         'NTS':Nonstationary_Transformer,
         'FEDWav':FEDformer_wavelet
     } #
-        Dict des différentes données. Il n'est pas utilisé pour l'instant à cause de problème de circular import."""
+#Dict des différentes données. Il n'est pas utilisé pour l'instant à cause de problème de circular import.
 #} #! Il manque Metaformer
 
 

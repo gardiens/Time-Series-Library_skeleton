@@ -82,7 +82,7 @@ Liste_set_membre={
     "5_partie":[dict_membre["buste"],dict_membre["bras_gauche"],dict_membre["bras_droit"],dict_membre["jambe_gauche"],dict_membre["jambe_droite"]],
     "3_partie:":[dict_membre["buste"],dict_membre["bras_gauche"]+dict_membre["bras_droit"],dict_membre["jambe_gauche"]+dict_membre["jambe_droite"]],
     "2_partie":[dict_membre["buste"]+dict_membre["bras_gauche"]+dict_membre["bras_droit"],dict_membre["jambe_gauche"]+dict_membre["jambe_droite"]],
-}
+}# Dictionnaire des différents coordonnées des membres 
 # pour 3 partie: on en a 5*3 buste, 12*3 bras, 8*3 jambe
 
 dict_set_membre={
@@ -91,4 +91,5 @@ dict_set_membre={
         "arm":Liste_set_membre["3_partie:"][1],
         "leg":Liste_set_membre["3_partie:"][2]
     }
-}
+}# permets de récupérer une liste qui contient les points de chauqe membre qu'on va prédire.
+
