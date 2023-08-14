@@ -85,7 +85,6 @@ if __name__ == '__main__':
     parser.add_argument('--loss', type=str, default='MSE', help='loss function. Chose wether MSE or MAE')
     parser.add_argument('--lradj', type=str, default='type1', help='adjust learning rate. options:[constant, sem_constant, cosine, type1, type2]')
     parser.add_argument('--use_amp', action='store_true', help='use automatic mixed precision training', default=False)
-pre
     # GPU
     parser.add_argument('--use_gpu', type=bool, default=True, help='use gpu')
     parser.add_argument('--gpu', type=int, default=0, help='gpu')
