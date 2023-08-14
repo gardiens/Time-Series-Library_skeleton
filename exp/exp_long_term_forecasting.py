@@ -8,7 +8,7 @@ from torch import optim
 import os
 import time
 import warnings
-if torch.cuda
+
 if torch.cuda.is_available(): 
     try:
         import cupy as np 
