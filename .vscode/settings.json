@@ -4,5 +4,9 @@
     "doki.wallpaper.path": "C:/Users/lix/Pictures/dokithem/H7.png",
     "doki.background.enabled": true,
     "doki.sticker.css": "  ",
-    "doki.wallpaper.enabled": true
+    "doki.wallpaper.enabled": true,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python"
+    },
+    "python.formatting.provider": "none"
 }
