@@ -378,7 +378,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         test_data, test_loader = self._get_data(flag='test')
         if test:
             print('loading model')
-            load_checkpoint(model=self.model,setting=setting,checkpoint_path='./checkpoints/',args=self.args
+            load_checkpoint(model=self.model,setting=setting,checkpoint_path='./checkpoints/',args=self.args)
         preds = []
         trues = []
         folder_path = './test_results/' + setting + '/'
