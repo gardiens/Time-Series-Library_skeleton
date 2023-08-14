@@ -33,7 +33,7 @@ python -u run.py \
   --get_cat_value 0 \
   --get_time_value 1 \
   --use_gpu 1 \
-  --train_epochs 14\
+  --train_epochs 20\
   --lradj sem_constant \
   --patience 4 \
   --batch_size ${batch_size}\
