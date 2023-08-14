@@ -31,3 +31,8 @@ data_loader contient toutes les implémentations de dataset disponibles
 - NTURGB l'implémentation du dataset NTU_RGBD. Il est à noter qu'il existe des extensions de ce dataset sous le nom NTU_leg, NTU_arm, NTU_body qui permettent de récupérer uniquement certains membres des squelettes. Ce dataset utilise des fonctions présente dans utils/NTU_RGB
 - Il existe aussi les datasets initiaux: ETT,PMSEG,MSLeg,SWATSegLoader,UEAloader
 
+
+
+
+##Todo: 
+Pour améliorer la rapidité des modèles sur NTU_RGB, on pourrait faire tous le preprocessing des données en créeant une nouvelle colonne du dataframe et récupérer ensuite l'objet, cela augmenterait grandement la compléxité temporelle...

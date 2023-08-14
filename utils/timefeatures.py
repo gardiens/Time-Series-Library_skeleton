@@ -14,7 +14,12 @@
 
 from typing import List
 
-import numpy as np
+import torch as t 
+if t.cuda.is_available():
+    try:
+        import cupy as np
+    except:
+        import numpy as np
 import pandas as pd
 from pandas.tseries import offsets
 from pandas.tseries.frequencies import to_offset

@@ -18,7 +18,12 @@ Loss functions for PyTorch.
 
 import torch as t
 import torch.nn as nn
-import numpy as np
+if t.cuda.is_available():
+    try:
+        import cupy as np
+    except:
+        import numpy as np
+
 import pdb
 
 

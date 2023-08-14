@@ -8,7 +8,15 @@ from torch import optim
 import os
 import time
 import warnings
-import numpy as np
+if torch.cuda
+if torch.cuda.is_available(): 
+    try:
+        import cupy as np 
+    except:
+        import numpy as np 
+        print("on importe numpy malgré un GPU?")
+else:
+    import numpy as np 
 from setuptools import distutils
 from utils.NTU_RGB.plot_skeleton import plot_video_skeletons,plot_skeleton
 from utils.constantes import get_settings,get_args_from_filename
@@ -438,7 +446,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     X_true=X_true.transpose(1,2,0)
                     #* On va plot les résultats. On plot en bleu le vrai et en rouge le prédit. On plot aussi le comportement global du modèle initial.
                     filename=str(test_data.liste_path["filename"].iloc[i]) # ???
-                    plot_video_skeletons(mat_skeletons=[X_true,X_pred],save_name="label:"+self.args.model_id+filename,path_folder_save=os.path.join(folder_path))
+                    plot_video_skeletons(list_mat_skeletons=[X_true,X_pred],save_name="label:"+self.args.model_id+filename,path_folder_save=os.path.join(folder_path))
                     
                     plot_skeleton(path_skeleton=os.path.join(self.args.root_path,"raw/",filename+".skeleton"),save_name=str(i)+filename,path_folder_save=folder_path)
 
@@ -530,7 +538,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     X_pred=X_pred.transpose(1,2,0)
                     X_true=X_true.transpose(1,2,0)
                     #* On va plot les résultats
-                    plot_video_skeletons(mat_skeletons=[X_true,X_pred],save_name="train:"+self.args.model_id+str(i),path_folder_save=os.path.join(folder_path))
+                    plot_video_skeletons(list_mat_skeletons==[X_true,X_pred],save_name="train:"+self.args.model_id+str(i),path_folder_save=os.path.join(folder_path))
                     filename=str(test_data.liste_path["filename"].iloc[i]) # ???
                     plot_skeleton(path_skeleton=os.path.join(self.args.root_path,"raw/",filename+".skeleton"),save_name="train_"+str(i)+filename,path_folder_save=folder_path)
 

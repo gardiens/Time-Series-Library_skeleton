@@ -9,7 +9,12 @@ Three functions are provided.
 
 """
 
-import numpy as np
+import torch as t 
+if t.cuda.is_available():
+    try:
+        import cupy as np
+    except:
+        import numpy as np
 
 
 def read_skeleton(file):

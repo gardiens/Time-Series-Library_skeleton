@@ -1,7 +1,12 @@
 """ Everything usefull while parsing some NTU dataset ! """
 
 import os
-import numpy as np
+import torch as t 
+if t.cuda.is_available():
+    try:
+        import cupy as np
+    except:
+        import numpy as np
 import pandas as pd
 from torch import tensor
 import ruptures as rpt  # Package for changepoint detection

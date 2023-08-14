@@ -5,8 +5,12 @@ Les fonctiosn actuellement implémentés sont Randmix,augment,  et des rotations
 import os
 from typing import Any
 import torch
-
-import numpy as np
+import torch as t 
+if t.cuda.is_available():
+    try:
+        import cupy as np
+    except:
+        import numpy as np
 
 import copy 
 
