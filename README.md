@@ -19,13 +19,13 @@
 <br />
 <div align="center">
   <a href="https://github.com/gardiens/Time-Series-Library_babygarches">
-    <img src="images/logos.png.jpg" alt="Logo" width="160" height="160">
+    <img src="images/logos.png.jpg" alt="Logo" width="360" height="360">
   </a>
 
 <h3 align="center">Time-series-Forecasting babygarches</h3>
 
   <p align="center">
-    use of Deep Learning models to predict skeletons
+    Deep learning models to predict human skeleton 
     <br />
     <a href="https://github.com/gardiens/Time-Series-Library_babygarches"><strong>Explore the docs »</strong></a>
     <br />
@@ -71,20 +71,15 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-The goal of this project is to predict skeleton using Deep-learning architectures and especially FEDFormers and AutoFormers. It relies heavily on Time-series Library from thuml( https://github.com/thuml/Time-Series-Library/tree/main)
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
+The goal of this project is to predict skeleton using Deep-learning architectures and especially  using FEDFormers and AutoFormers. It relies heavily on Time-series Library from [thuml]( https://github.com/thuml/Time-Series-Library/tree/main)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
-If you want to set up 
 To get a local copy up and running follow these simple  steps.
 
 ### Installation
@@ -104,7 +99,7 @@ the file .npy should be stored in dataset/NTU_RGB+D/numpyed/ and the raw data sh
  ```py
    python3 build_csv.py
    ```
-6. then run the main.py with your argument :) 
+6. then run the main.py with your argument :)  Somes scripts are provided in the scripts folder.
 
 
 
@@ -115,9 +110,23 @@ the file .npy should be stored in dataset/NTU_RGB+D/numpyed/ and the raw data sh
 
 <!-- USAGE EXAMPLES -->
 ## Usage
+this repo provides several features:
+- you can preprocess the NTU_RGB+D  dataset efficiently
+- you can train FEDFormers and AutoFormers on this dataset
+- you can plot your results 
 
-This repository
 
+## Pipeline of the code
+the code is organised as follow:
+1. When you run main.py, it builds an instance of exp/Long_term_forecasting which is the pipeline of the training/test 
+2. it find the dataset on [dataset/your_dataset](https://github.com/gardiens/Time-Series-Library_babygarches/tree/master/data_provider) and builds the model in [models/your_model](https://github.com/gardiens/Time-Series-Library_babygarches/tree/master/models). it eventually runs  the training/test code
+3. you can fetch the result and have logs on several folder. 
+    - In test_results you can see videos of your model after the training session, 
+    - in results you have a results_df.csv which is a dataframe that give the loss of every sample of the model. 
+    - in runs you have the tensorboards logs of the run.
+
+the setting name is supposed to be a unique ID of each models run. 
+I added on every folder a readme to help you to grasp what functions are supposed to do.If you want to use fast some function of this repo, I added a COMMANDE_UTILE.ipynb which is supposed to summarize the usual functions needed.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -125,12 +134,14 @@ This repository
 
 <!-- ROADMAP -->
 ## Roadmap
-
-- [ ] Feature 1
+### Non technical roadmap
+- [ ] Insert Categorical value in the prediction. It can be with a PCA or just with the concatenation of models
 - [ ] Feature 2
 - [ ] Feature 3
     - [ ] Nested Feature
-
+### more technical roadmap 
+- [ ]  rewrite the preprocess step to be easier to add new steps and write it on torch to be faster
+- [ ] Ease the fetch of new results and get faster insights on the results. it means to fetch faster the data and have more visual analysis of the models ( gradient/non zero layers..) 
 See the [open issues](https://github.com/gardiens/Time-Series-Library_babygarches/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

@@ -1,6 +1,6 @@
 """ Le but est de recenser ici toutes les constantes dans les programmes :') """
-from data_provider.data_loader import Dataset_ETT_hour, Dataset_ETT_minute, Dataset_Custom, Dataset_M4, PSMSegLoader, \
-    MSLSegLoader, SMAPSegLoader, SMDSegLoader, SWATSegLoader, UEAloader,dataset_NTURGBD
+"""from data_provider.data_loader import Dataset_ETT_hour, Dataset_ETT_minute, Dataset_Custom, Dataset_M4, PSMSegLoader, \
+    MSLSegLoader, SMAPSegLoader, SMDSegLoader, SWATSegLoader, UEAloader,dataset_NTURGBD"""
 """
 data_dict = {
     'ETTh1': Dataset_ETT_hour,
@@ -18,10 +18,10 @@ data_dict = {
     'NTU': dataset_NTURGBD
 } # Dict des différentes données. Il n'est pas utilisé pour l'instant à cause de problème de circular import."""
 #used in data_factory
-from models import Autoformer, Transformer, TimesNet, Nonstationary_Transformer, DLinear, FEDformer, \
+"""from models import Autoformer, Transformer, TimesNet, Nonstationary_Transformer, DLinear, FEDformer, \
     Informer, LightTS, Reformer, ETSformer, Pyraformer, PatchTST, MICN, Crossformer, FiLM
 from models import FEDformer_wavelet
-
+"""
 #used in exp_basic.
 """model_dict = {
         'TimesNet': TimesNet,

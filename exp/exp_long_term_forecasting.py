@@ -372,14 +372,13 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             vaut 0 si le modèle vient d'être entrainé, sinon vaut 1 pour load le checkpoints dans checkpoints/setting/checkpoint.pth, by default 0
         détail technique: 
         le plot des squelettes est sauvegardé dans test_results/setting/ et le pandas dataframe est sauvegardé dans results/setting/
-        Le plot des squelettes ne "coupe" pas les prédictions, il se peut donc qu'il y a une différence de longueur entre la prédiction et les labels.
+        Rq: Le plot des squelettes ne "couperait" pas les prédictions, il se peut donc qu'il y a une différence de longueur entre la prédiction et les labels.
         """        
         train_data,train_loader = self._get_data(flag='train')
         test_data, test_loader = self._get_data(flag='test')
         if test:
             print('loading model')
             load_checkpoint(model=self.model,setting=setting,checkpoint_path='./checkpoints/',args=self.args
-            
         preds = []
         trues = []
         folder_path = './test_results/' + setting + '/'
@@ -475,7 +474,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         np.save(folder_path + 'pred_test.npy', preds)
         np.save(folder_path + 'true_test.npy', trues)
 
-        #print("verification des paramètres du modèle", show_grads(self.model))
+        print("verification des paramètres du modèle", show_grads(self.model))
         #* On plot aussi le train 
         preds = []
         trues = []

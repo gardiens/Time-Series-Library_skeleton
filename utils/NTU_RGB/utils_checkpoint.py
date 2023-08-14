@@ -3,7 +3,7 @@ import torch
 import os 
 from collections import OrderedDict
 from utils.constantes import get_settings,get_args_from_filename
-def load_checkpoint(model,setting,checkpoint_path="./checkpoints/",args):
+def load_checkpoint(model,setting,args,checkpoint_path="./checkpoints/"):
     """load un model sachant un setting. Le checkpoint est sotcké dans checkpoint_path+setting.
 
     Parameters
@@ -17,7 +17,7 @@ def load_checkpoint(model,setting,checkpoint_path="./checkpoints/",args):
     checkpoint_path : str, optional
         path du checkpoint, à priori fixe dans toute l'implémentation, by default "./checkpoints/"
     """
-    
+    print("load",args.model_id)
     if "Meta" not in setting:
         if torch.cuda.is_available():
                     
