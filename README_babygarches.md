@@ -13,20 +13,13 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
 
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/gardiens/Time-Series-Library_babygarches">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="images/logos.png.jpg" alt="Logo" width="160" height="160">
   </a>
 
 <h3 align="center">Time-series-Forecasting babygarches</h3>
@@ -111,7 +104,7 @@ the file .npy should be stored in dataset/NTU_RGB+D/numpyed/ and the raw data sh
  ```py
    python3 build_csv.py
    ```
-6. then run the main.py with your argument :)
+6. then run the main.py with your argument :) 
 
 
 
@@ -123,26 +116,8 @@ the file .npy should be stored in dataset/NTU_RGB+D/numpyed/ and the raw data sh
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Install Python 3.8. For convenience, execute the following command.
-pip install -r requirements.txt
-Prepare Data. You can obtained the well pre-processed datasets from [Google Drive], [Tsinghua Cloud] or [Baidu Drive]. Then place the downloaded data under the folder ./dataset. Here is a summary of supported datasets.
+This repository
 
-
-Train and evaluate model. We provide the experiment scripts of all benchmarks under the folder ./scripts/. You can reproduce the experiment results as the following examples:
-# long-term forecast
-bash ./scripts/long_term_forecast/ETT_script/TimesNet_ETTh1.sh
-# short-term forecast
-bash ./scripts/short_term_forecast/TimesNet_M4.sh
-# imputation
-bash ./scripts/imputation/ETT_script/TimesNet_ETTh1.sh
-# anomaly detection
-bash ./scripts/anomaly_detection/PSM/TimesNet.sh
-# classification
-bash ./scripts/classification/TimesNet.sh
-Develop your own model.
-Add the model file to the folder ./models. You can follow the ./models/Transformer.py.
-Include the newly added model in the Exp_Basic.model_dict of ./exp/exp_basic.py.
-Create the corresponding scripts under the folder ./scripts
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -170,11 +145,6 @@ Contributions are what make the open source community such an amazing place to l
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -199,25 +169,14 @@ Project Link: [https://github.com/gardiens/Time-Series-Library_babygarches](http
 
 
 
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* []()
-* []()
-* []()
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/github_username/Time-Series-Library_babygarches
 .svg?style=for-the-badge
-[contributors-url]: https://github.com/gardiens/Time-Series-Library_babygarches/graphs/contributors
+[contributors-url]: https://github.com/gardiens/Time-Series-Library_babygarches
 [forks-shield]: https://img.shields.io/github/forks/github_username/Time-Series-Library_babygarches
 .svg?style=for-the-badge
-[forks-url]: https://github.com/gardiens/Time-Series-Library_babygarches/network/members
+[forks-url]: https://github.com/gardiens/Time-Series-Library_babygarches/network
 [stars-shield]: https://img.shields.io/github/stars/github_username/Time-Series-Library_babygarches
 .svg?style=for-the-badge
 [stars-url]: https://github.com/gardiens/Time-Series-Library_babygarches/stargazers

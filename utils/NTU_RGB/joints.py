@@ -10,7 +10,7 @@ import numpy as np
 class Joints(IntEnum):
     r"""Maps each Kinect v2 joint name to its corresponding index. See
     https://medium.com/@lisajamhoury/understanding-kinect-v2-joints-and-coordinate-system-4f4b90b9df16 for joints infos.
-
+    Utilisé pour donner les liens entre les différentes coordonnées d'un squelette.
     """
     SPINEBASE = 0
     SPINEMID = 1

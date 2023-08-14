@@ -3,6 +3,7 @@
 
 '''
 transform the skeleton data in NTU RGB+D dataset into the numpy arrays for a more efficient data loading
+It comes from NTU_RGB github so I didn't touch it except the save_npy_path and load_txt_path
 '''
 
 import numpy as np

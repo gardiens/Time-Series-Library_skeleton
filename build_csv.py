@@ -1,4 +1,5 @@
 """ Fichier pour build les csv pour refaire la documentation des données"""
+""" a run si jamais on veut setup le repo sur une nouvelle machine."""
 from utils.NTU_RGB.utils_dataset import *
 
 if __name__ == '__main__':

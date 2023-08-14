@@ -1,7 +1,7 @@
 """ Le but est de recenser ici toutes les constantes dans les programmes :') """
 from data_provider.data_loader import Dataset_ETT_hour, Dataset_ETT_minute, Dataset_Custom, Dataset_M4, PSMSegLoader, \
     MSLSegLoader, SMAPSegLoader, SMDSegLoader, SWATSegLoader, UEAloader,dataset_NTURGBD
-
+"""
 data_dict = {
     'ETTh1': Dataset_ETT_hour,
     'ETTh2': Dataset_ETT_hour,
@@ -16,14 +16,14 @@ data_dict = {
     'SWAT': SWATSegLoader,
     'UEA': UEAloader,
     'NTU': dataset_NTURGBD
-}
+} # Dict des différentes données. Il n'est pas utilisé pour l'instant à cause de problème de circular import."""
 #used in data_factory
 from models import Autoformer, Transformer, TimesNet, Nonstationary_Transformer, DLinear, FEDformer, \
     Informer, LightTS, Reformer, ETSformer, Pyraformer, PatchTST, MICN, Crossformer, FiLM
 from models import FEDformer_wavelet
 
 #used in exp_basic.
-model_dict = {
+"""model_dict = {
         'TimesNet': TimesNet,
         'Autoformer': Autoformer,
         'Transformer': Transformer,
@@ -42,7 +42,9 @@ model_dict = {
         'NonstationaryTransformer':Nonstationary_Transformer,
         'NTS':Nonstationary_Transformer,
         'FEDWav':FEDformer_wavelet
-} #! Il manque Metaformer
+    } #
+        Dict des différentes données. Il n'est pas utilisé pour l'instant à cause de problème de circular import."""
+#} #! Il manque Metaformer
 
 
 
@@ -148,6 +150,7 @@ Contains a help *Joints* class which maps each Kinect v2 index with its name. Al
 array which contains all neighboring joints.
 
 """
+
 from enum import IntEnum
 import numpy as np
 
@@ -155,6 +158,7 @@ import numpy as np
 class Joints(IntEnum):
     r"""Maps each Kinect v2 joint name to its corresponding index. See
     https://medium.com/@lisajamhoury/understanding-kinect-v2-joints-and-coordinate-system-4f4b90b9df16 for joints infos.
+    Utilisé pour donner les liens entre les différentes coordonnées d'un squelette.
 
     """
     SPINEBASE = 0
@@ -228,7 +232,8 @@ connexion_tuples = np.array([[Joints.SPINEBASE, Joints.SPINEMID],
 # utilisé dans expr.basic et expr.long_term_forecast
 def get_settings(args):
     """ Sachant des args, permets de renvoyer un setting de manière automatiser,
-    REMPLACE AUTOMATQIEUEMNT _ PAR - """
+    ces settings sont le nom des dossiers des checkpoints et des results 
+     """
     try:
         args.num_itr
     except:
@@ -259,8 +264,18 @@ def get_settings(args):
 
 
 def get_args_from_filename(file,args_inherit=None ):
-    """ On va retourner le setting sachant le Filefait à la main
-    POUR FED SI CEST NTU IL FAUT RAJOUTER DES TRUCS  """
+    """On retourne les args modifié sachant un nom de setting 
+    file:
+        le nom du setting dont on veut récupérer les args
+    args_inherit:
+        classe d'args de référence. Certains paramètres ne sont pas explicité par args et nous devons donc les inférer. 
+
+    Returns
+    -------
+    args
+        classe d'args qu'on peut ensuite utilisés
+    """
+    #TODO: réajuster les args par défaut
     parser=file.split("_")
     if args_inherit is None:
         class Args1(Args_technique_CPU):
@@ -464,18 +479,3 @@ class Args_technique_GPU():
 
         # NTU_RGB
         self.ii=0
-dict_membre={
-    "buste":[0,1,2,3,20],
-    "bras_gauche":[4,5,6,7,21,22],
-    "bras_droit":[8,9,10,11,23,24],
-    "jambe_gauche":[12,13,14,15],
-    "jambe_droite":[16,17,18,19],
-    
-}
-
-Liste_set_membre={
-    "5_partie":[dict_membre["buste"],dict_membre["bras_gauche"],dict_membre["bras_droit"],dict_membre["jambe_gauche"],dict_membre["jambe_droite"]],
-    "3_partie:":[dict_membre["buste"],dict_membre["bras_gauche"]+dict_membre["bras_droit"],dict_membre["jambe_gauche"]+dict_membre["jambe_droite"]],
-    "2_partie":[dict_membre["buste"]+dict_membre["bras_gauche"]+dict_membre["bras_droit"],dict_membre["jambe_gauche"]+dict_membre["jambe_droite"]],
-}
-

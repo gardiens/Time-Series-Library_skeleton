@@ -9,6 +9,20 @@ plt.switch_backend('agg')
 
 
 def adjust_learning_rate(optimizer, epoch, args):
+    """utilisé dans exp.train pour modifié le learning rate
+
+    Parameters
+    ----------
+    optimizer : _type_
+        l'optimizer utilisé ?
+    epoch : int
+        numéro de l'epochregardé
+    args : classe
+        args qu'on récupère quand on run run.py
+
+    ------------
+    lr_adjust est un dictionnaire de la forme {epoch:args.learning_rate}
+    """
     # lr = args.learning_rate * (0.2 ** (epoch // 2))
     if args.lradj=="constant":
         lr_adjust = {epoch: args.learning_rate}
@@ -39,6 +53,8 @@ def adjust_learning_rate(optimizer, epoch, args):
 
 
 class EarlyStopping:
+    """Classe d'early Stoping, elle permet de s'arrêter quand la validation loss va augmenter. C'est aussi cette classe qui va sauvegarder les modèles
+    """
     def __init__(self, patience=7, verbose=False, delta=10**-6):
         self.patience = patience
         self.verbose = verbose

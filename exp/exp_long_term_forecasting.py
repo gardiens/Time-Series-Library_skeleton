@@ -14,11 +14,10 @@ from utils.NTU_RGB.plot_skeleton import plot_video_skeletons,plot_skeleton
 from utils.constantes import get_settings,get_args_from_filename
 from torch.utils.tensorboard import SummaryWriter
 from utils.losses import mape_loss, mase_loss, smape_loss
-
+from utils.NTU_RGB.utils_checkpoint import load_checkpoint
 from collections import OrderedDict
 warnings.filterwarnings('ignore')
 
-from utils.NTU_RGB.tensorboard import add_hparams
 from utils.NTU_RGB.utils_dataset import show_grads
 class Exp_Long_Term_Forecast(Exp_Basic):
     """Expérience principalement utilisé au cours du stage
@@ -379,33 +378,8 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         test_data, test_loader = self._get_data(flag='test')
         if test:
             print('loading model')
-            if "Meta" not in setting:
-                if torch.cuda.is_available():
-                    state_dict = torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth'))
-                else:
-                    state_dict = torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth'),map_location=torch.device('cpu'))
-                # create new OrderedDict that does not contain `module.`
-
-                new_state_dict = OrderedDict()
-                for k, v in state_dict.items():
-                    
-                    name = k[7:] # remove `module.`
-                    new_state_dict[name] = v
-                
-                try: #* On load le check 
-
-                    if torch.cuda.is_available():
-                        self.model.load_state_dict(new_state_dict)
-                    else:
-                        self.model.load_state_dict(new_state_dict)
-                except FileNotFoundError:
-                    args1=get_args_from_filename(setting,self.args)
-                    args1.get_cat_value="_"+str(args1.get_cat_value)
-                    setting1=get_settings(args1)
-                    if torch.cuda.is_available():
-                        self.model.load_state_dict(new_state_dict)
-                    else:
-                        self.model.load_state_dict(new_state_dict)
+            load_checkpoint(model=self.model,setting=setting,checkpoint_path='./checkpoints/',args=self.args
+            
         preds = []
         trues = []
         folder_path = './test_results/' + setting + '/'

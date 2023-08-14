@@ -672,8 +672,11 @@ def summary_csv_NTU(path_data_npy:str='./dataset/NTU_RGB+D/numpyed/',path_csv:st
                     print("un possible problème de début?")
                 # Calcul de la moyenne par body
                 #* AFAIRE APRES
+                array_k=array_k.reshape(array_k.shape[0],njoints,3)
+
                 array_k=array_k-np.mean(array_k[:,reference,:],axis=0) # On recentre le squelette par rapport à la frame de référence
- 
+                array_k=array_k.reshape(array_k.shape[0],array_k.shape[1]*array_k.shape[2])
+
                 moyenne=np.mean(array_k,axis=0)
                 sum_moy=np.sum(moyenne,axis=0)
                 mean.append(sum_moy)
