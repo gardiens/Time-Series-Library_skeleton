@@ -7,7 +7,7 @@ pred_len=32
 label_len=32
 data=NTU
 batch_size=256
-model_id_name=14-08-FEDmean
+model_id_name=15-08-FEDmean
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 1 \
@@ -33,9 +33,9 @@ python -u run.py \
   --get_cat_value 0 \
   --get_time_value 1 \
   --use_gpu 1 \
-  --train_epochs 20\
+  --train_epochs 60\
   --lradj sem_constant \
-  --patience 4 \
+  --patience 10 \
   --batch_size ${batch_size}\
   --learning_rate $(echo "scale=10; 10^-3" | bc)\
   --split_train_test action \
