@@ -388,7 +388,8 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         test_data, test_loader = self._get_data(flag='test')
         if test:
             print('loading model')
-            load_checkpoint(model=self.model,setting=setting,checkpoint_path='./checkpoints/',args=self.args)
+            #load_checkpoint(model=self.model,setting=setting,checkpoint_path='./checkpoints/',args=self.args)
+
         preds = []
         trues = []
         folder_path = './test_results/' + setting + '/'
@@ -444,7 +445,9 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     filename=str(test_data.liste_path["filename"].iloc[i]) # ???
                     num_body=int(test_data.liste_path["num_body"].iloc[i])
                     row=test_data.liste_path.iloc[i]
-                    mat_path=os.path.join(self.args.data_path,row["filename"]+".skeleton.npy")
+                    print(filename)
+                    print(os.path.join(self.args.data_path,filename+".skeleton.npy"))
+                    mat_path=os.path.join(self.args.data_path,filename+".skeleton.npy")
                     data=np.load(mat_path,allow_pickle=True).item()[f'skel_body{int(num_body)}'] #* C'est une matrice de la forme [frames,nb_joints,3]
                     
                     debut_frame=int(row['debut_frame'])
