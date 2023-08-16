@@ -388,7 +388,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         test_data, test_loader = self._get_data(flag='test')
         if test:
             print('loading model')
-            #load_checkpoint(model=self.model,setting=setting,checkpoint_path='./checkpoints/',args=self.args)
+            load_checkpoint(model=self.model,setting=setting,checkpoint_path='./checkpoints/',args=self.args)
 
         preds = []
         trues = []
@@ -442,7 +442,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     y_out=data_set.inverse_transform_data(y_out)
                     y_true=data_set.inverse_transform_data(y_true)
 
-                    """filename=str(test_data.liste_path["filename"].iloc[i]) # ???
+                    filename=str(test_data.liste_path["filename"].iloc[i]) # ???
                     num_body=int(test_data.liste_path["num_body"].iloc[i])
                     row=test_data.liste_path.iloc[i]
                     mat_path=os.path.join(self.args.root_path,self.args.data_path,filename+".skeleton.npy")
@@ -453,10 +453,10 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     """debut=debut_frame  
                     begin=data[debut:debut+self.args.seq_len]
                     mean=np.mean(begin[:,:,:],axis=0)
-                    """
                     
-                    X_pred=y_out #np.concatenate((X,y_out),axis=0) # Quelle axis?
-                    X_true=y_true #np.concatenate((X,y_true),axis=0)
+                    
+                    X_pred=y_out+mean #np.concatenate((X,y_out),axis=0) # Quelle axis?
+                    X_true=y_true+mean #np.concatenate((X,y_true),axis=0)
                     #* plot_video_skeletons demande :  (nb_joints,3,nb_frames) et pour l'instant on a ( nb_frames,nb_joints,3) 
                     
                     X_pred=X_pred.transpose(1,2,0)
