@@ -442,23 +442,21 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     y_out=data_set.inverse_transform_data(y_out)
                     y_true=data_set.inverse_transform_data(y_true)
 
-                    filename=str(test_data.liste_path["filename"].iloc[i]) # ???
+                    """filename=str(test_data.liste_path["filename"].iloc[i]) # ???
                     num_body=int(test_data.liste_path["num_body"].iloc[i])
                     row=test_data.liste_path.iloc[i]
-                    print(filename)
-                    print(os.path.join(self.args.root_path,self.args.data_path,filename+".skeleton.npy"))
                     mat_path=os.path.join(self.args.root_path,self.args.data_path,filename+".skeleton.npy")
                     data=np.load(mat_path,allow_pickle=True).item()[f'skel_body{int(num_body)}'] #* C'est une matrice de la forme [frames,nb_joints,3]
                     
-                    debut_frame=int(row['debut_frame'])
+                    debut_frame=int(row['debut_frame'])"""
                     #* On récupère le début et la fin de la séquence
-                    debut=debut_frame  
+                    """debut=debut_frame  
                     begin=data[debut:debut+self.args.seq_len]
                     mean=np.mean(begin[:,:,:],axis=0)
-
+                    """
                     
-                    X_pred=y_out +mean #np.concatenate((X,y_out),axis=0) # Quelle axis?
-                    X_true=y_true+mean #np.concatenate((X,y_true),axis=0)
+                    X_pred=y_out #np.concatenate((X,y_out),axis=0) # Quelle axis?
+                    X_true=y_true #np.concatenate((X,y_true),axis=0)
                     #* plot_video_skeletons demande :  (nb_joints,3,nb_frames) et pour l'instant on a ( nb_frames,nb_joints,3) 
                     
                     X_pred=X_pred.transpose(1,2,0)
