@@ -25,20 +25,22 @@ def load_checkpoint(model,setting,args,checkpoint_path="./checkpoints/"):
         else:
             state_dict = torch.load(os.path.join(checkpoint_path+ setting, 'checkpoint.pth'),map_location=torch.device('cpu'))
         # create new OrderedDict that does not contain `module.`
-
-        new_state_dict = OrderedDict()
-        for k, v in state_dict.items(): #* On va remove module, sinon on a une erreur de python
+        try:
+            new_state_dict = OrderedDict()
+            for k, v in state_dict.items(): #* On va remove module, sinon on a une erreur de python
+                
+                name = k[7:] # remove `module.`
+                new_state_dict[name] = v
             
-            name = k[7:] # remove `module.`
-            new_state_dict[name] = v
-        
-        try: #* On load le checkpoint
-                model.load_state_dict(new_state_dict)
-        except FileNotFoundError: #* Cas particulier où get_cat_value n'était pas encore défini
-            args1=get_args_from_filename(setting,args)
-            args1.get_cat_value="_"+str(args1.get_cat_value)
-            setting1=get_settings(args1)
-            if torch.cuda.is_available():
-                model.load_state_dict(new_state_dict)
-            else:
-                model.load_state_dict(new_state_dict)
+            try: #* On load le checkpoint
+                    model.load_state_dict(new_state_dict)
+            except FileNotFoundError: #* Cas particulier où get_cat_value n'était pas encore défini
+                args1=get_args_from_filename(setting,args)
+                args1.get_cat_value="_"+str(args1.get_cat_value)
+                setting1=get_settings(args1)
+                if torch.cuda.is_available():
+                    model.load_state_dict(new_state_dict)
+                else:
+                    model.load_state_dict(new_state_dict)
+        except: 
+            model.load_state_dict(state_dict)
