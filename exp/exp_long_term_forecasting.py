@@ -17,6 +17,7 @@ if torch.cuda.is_available():
         print("on importe numpy malgré un GPU?")
 else:
     import numpy as np 
+    
 from setuptools import distutils
 import distutils.version
 from utils.NTU_RGB.plot_skeleton import plot_video_skeletons,plot_skeleton
@@ -439,16 +440,29 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     data_set=test_data
                     y_out=data_set.inverse_transform_data(y_out)
                     y_true=data_set.inverse_transform_data(y_true)
-                    X_pred=y_out #np.concatenate((X,y_out),axis=0) # Quelle axis?
-                    X_true=y_true #np.concatenate((X,y_true),axis=0)
+
+                    filename=str(test_data.liste_path["filename"].iloc[i]) # ???
+                    num_body=int(test_data.liste_path["num_body"].iloc[i])
+                    row=test_data.liste_path.iloc[i]
+                    mat_path=os.path.join(self.args.data_path,row["filename"]+".skeleton.npy")
+                    data=np.load(mat_path,allow_pickle=True).item()[f'skel_body{int(num_body)}'] #* C'est une matrice de la forme [frames,nb_joints,3]
+                    
+                    debut_frame=int(row['debut_frame'])
+                    #* On récupère le début et la fin de la séquence
+                    debut=debut_frame  
+                    begin=data[debut:debut+self.args.seq_len]
+                    mean=np.mean(begin[:,:,:],axis=0)
+
+                    
+                    X_pred=y_out +mean #np.concatenate((X,y_out),axis=0) # Quelle axis?
+                    X_true=y_true+mean #np.concatenate((X,y_true),axis=0)
                     #* plot_video_skeletons demande :  (nb_joints,3,nb_frames) et pour l'instant on a ( nb_frames,nb_joints,3) 
                     
                     X_pred=X_pred.transpose(1,2,0)
                     X_true=X_true.transpose(1,2,0)
                     #* On va plot les résultats. On plot en bleu le vrai et en rouge le prédit. On plot aussi le comportement global du modèle initial.
-                    filename=str(test_data.liste_path["filename"].iloc[i]) # ???
                     plot_video_skeletons(list_mat_skeletons=[X_true,X_pred],save_name="label:"+self.args.model_id+filename,path_folder_save=os.path.join(folder_path))
-                    
+                    filename=str(test_data.liste_path["filename"].iloc[i]) # ???
                     plot_skeleton(path_skeleton=os.path.join(self.args.root_path,"raw/",filename+".skeleton"),save_name=str(i)+filename,path_folder_save=folder_path)
 
         preds = np.array(preds)

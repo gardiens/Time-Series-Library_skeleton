@@ -19,7 +19,10 @@ if t.cuda.is_available():
     try:
         import cupy as np
     except:
+        print("oui?")
         import numpy as np
+else:
+    import numpy as np
 import pandas as pd
 from pandas.tseries import offsets
 from pandas.tseries.frequencies import to_offset

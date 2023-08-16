@@ -23,7 +23,8 @@ if t.cuda.is_available():
         import cupy as np
     except:
         import numpy as np
-
+else:
+    import numpy as np 
 import pdb
 
 

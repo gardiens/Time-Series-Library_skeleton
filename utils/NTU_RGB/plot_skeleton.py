@@ -140,9 +140,9 @@ def plot_video_skeletons(list_mat_skeletons,title=None,write=True,animate=False,
     if write:
         animation.writer=animation.writers['ffmpeg']
         plt.ioff() # Turn off interactive mode just in case
-        
+        print("sauvegarde du fichier")
         ani.save( path_folder_save+save_name+'.mp4',fps=15) # A FAIRE PASSER EN MP4
-         
+        print("fin de sauvegarde")
     if animate:
         #u may expect strange behavior, only used write
         # it may be really laggy if u dont have a good computer

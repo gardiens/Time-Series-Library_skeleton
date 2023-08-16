@@ -4,7 +4,8 @@ if t.cuda.is_available():
         import cupy as np
     except:
         import numpy as np
-
+else:
+    import numpy as np 
 def RSE(pred, true):
     return np.sqrt(np.sum((true - pred) ** 2)) / np.sqrt(np.sum((true - true.mean()) ** 2))
 

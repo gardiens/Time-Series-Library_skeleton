@@ -7,6 +7,8 @@ if t.cuda.is_available():
         import cupy as np
     except:
         import numpy as np
+else:
+    import numpy as np 
 import pandas as pd
 from torch import tensor
 import ruptures as rpt  # Package for changepoint detection

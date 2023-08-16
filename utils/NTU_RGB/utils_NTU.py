@@ -15,7 +15,8 @@ if t.cuda.is_available():
         import cupy as np
     except:
         import numpy as np
-
+else:
+    import numpy as np 
 
 def read_skeleton(file):
     r"""Reads a skeleton file provided by the NTU RGB+D dataset and outputs a dictionary with the data.
