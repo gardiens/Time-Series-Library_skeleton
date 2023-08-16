@@ -10,7 +10,7 @@ batch_size=256
 model_id_name=15-08-FEDmean
 python -u run.py \
   --task_name long_term_forecast \
-  --is_training 1 \
+  --is_training 0 \
   --root_path './dataset/NTU_RGB+D/' \
   --data_path 'numpyed/'\
   --model_id ${model_id_name} \
@@ -40,5 +40,5 @@ python -u run.py \
   --learning_rate $(echo "scale=10; 10^-3" | bc)\
   --split_train_test action \
   --preprocess 3 \
-  --no_test
+
 
