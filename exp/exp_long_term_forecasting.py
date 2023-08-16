@@ -553,9 +553,9 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     
                     X_pred=X_pred.transpose(1,2,0)
                     X_true=X_true.transpose(1,2,0)
-                    #* On va plot les résultats
-                    plot_video_skeletons(list_mat_skeletons==[X_true,X_pred],save_name="train:"+self.args.model_id+str(i),path_folder_save=os.path.join(folder_path))
+                    #* On va plot les résultats                    
                     filename=str(test_data.liste_path["filename"].iloc[i]) # ???
+                    plot_video_skeletons(list_mat_skeletons==[X_true,X_pred],save_name="train:"+self.args.model_id+str(i),path_folder_save=os.path.join(folder_path))
                     plot_skeleton(path_skeleton=os.path.join(self.args.root_path,"raw/",filename+".skeleton"),save_name="train_"+str(i)+filename,path_folder_save=folder_path)
 
         preds = np.array(preds)
