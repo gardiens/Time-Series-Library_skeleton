@@ -446,8 +446,8 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     num_body=int(test_data.liste_path["num_body"].iloc[i])
                     row=test_data.liste_path.iloc[i]
                     print(filename)
-                    print(os.path.join(self.args.data_path,filename+".skeleton.npy"))
-                    mat_path=os.path.join(self.args.data_path,filename+".skeleton.npy")
+                    print(os.path.join(self.args.root_path,self.args.data_path,filename+".skeleton.npy"))
+                    mat_path=os.path.join(self.args.root_path,self.args.data_path,filename+".skeleton.npy")
                     data=np.load(mat_path,allow_pickle=True).item()[f'skel_body{int(num_body)}'] #* C'est une matrice de la forme [frames,nb_joints,3]
                     
                     debut_frame=int(row['debut_frame'])
