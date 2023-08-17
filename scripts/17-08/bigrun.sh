@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for model in TimesNet Nonstationary_Transformer LightTS Reformer ETSformer PatchTST  MICN Crossformer FiLM   FEDWav
+for model in Nonstationary_Transformer LightTS Reformer ETSformer PatchTST  MICN Crossformer FiLM   FEDWav
 do 
 
 model_name=${model}
