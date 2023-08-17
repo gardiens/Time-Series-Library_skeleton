@@ -73,7 +73,7 @@
 
 
 
-The goal of this project is to predict skeleton using Deep-learning architectures and especially  using FEDFormers and AutoFormers. It relies heavily on Time-series Library from [thuml]( https://github.com/thuml/Time-Series-Library/tree/main)
+The goal of this project is to predict skeleton using Deep-learning architectures especially  using FEDFormers and AutoFormers. It relies heavily on Time-series Library from [thuml]( https://github.com/thuml/Time-Series-Library/tree/main)
 Don't forget to give the project a star! Thanks again!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -118,7 +118,7 @@ the file .npy should be stored in dataset/NTU_RGB+D/numpyed/ and the raw data sh
 this repo provides several features:
 - you can preprocess the NTU_RGB+D  dataset efficiently. The implementation is in the folder data_loader
 - you can train FEDFormers and AutoFormers on this dataset thanks to exp_Long_Term_Forecast
-- you can plot your results 
+- you can plot your results.they are stored in test_results after the test of your model.
 
 
 
@@ -126,7 +126,7 @@ this repo provides several features:
 ## Roadmap
 ### Non technical roadmap
 - [ ] Insert Categorical value in the prediction.
-- [ ] Insert Fourier transform or Wavelet Transform
+- [ ] Insert Wavelet Transform
 
 ### more technical roadmap 
 - [ ]  rewrite the preprocess step to be easier to add new steps.
