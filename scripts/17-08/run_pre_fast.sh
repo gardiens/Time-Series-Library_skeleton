@@ -1,3 +1,4 @@
+#!/bin/bash
 
 
 model_name=LightTS
