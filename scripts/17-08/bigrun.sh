@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for model in TimesNet,Autoformer,Nonstationary_Transformer,Dlinear,FEDformer,Informer,LightTS,Reformer,ETSformer,PatchTST,Pyraformer,MICN,Crossformer,FiLM,Nonstationary_Transformer,NTS,FEDWav
+for model in TimesNet Autoformer Nonstationary_Transformer Dlinear FEDformer Informer LightTS Reformer ETSformer PatchTST Pyraformer MICN Crossformer FiLM Nonstationary_Transformer NTS FEDWav
 do 
 
 model_name=${model}
