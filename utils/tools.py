@@ -14,7 +14,7 @@ def adjust_learning_rate(optimizer, epoch, args):
     Parameters
     ----------
     optimizer : _type_
-        l'optimizer utilisé ?
+        l'optimizer utilisé 
     epoch : int
         numéro de l'epochregardé
     args : classe

@@ -30,34 +30,26 @@ warnings.filterwarnings('ignore')
 
 from utils.NTU_RGB.utils_dataset import show_grads
 class Exp_Long_Term_Forecast(Exp_Basic):
-    """Expérience principalement utilisé au cours du stage
-
+    """Expérience utilisé principalement pendant le stage 
     Parameters
     ----------
-    Exp_Basic : classe
-        classe qui permet de construire le modèle, récupérer les datasets  et de s'occuper du multiègpu si nécessaire
+    Exp_Basic : class
+            classe qui permet de récupérer le dataset, le modèle et faire la phase de training et setting
     """
     def __init__(self, args):
         super(Exp_Long_Term_Forecast, self).__init__(args)
         setting = get_settings(args)
                 
         self.setting=setting
-        self.writer=SummaryWriter(log_dir=f"runs/{setting}") #* Permets de setup tensorboard
+        self.writer=SummaryWriter(log_dir=f"runs/{setting}") #* Setup Tensorboard
         writer=self.writer
-        #print("les args",vars(args))
-        #add_hparams(self.writer,args) inutilisé car il ne semblait pas réussi àfaire fonctionner le hparmars mais dédouble les expériences.
-
-        # Add in the writer every parameter which are float,int,str or bool
-        #writer.add_hparams({k:v for k,v in vars(args).items() if type(v) in [float,int,str,bool]},{})
-        #"writer.flush()
-        
     def _build_model(self):
-        """construit le modèle
+        """build the model
 
         Returns
         -------
         model : nn.Module
-            model présent dans le model_dict de Exp_basic.
+            model à l'intérieur de model_dict
             les args utilisés lors de la construction du modèle sont :
             
         remarque:

@@ -214,10 +214,8 @@ class dataset_NTURGBD(Dataset):
 
     def inverse_transform_data(self,x,preprocessing=True):
         """ renvoie X de la bonne forme ( nb_frames,nb_joints,3) et effectue les potentielles effets inverses"""
-        if preprocessing:
-            return self.item.inverse_transform(x)
-        else:
-            return self.item.inverse_transform(x)
+        
+        return self.item.inverse_transform(x)
 
     def get_input_model(self,entry):
         """ depuis un X obtenu de get_data ou get_data_from_sample_name, renvoie un input de la bonne forme pour le modèle"""

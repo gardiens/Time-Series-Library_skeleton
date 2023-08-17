@@ -28,7 +28,7 @@ model_dict = {
         'FEDWav':FEDformer_wavelet,
         'Meta':Metaformer
 }
-#used in exp_basic. pour des raisons techniques, je n'ai pas pu le déplacer dans les constantes.
+#USed in Exp_basic.For technical reasons, I could not move it to the constants.
 class Exp_Basic(object):
     def __init__(self, args):
         """initialise exp_basic qui est utilisé dans tous les exp. Il permet de récupérer les arguments et de construire le modèle

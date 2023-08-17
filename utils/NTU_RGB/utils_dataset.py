@@ -18,7 +18,7 @@ import torch
 class time_serie_NTU:
 
     """ Classe de Time_series qui va être la brique de basse de notre dataset"""
-    """ File to display the lementary objects used in Dataset. """
+    """ File to display the elementary objects used in Dataset. """
 
 
     def __init__(self,input_len:int=30,output_len:int=30,data_path='./dataset/NTU_RGB+D/numpyed/',file_extension='.skeleton.npy',get_cat_value=True,get_time_value=False,categorical_columns=[ 'actor', 'acti', 'camera'],preprocess:int=1) -> None:

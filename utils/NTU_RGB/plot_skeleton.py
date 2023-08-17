@@ -83,9 +83,23 @@ def plot_video_skeletons(list_mat_skeletons,title=None,write=True,animate=False,
     ax.set_ylim3d(ylimm, ylimp)
     ax.set_zlim3d(zlimm, zlimp)
     if title!=None: #* set a title.
+
         ax.text2D(0.05, 0.95,title, transform=ax.transAxes)
+        if nb_skeletons==1:
+            ax.text2D(0.1,0.90,"the skeleton",color=liste_color_skeleton[0], transform=ax.transAxes)
+
+        if nb_skeletons==2:
+            ax.text2D(0.1,0.90,"ground skeleton",color=liste_color_skeleton[0], transform=ax.transAxes)
+            ax.text2D(0.1,0.85,"predicted skeleton",color=liste_color_skeleton[1], transform=ax.transAxes)
     else:
         ax.text2D(0.05, 0.95,save_name, transform=ax.transAxes)
+        if nb_skeletons==1:
+            ax.text2D(0.05,0.90,"skeleton",color=liste_color_skeleton[0], transform=ax.transAxes)
+
+        if nb_skeletons==2:
+            ax.text2D(0.05,0.90,"ground skeleton",color=liste_color_skeleton[0], transform=ax.transAxes)
+            ax.text2D(0.05,0.85,"predicted skeleton",color=liste_color_skeleton[1], transform=ax.transAxes)
+
   
     #* On définit les lignes et points à animer
     liste_line=[ [ax.plot([],[],[],linestyle=':',color=liste_color_skeleton[k])[0] for _ in connexion_tuples] for k in range(nb_skeletons) ]

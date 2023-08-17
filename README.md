@@ -74,6 +74,8 @@
 
 
 The goal of this project is to predict skeleton using Deep-learning architectures and especially  using FEDFormers and AutoFormers. It relies heavily on Time-series Library from [thuml]( https://github.com/thuml/Time-Series-Library/tree/main)
+Don't forget to give the project a star! Thanks again!
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -99,7 +101,10 @@ the file .npy should be stored in dataset/NTU_RGB+D/numpyed/ and the raw data sh
  ```py
    python3 build_csv.py
    ```
-6. then run the main.py with your argument :)  Somes scripts are provided in the scripts folder.
+6. then run the main.py with your argument :)  Somes scripts are provided in the scripts folder. for example:
+ ```console
+   sh scripts/utils/template_script.sh
+   ```
 
 
 
@@ -111,9 +116,43 @@ the file .npy should be stored in dataset/NTU_RGB+D/numpyed/ and the raw data sh
 <!-- USAGE EXAMPLES -->
 ## Usage
 this repo provides several features:
-- you can preprocess the NTU_RGB+D  dataset efficiently
-- you can train FEDFormers and AutoFormers on this dataset
+- you can preprocess the NTU_RGB+D  dataset efficiently. The implementation is in the folder data_loader
+- you can train FEDFormers and AutoFormers on this dataset thanks to exp_Long_Term_Forecast
 - you can plot your results 
+
+
+
+<!-- ROADMAP -->
+## Roadmap
+### Non technical roadmap
+- [ ] Insert Categorical value in the prediction.
+- [ ] Insert Fourier transform or Wavelet Transform
+
+### more technical roadmap 
+- [ ]  rewrite the preprocess step to be easier to add new steps.
+- [ ] write on Pytorch the preprocessing steps.
+- [ ] Ease the fetch of new results and get faster insights on the results. it means to fetch faster the data and have more visual analysis of the models ( gradient/non zero layers..) 
+
+
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- LICENSE -->
+
+
+<!-- CONTACT -->
+## Contact
+
+
+Project Link: [https://github.com/gardiens/Time-Series-Library_babygarches](https://github.com/gardiens/Time-Series-Library_babygarches) 
+you can contact me by email ( pierrick.bournez@student-cs.fr ).
+Please star if you find this repo useful :) 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
 
 
 ## Pipeline of the code
@@ -126,93 +165,8 @@ the code is organised as follow:
     - in runs you have the tensorboards logs of the run.
 
 the setting name is supposed to be a unique ID of each models run. 
-I added on every folder a readme to help you to grasp what functions are supposed to do.If you want to use fast some function of this repo, I added a COMMANDE_UTILE.ipynb which is supposed to summarize the usual functions needed.
+I added on every folder a readme to help you to grasp what functions are supposed to do. This comments are unfortunately in French.
+If you want to use fast some function of this repo, I added a COMMANDE_UTILE.ipynb which is supposed to summarize the needed functions.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
-<!-- ROADMAP -->
-## Roadmap
-### Non technical roadmap
-- [ ] Insert Categorical value in the prediction. It can be with a PCA or just with the concatenation of models
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
-### more technical roadmap 
-- [ ]  rewrite the preprocess step to be easier to add new steps and write it on torch to be faster
-- [ ] Ease the fetch of new results and get faster insights on the results. it means to fetch faster the data and have more visual analysis of the models ( gradient/non zero layers..) 
-See the [open issues](https://github.com/gardiens/Time-Series-Library_babygarches/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- LICENSE -->
-## License
-
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTACT -->
-## Contact
-
-
-Project Link: [https://github.com/gardiens/Time-Series-Library_babygarches](https://github.com/gardiens/Time-Series-Library_babygarches)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/Time-Series-Library_babygarches
-.svg?style=for-the-badge
-[contributors-url]: https://github.com/gardiens/Time-Series-Library_babygarches
-[forks-shield]: https://img.shields.io/github/forks/github_username/Time-Series-Library_babygarches
-.svg?style=for-the-badge
-[forks-url]: https://github.com/gardiens/Time-Series-Library_babygarches/network
-[stars-shield]: https://img.shields.io/github/stars/github_username/Time-Series-Library_babygarches
-.svg?style=for-the-badge
-[stars-url]: https://github.com/gardiens/Time-Series-Library_babygarches/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/Time-Series-Library_babygarches
-.svg?style=for-the-badge
-[issues-url]: https://github.com/gardiens/Time-Series-Library_babygarches/issues
-[license-shield]: https://img.shields.io/github/license/github_username/Time-Series-Library_babygarches
-.svg?style=for-the-badge
-[license-url]: https://github.com/gardiens/Time-Series-Library_babygarches/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
-[product-screenshot]: images/screenshot.png
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
-[Next-url]: https://nextjs.org/
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[React-url]: https://reactjs.org/
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
-[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
-[Angular-url]: https://angular.io/
-[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
-[Svelte-url]: https://svelte.dev/
-[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
-[Laravel-url]: https://laravel.com
-[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
-[Bootstrap-url]: https://getbootstrap.com
-[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
-[JQuery-url]: https://jquery.com 
