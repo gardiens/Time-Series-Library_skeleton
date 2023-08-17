@@ -1,8 +1,8 @@
 #!/bin/bash
 
-for model in TimesNet Nonstationary_Transformer LightTS Reformer ETSformer PatchTST  MICN Crossformer FiLM   FEDWav
+for model in  Nonstationary_Transformer LightTS Reformer ETSformer PatchTST  MICN Crossformer FiLM   FEDWav
 do 
-
+# Il manque TimeSnet
 model_name=${model}
 pred_len=16
 label_len=16
