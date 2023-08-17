@@ -11,7 +11,7 @@ from utils.timefeatures import time_features
 from data_provider.uea import subsample, interpolate_missing, Normalizer
 from sktime.datasets import load_from_tsfile_to_dataframe
 from utils.NTU_RGB.utils_dataset import time_serie_NTU,time_serie_NTU_particular_body, data_rentrer_dans_DATASET_NTU,time_serie_NTU_2,time_serie_NTU_3
-from utils.NTU_RGB.utils_dataset import time_serie_NTU_FED1,time_serie_NTU_FEDn
+from utils.NTU_RGB.utils_dataset import time_serie_NTU_FED1,time_serie_NTU_FEDn, time_serie_NTU_no_pre
 import warnings
 warnings.filterwarnings('ignore')
 from sklearn.model_selection import train_test_split
@@ -110,7 +110,9 @@ class dataset_NTURGBD(Dataset):
             self.item=time_serie_NTU_FED1(data_path=self.data_path,input_len=self.input_len,output_len=self.out_len,get_cat_value=self.get_cat_value,get_time_value=self.get_time_value,preprocess=self.preprocess) #* Classe de base du data'set qui va renvoyer la time series voulu 
         if preprocess==5:
             self.item=time_serie_NTU_FEDn(data_path=self.data_path,input_len=self.input_len,output_len=self.out_len,get_cat_value=self.get_cat_value,get_time_value=self.get_time_value,preprocess=self.preprocess) #* Classe de base du data'set qui va renvoyer la time series voulu 
-        
+        if preprocess==6:
+            self.item=time_serie_NTU_no_pre(data_path=self.data_path,input_len=self.input_len,output_len=self.out_len,get_cat_value=self.get_cat_value,get_time_value=self.get_time_value,preprocess=self.preprocess) #* Classe de base du data'set qui va renvoyer la time series voulu 
+
         # ne sert que lorsque split_train_test vaut random
         self.test_size=test_size
         self.train_size=train_size

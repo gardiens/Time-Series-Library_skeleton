@@ -1072,6 +1072,174 @@ def extract_integers(file_name):
     else:
         return np.array([])
 
+class time_serie_NTU_no_pre:
+
+    """ Classe de Time_series qui va être la brique de basse de notre dataset"""
+    """ File to display the elementary objects used in Dataset. """
+
+
+    def __init__(self,input_len:int=30,output_len:int=30,data_path='./dataset/NTU_RGB+D/numpyed/',file_extension='.skeleton.npy',get_cat_value=True,get_time_value=False,categorical_columns=[ 'actor', 'acti', 'camera'],preprocess:int=1) -> None:
+        """initialisation de la classe
+
+        Parameters
+        ----------
+        row : df
+            un row d'un pandas dataframe qui contient les informations d'un squelettes
+         seq_len : int, optional
+            longueur de la séquence d'entrée, by default 30
+        out_len : int, optional
+            longueur de la séquence de sortie, by default 30
+        data_path : str, optional
+            path qui contient tous les .npy des skeletons , by default './dataset/NTU_RGB+D/numpyed/'
+        
+        file_extension : str, optional
+            _description_, by default '.skeleton.npy'
+        get_cat_value : bool, optional
+            true si on veut les valeurs catégoriques, by default True
+        get_time_value : bool, optional
+            renvoie en plus un array avec le différents temps, by default False
+        categorical_columns : list, optional
+            ensembles des données catégoriques que l'on veut garder ou non, by default ['nbodys', 'actor', 'acti', 'camera', 'scene', 'repet']
+        preprocces:int,optional
+            si on veut préprocesser les données ou non. recommandé à 1
+        """
+        #stockage des paramètres
+        self.input_len=input_len
+        self.output_len=output_len
+
+        self.data_path=data_path
+        self.file_extension=file_extension
+        self.get_cat_value=get_cat_value
+        self.categorical_columns=categorical_columns
+        self.get_time_value=get_time_value
+        self.intervalle_frame=1/30 #* On suppose que c'est du 30 fps
+        self.preprocess=preprocess
+    def __len__(self) -> int:
+        return len(self.row)
+    
+    
+    def get_data(self,row):
+        """permet de récupérer les données d'une ligne d'un dataframe de ??? et de les renvoyer dans le bon format.
+        très important pour NTU_RGB car utilisé dans __getitem()__ de NTU_RGB_dataset.py
+        les opérations de preprocessing éfféctuées ici sont:
+            - recentrage du squelette par rapport à la frame de début de la séquence pour "spine shoulder"
+
+        Parameters
+        ----------
+        row : row dataframe
+            correspond à un row d'un dataframe. Il doit contenir les informations suivantes:*
+            filename: str
+                nom du fichier ( sans.skeleton ou .npy)
+            num_body: int
+                numéro du body dans le filename que l'on veut récupérer
+            debut_frame: int
+                frame de début de prédiction de la séquence
+            fin_frame: int
+
+        Returns
+        -------
+        il peut renvoyer plusieurs données. L'usage basique est détaillé dans le cas où get_time_value vaut 1
+        begin
+            np.array qui correspond à l'input de la séquence
+            begin est de la forme (nb_frames,nb_joints*3)
+        label,
+            np.array qui correspond à la séquence à prédire. 
+            label est de la forme (nb_frames,nb_joints*3)
+            Attention si preprocess vaut 1 il est de laforme [begin,sequence inconnue]. dans le cas contraire il est de la forme [sequence inconnue]
+        time_value_enc,
+            np.array qui correspond à l'encoding du temps. non utilisé à priori
+        time_value_dec
+            np.array qui correspond à l'encoding du temps. non utilisé à priori
+        """
+        mat_path=os.path.join(self.data_path,row['filename']+self.file_extension) #! WARNING ON THE EXTENSION OF THE .NPY
+        #* On récupère la valeur du body intéressant
+        num_body=row['num_body']
+        data=np.load(mat_path,allow_pickle=True).item()[f'skel_body{int(num_body)}'] #* C'est une matrice de la forme [frames,nb_joints,3]
+        
+        debut_frame=int(row['debut_frame'])
+        #* On récupère le début et la fin de la séquence
+        debut=debut_frame  
+        begin=data[debut:debut+self.input_len]
+        label=data[debut+self.input_len:debut+self.input_len+self.output_len]#* On prend les output_len suivantes
+        #* On recentre le squelette par rapport à la frame de référence
+
+        begin=begin
+        label=label
+
+        #! Détail technique: à priori les données sont de la formes [nb_frames,nb_joints,3] mais les réseauxde neurones acceptent un format [nb_frames,nb_features]
+        begin=begin.reshape(begin.shape[0],-1)
+        label=label.reshape(label.shape[0],-1)
+        #* Maintenant , begin est de la forme( nb_frames,nb_joints*3) et label est de la forme (nb_frames,nb_joints*3
+
+        #* récupération des données catégoriques ou temporelles si besoin
+        if self.get_cat_value:
+            mat_cat_data=row[self.categorical_columns].values #* C'est un np.array avec les différentes 
+            #* change the type to be float64 , MAY BE BUGGY HERE
+            mat_cat_data=mat_cat_data.astype(np.float64)
+            begin=np.concatenate((begin,np.expand_dims(mat_cat_data,axis=0).repeat(begin.shape[0],axis=0)),axis=1)
+        if self.get_time_value:
+            time_value_enc=np.arange(debut_frame,debut_frame+begin.shape[0])*self.intervalle_frame #* Encoding du temps, représente x_mark_enc pour FEDformers
+            time_value_dec=np.arange(debut_frame,debut_frame+label.shape[0])*self.intervalle_frame #* Decoding du temps entre deux frames , représente x_mark_dec pour FedFormers
+            time_value_enc=np.tile(time_value_enc,(begin.shape[1],1)).transpose((1,0)) #* On fait un tile pour avoir la même valeur pour chaque joint]))
+            time_value_dec=np.tile(time_value_dec,(label.shape[1],1)).transpose((1,0)) #* On fait un tile pour avoir la même valeur pour chaque joint]))
+        
+
+        
+        #*  renvoie la solution de la bonne forme ! 
+        if self.get_time_value :
+            #print(begin.shape,label.shape,time_value_enc.shape)
+            return begin,label,time_value_enc,time_value_dec
+        else:
+            return begin,label
+        
+    def inverse_transform(self,x,preprocessing=1):
+        """renvoie une matrice de type begin [nb_frame,nb_channel] de la forme [nb_frames,nb_joints,3]
+
+        Parameters
+        ----------
+        x : torch.tensor ou np.array
+            de la forme [nb_frames,nb_channel]
+        entry : _type_, optional
+            _description_, by default None
+        preprocessing : int, optional
+            , by default 1
+
+        Returns
+        -------
+        np.array ou torch.tensor
+            array de la forme [nb_frames,nb_joints,3]
+        """
+        return (x).reshape(x.shape[0],int(x.shape[1]//3),3)
+
+    def get_input_model(self,entry):
+        """depuis un X obtenu de get_data ou get_data_from_sample_name, renvoie un input de la bonne forme pour le modèle
+
+        Parameters
+        ----------
+        entry : np.array ou torch.tensor
+            array de la forme [nb_frames,nb_channel]
+
+        Returns
+        -------
+        batch
+            torch.tensor de la forme [1,nb_frames,nb_channels]
+        """
+        
+      
+        if self.get_time_value:
+             begin,label,time_value_enc,time_value_dec=entry
+
+        else:
+             begin,label=entry 
+        begin=tensor(np.expand_dims(begin,axis=0)).float()
+        label=tensor(np.expand_dims(label,axis=0)).float()
+        if self.get_time_value:
+            time_value_enc=tensor(np.expand_dims(time_value_enc,axis=0)).float()
+            time_value_dec=tensor(np.expand_dims(time_value_dec,axis=0)).float()
+            return begin,label,time_value_enc,time_value_dec
+        else:
+            return begin,label
+
 
 
 
@@ -1405,8 +1573,10 @@ def data_rentrer_dans_DATASET_NTU(path_csv:str='./dataset/NTU_RGB+D/summary_NTU/
     if preprocess==0: #* Pas de modification du dataset non particulière 
         nvdf=df[(df['nb_frames']>=seq_len+out_len+df['debut_frame']) & (df['num_body']<=2)].dropna() #* CEST ICI QUON RECUPERE SEULEMENT CEUX QUI ONT UN NOMBRE DE FRAME SUFFISANT, A CHANGER SI BESOIn!!
         return nvdf
-
-    if preprocess>=1:
+    elif preprocess==6:
+        nvdf=df[(df['nb_frames']>=seq_len+out_len+df['debut_frame']) & (df['num_body']<=2)].dropna() #* CEST ICI QUON RECUPERE SEULEMENT CEUX QUI ONT UN NOMBRE DE FRAME SUFFISANT, A CHANGER SI BESOIn!!
+        return nvdf
+    elif preprocess>=1:
         #print("Attention on filtre le dataset")
         excel_sheet=pd.read_excel(path_excel)
         row_to_keep=excel_sheet["A"].where((excel_sheet["good_data"]=="x")|(excel_sheet["average_data"]=="x")).dropna()#* On récupère uniquement les rows labéllisés comme bonne ou moyens dans l'excel
