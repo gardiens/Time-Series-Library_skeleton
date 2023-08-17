@@ -30,9 +30,9 @@ if __name__ == '__main__':
                         help='model name. See the list on Exp_basic,model_dict, options: [Autoformer, Transformer, TimesNet]')
 
     # data loader
-    parser.add_argument('--data', type=str, required=True, default='ETTm1', help='dataset type. The data you want to use, type NTU for NTU_RGB+D')
-    parser.add_argument('--root_path', type=str, default='./data/ETT/', help='root path of the data file. For NTU it is ./dataset/NTU_RGB+D/')
-    parser.add_argument('--data_path', type=str, default='ETTh1.csv', help='data file. for NTU it is numpyed/')
+    parser.add_argument('--data', type=str, required=True, default='NTU', help='dataset type. The data you want to use, type NTU for NTU_RGB+D')
+    parser.add_argument('--root_path', type=str, default='./dataset/NTU_RGB+D/', help='root path of the data file. For NTU it is ./dataset/NTU_RGB+D/')
+    parser.add_argument('--data_path', type=str, default='numpyed/', help='data file. for NTU it is numpyed/')
     parser.add_argument('--features', type=str, default='M',
                         help='forecasting task,for NTU it is M options:[M, S, MS]; M:multivariate predict multivariate, S:univariate predict univariate, MS:multivariate predict univariate')
     parser.add_argument('--target', type=str, default='OT', help='target feature in S or MS task. Do not change it')
@@ -41,9 +41,9 @@ if __name__ == '__main__':
     parser.add_argument('--checkpoints', type=str, default='./checkpoints/', help='location of model checkpoints')
 
     # forecasting task
-    parser.add_argument('--seq_len', type=int, default=96, help='input sequence length')
-    parser.add_argument('--label_len', type=int, default=48, help='length of  labels')
-    parser.add_argument('--pred_len', type=int, default=96, help='prediction sequence length,must be greater than label_len')
+    parser.add_argument('--seq_len', type=int, default=16, help='input sequence length')
+    parser.add_argument('--label_len', type=int, default=32, help='length of  labels')
+    parser.add_argument('--pred_len', type=int, default=32, help='prediction sequence length,must be greater than label_len')
     parser.add_argument('--seasonal_patterns', type=str, default='Monthly', help='subset for M4')
 
     # inputation task
@@ -55,41 +55,41 @@ if __name__ == '__main__':
     # model define
     parser.add_argument('--top_k', type=int, default=5, help='for TimesBlock')
     parser.add_argument('--num_kernels', type=int, default=6, help='for Inception')
-    parser.add_argument('--enc_in', type=int, default=7, help='encoder input size ( so the number of channels input of the model).For NTU it is 75')
-    parser.add_argument('--dec_in', type=int, default=7, help='decoder input size. to me , the same as encoder input size, For NTU it is 75')
-    parser.add_argument('--c_out', type=int, default=7, help='output size, For NTU it is 75')
+    parser.add_argument('--enc_in', type=int, default=75, help='encoder input size ( so the number of channels input of the model).For NTU it is 75')
+    parser.add_argument('--dec_in', type=int, default=75, help='decoder input size. to me , the same as encoder input size, For NTU it is 75')
+    parser.add_argument('--c_out', type=int, default=75, help='output size, For NTU it is 75')
     parser.add_argument('--d_model', type=int, default=512, help='dimension of model between encoder layer')
     parser.add_argument('--n_heads', type=int, default=8, help='num of heads')
     parser.add_argument('--e_layers', type=int, default=2, help='num of encoder layers. Usually 2')
     parser.add_argument('--d_layers', type=int, default=1, help='num of decoder layers. Usually 1')
-    parser.add_argument('--d_ff', type=int, default=2048, help='dimension of fcn.')
+    parser.add_argument('--d_ff', type=int, default=512, help='dimension of fcn.')
     parser.add_argument('--moving_avg', type=int, default=25, help='window size of moving average')
-    parser.add_argument('--factor', type=int, default=1, help='attn factor')
+    parser.add_argument('--factor', type=int, default=3, help='attn factor')
     parser.add_argument('--distil', action='store_false',
                         help='whether to use distilling in encoder, using this argument means not using distilling',
                         default=True)
     parser.add_argument('--dropout', type=float, default=0.1, help='dropout')
-    parser.add_argument('--embed', type=str, default='timeF',
-                        help='time features encoding. Not used in NTU, options:[timeF, fixed, learned]')
+    parser.add_argument('--embed', type=str, default='timeNTU ',
+                        help='time features encoding. Not used in NTU, options:[timeF, fixed, learned,timeNTU]')
     parser.add_argument('--activation', type=str, default='gelu', help='activation')
     parser.add_argument('--output_attention', action='store_true', help='whether to output attention in ecoder')
 
     # optimization
     parser.add_argument('--num_workers', type=int, default=10, help='data loader num workers')
     parser.add_argument('--itr', type=int, default=1, help='experiments times')
-    parser.add_argument('--train_epochs', type=int, default=10, help='train epochs')
-    parser.add_argument('--batch_size', type=int, default=64, help='batch size of train input data')
-    parser.add_argument('--patience', type=int, default=3, help='early stopping patience')
-    parser.add_argument('--learning_rate', type=float, default=0.0001, help='optimizer learning rate')
+    parser.add_argument('--train_epochs', type=int, default=14, help='train epochs')
+    parser.add_argument('--batch_size', type=int, default=256, help='batch size of train input data')
+    parser.add_argument('--patience', type=int, default=4, help='early stopping patience')
+    parser.add_argument('--learning_rate', type=float, default=(10**-3), help='optimizer learning rate')
     parser.add_argument('--des', type=str, default='test', help='exp description')
     parser.add_argument('--loss', type=str, default='MSE', help='loss function. Chose wether MSE or MAE')
-    parser.add_argument('--lradj', type=str, default='type1', help='adjust learning rate. options:[constant, sem_constant, cosine, type1, type2]')
+    parser.add_argument('--lradj', type=str, default='sem_constant', help='adjust learning rate. options:[constant, sem_constant, cosine, type1, type2]')
     parser.add_argument('--use_amp', action='store_true', help='use automatic mixed precision training', default=False)
     # GPU
     parser.add_argument('--use_gpu', type=bool, default=True, help='use gpu')
     parser.add_argument('--gpu', type=int, default=0, help='gpu')
     parser.add_argument('--use_multi_gpu', action='store_true', help='use multiple gpus', default=True)
-    parser.add_argument('--devices', type=str, default='0', help='device ids of multiple gpus')
+    parser.add_argument('--devices', type=str, default='0,1', help='device ids of multiple gpus')
 
     # de-stationary projector params
     parser.add_argument('--p_hidden_dims', type=int, nargs='+', default=[128, 128],

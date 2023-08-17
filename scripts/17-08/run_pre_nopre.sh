@@ -7,7 +7,7 @@ python -u run.py \
   --is_training 1 \
   --root_path ./dataset/NTU_RGB+D/ \
   --data_path numpyed/ \
-  --model_id ${model_name}-pre \
+  --model_id ${model_name}-nopre \
   --model $model_name \
   --data NTU \
   --features M \
@@ -37,7 +37,7 @@ python -u run.py \
   --is_training 1 \
   --root_path ./dataset/NTU_RGB+D/ \
   --data_path numpyed/ \
-  --model_id ${model_name}-pre \
+  --model_id ${model_name}-nopre \
   --model $model_name \
   --data NTU \
   --features M \
@@ -68,7 +68,7 @@ python -u run.py \
   --is_training 1 \
   --root_path ./dataset/NTU_RGB+D/ \
   --data_path numpyed/ \
-  --model_id ${model_name}-pre \
+  --model_id ${model_name}-nopre \
   --model $model_name \
  --data NTU \
   --features M \
@@ -101,7 +101,7 @@ python -u run.py \
   --is_training 1 \
   --root_path ./dataset/NTU_RGB+D/ \
   --data_path numpyed/ \
-  --model_id ${model_name}-pre \
+  --model_id ${model_name}-nopre \
   --model $model_name \
  --data NTU \
   --features M \
@@ -133,7 +133,7 @@ python -u run.py \
   --is_training 1 \
   --root_path ./dataset/NTU_RGB+D/ \
   --data_path numpyed/ \
-  --model_id ${model_name}-pre \
+  --model_id ${model_name}-nopre \
   --model $model_name \
  --data NTU \
   --features M \
@@ -165,7 +165,7 @@ python -u run.py \
   --is_training 1 \
   --root_path ./dataset/NTU_RGB+D/ \
   --data_path numpyed/ \
-  --model_id ${model_name}-pre \
+  --model_id ${model_name}-nopre \
   --model $model_name \
  --data NTU \
   --features M \
@@ -198,7 +198,7 @@ python -u run.py \
   --is_training 1 \
   --root_path ./dataset/NTU_RGB+D/ \
   --data_path numpyed/ \
-  --model_id ${model_name}-pre \
+  --model_id ${model_name}-nopre \
   --model $model_name \
  --data NTU \
   --e_layers 3 \
@@ -224,7 +224,7 @@ python -u run.py \
   --is_training 1 \
   --root_path ./dataset/NTU_RGB+D/ \
   --data_path numpyed/ \
-  --model_id ${model_name}-pre \
+  --model_id ${model_name}-nopre \
   --model $model_name \
  --data NTU \
   --features M \
