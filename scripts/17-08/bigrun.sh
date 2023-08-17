@@ -41,7 +41,7 @@ python -u run.py \
   --learning_rate $(echo "scale=10; 10^-3" | bc)\
   --split_train_test action \
   --no_test\
-  --preprocess 2 
+  --preprocess 1
 wait 1800
 
 done 
