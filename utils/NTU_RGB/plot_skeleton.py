@@ -167,7 +167,7 @@ def plot_video_skeletons(list_mat_skeletons,title=None,write=True,animate=False,
 
 def plot_skeleton(path_skeleton:str=None,save_name='skeleton',title=None,write=True,animate=False,path_folder_save='./videos/',num_body=0):
     """plot le skeleton d'une personne du dataset NTU RGB+D sachant le .skeleton.
-    outdated
+    require to download ffmpeg I think
 
     Parameters
     ----------

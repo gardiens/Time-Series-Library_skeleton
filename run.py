@@ -97,7 +97,7 @@ if __name__ == '__main__':
     parser.add_argument('--p_hidden_layers', type=int, default=2, help='number of hidden layers in projector')
 
     #** NTU_RGB
-    parser.add_argument('--get_time_value', type=int, default=0, help='get time value,0 if not, 1 if yes')
+    parser.add_argument('--get_time_value', type=int, default=1, help='get time value,0 if not, 1 if yes')
     parser.add_argument('--get_cat_value', type=int, default=0, help='get cat value,0 if not, 1 if yes')
     parser.add_argument('--preprocess', type=int, default=1, help='preprocess data,0 if 1 or more we do sth')
     #parser.add_argument('--sous_model', type=str, default='FEDformer', help='sous-Model pour metaformer')
@@ -107,10 +107,10 @@ if __name__ == '__main__':
     parser.add_argument('--split_train_test',type=str,default='action',help='split train test selon action ou au hasard. Possible value: [action,random]')
     #* Augmentation des données 
     parser.add_argument('--augment',default=False, action='store_true', help='use of data augmentation or not')
-    parser.add_argument('--prop',type=str,default="1.05,0.05,0.05",help="proportion of dataset size that we will augment. separate the value by ,")
+    parser.add_argument('--prop',type=str,default="1.05,0.05,0.05",help="proportion of dataset size that we will augment. separate the value by ,. the first one is backward, second one flip, the third Cutmix and the fourth Randmix")
     
     #Si on rerun un modèle à partir d'un checkpoint
-    parser.add_argument('--start_checkpoint',default=False,action='store_true',help='ask if we want to restart from a checkpoit')
+    parser.add_argument('--start_checkpoint',default=False,action='store_true',help='ask if we want to restart from a checkpoint')
     parser.add_argument('--setting_start_checkpoint',type=str,default="test",help="if start_checkpoint, ask the name of the last checkpoint settings ")
 
     args = parser.parse_args()

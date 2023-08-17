@@ -141,8 +141,8 @@ class dataset_NTURGBD(Dataset):
 
         Returns
         -------
-        _type_
-            _description_
+        entry,label,time_value,time_label_value 
+            C'est cette matrice  qui va ensuite passer dans le réseaux. A noter que si cat_value vaut 1, entry est concaténer avec les données catégorielles.
         """
         
         time_series=self.item
@@ -151,7 +151,7 @@ class dataset_NTURGBD(Dataset):
         return time_series.get_data(row=row)
         
     def get_df(self):
-        """permet de récupérer le dataframe correspondant au dataset voulu
+        """permet de récupérer le dataframe correspondant au dataset voulu.Ce dataframe vérifiera toutes les conditions de l'expérience éffectué ( les samples sont de tailles au moins la séquence à prédire,etc..)
 
         Returns
         -------

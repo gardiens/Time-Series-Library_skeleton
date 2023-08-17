@@ -46,23 +46,18 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
+    <li><a href="#Pipeline of code">Pipeline of code</a></li>
+
   </ol>
 </details>
 
@@ -105,7 +100,7 @@ the file .npy should be stored in dataset/NTU_RGB+D/numpyed/ and the raw data sh
  ```console
    sh scripts/utils/template_script.sh
    ```
-
+7. You can deep dive on your data with several tools. Videos of some sample are stored in the folder test_results, a dataframe of the loss of each sample is stored in results and you can see your runs in the folder runs thanks to Tensorboard
 
 
 
@@ -120,7 +115,8 @@ this repo provides several features:
 - you can train FEDFormers and AutoFormers on this dataset thanks to exp_Long_Term_Forecast
 - you can plot your results.they are stored in test_results after the test of your model.
 
-
+I added on every folder a readme to help you to grasp what functions are supposed to do. A FAQ is as well available for  any further technical questions. This comments are unfortunately in French.
+If you want to use fast some function of this repo, I added a COMMANDE_UTILE.ipynb which is supposed to summarize the needed functions.
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -140,10 +136,6 @@ this repo provides several features:
 
 
 
-<!-- LICENSE -->
-
-
-<!-- CONTACT -->
 ## Contact
 
 
@@ -165,8 +157,7 @@ the code is organised as follow:
     - in runs you have the tensorboards logs of the run.
 
 the setting name is supposed to be a unique ID of each models run. 
-I added on every folder a readme to help you to grasp what functions are supposed to do. This comments are unfortunately in French.
-If you want to use fast some function of this repo, I added a COMMANDE_UTILE.ipynb which is supposed to summarize the needed functions.
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

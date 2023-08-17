@@ -15,7 +15,7 @@ stop_tensorboard() {
 }
 
 # Start the SSH tunnel in the background
-ssh -L 16007:127.0.0.1:7860 bournez@slurm-ext &
+ssh -L 16007:127.0.0.1:7860 Username@slurm-ext &
 
 # Store the SSH tunnel's process ID (PID)
 ssh_pid=$!
@@ -41,4 +41,4 @@ tensorboard --logdir=runs --host=localhost --port=7970
 
 tensorboard --logdir=runs --host=localhost --port=7970
 
-ssh -L 16007:127.0.0.1:7970 bournez@slurm-ext
+ssh -L 16007:127.0.0.1:7970 Username@slurm-ext

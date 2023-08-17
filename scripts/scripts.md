@@ -2,7 +2,7 @@
 On garde ici tous les scripts qui permettent de lancer le logiciel sur un cluster. les scripts sont codé en bash et finissent par un .sh. 
 
 # Organisation des dossiers
-les dossiers sont stockés par dâtes d'executions. Un fichier utils contient des fichiers qui permettent d'automatiser les dates de récupérations de logs. un template d'envoi de scripts est donné dans le fichier utils.
+les dossiers sont stockés par dates d'executions. Un fichier utils contient des fichiers qui permettent d'automatiser les dates de récupérations de logs. un template d'envoi de scripts est donné dans le fichier utils.
 
 ## Scripts utiles:
 J'aimerais résumer ici les différentes informations importantes si jamais on veut lancer un script:
@@ -15,7 +15,9 @@ sbatch --gres=gpu:2 --time=20:00:00 --exclude=n[1-5] --output=logs/DATE/NOMMODEL
 ```
 pour l'utilisation des scripts:
 -Si vous voulez mettre en place automatiquement Tboard il faut faire:
+```console
 bash TensorBoard_run.sh
+```
 
 pour add/commit push automatiquement avec git:
 ```
@@ -71,5 +73,5 @@ Partie technique, nous allons expliquer ici  l'importance de chauqe paramètre d
 | c_out            	| 75                	| nombre de channel en sortie      	|                                                                                                                                          	|   	|
 | lradj            	| sem_constant      	| nom de l'agorithme d'ajustement  	|                                                                                                                                          	|   	|
 | preprocess       	| 1                 	|                                  	| un peu technique mais 0 c'est pour un setting du 1er aout, 1 pour des settings normaux et 2 pour des implémentations de temps en temps.  	|   	|
-| split_train_test 	| action            	| nom de la séparation des dataset 	|                                                                                                                                          	|   	|
+| split_train_test 	| action            	| nom de la séparation des dataset pour NTU_RGB 	|                                                                                                                                          	|   	|
 
