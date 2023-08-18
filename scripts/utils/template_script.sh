@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-# les arguments principaux
+# main arguments
 model_name=FEDformer
 input_len=16
 pred_len=32
@@ -18,11 +18,11 @@ batch_size=256
 learning_rate=3
 lradj=sem_constant
 epoch=14 
-#technical argument
+#technical argument. Must be the number of channel that will go into our models ( 75 for NTU)
 enc_in=75
 dec_in=${enc_in} # must be equal to enc_in
 c_out=75 
-split_train_test= action
+split_train_test= action 
 
 
 
@@ -59,7 +59,7 @@ python -u run.py \
   --split_train_test ${action} \
   --preprocess ${preprocess}\
 
-
+#Some possibilities are :
 #--augment
 #prop 1.0,0.1,0.1,0.1
 # --no_test
