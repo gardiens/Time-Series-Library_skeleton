@@ -10,7 +10,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/gardiens/Time-Series-Library_babygarches">
-    <img src="images/logos.png.jpg" alt="Logo" width="360" height="360">
+    <img src="images/logos.png.jpg" alt="Logo" width=600> 
   </a>
 
 <h3 align="center">Time-series-Forecasting babygarches</h3>
