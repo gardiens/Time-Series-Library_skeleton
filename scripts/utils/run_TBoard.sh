@@ -39,6 +39,3 @@ start http://localhost:16007
 wait $tensorboard_pid
 tensorboard --logdir=runs --host=localhost --port=7970
 
-tensorboard --logdir=runs --host=localhost --port=7970
-
-ssh -L 16007:127.0.0.1:7970 Username@slurm-ext

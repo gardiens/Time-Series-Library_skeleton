@@ -165,4 +165,9 @@ data_loader_all.py
 /videos/
 *.txt
 *.mp4
-/vscode/
+/.vscode/
+
+!.gitignore
+!COMMANDE_UTILE.ipynb
+
+!*.md

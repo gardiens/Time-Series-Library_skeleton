@@ -5,7 +5,7 @@ from utils.NTU_RGB.utils_NTU import read_xyz
 from utils.NTU_RGB.joints import connexion_tuples
 import matplotlib.animation as animation
 import mpl_toolkits.mplot3d as plt3d
-""" Tuto clair ici pour le fonctionnement intrinsèque du plot https://acme.byu.edu/00000179-d3f1-d7a6-a5fb-ffff6a210001/animation-pdf"""
+""" Tutorial how to do some matplotlibanimation https://acme.byu.edu/00000179-d3f1-d7a6-a5fb-ffff6a210001/animation-pdf"""
 
 
 def check_nombre_frames(L):
@@ -19,20 +19,20 @@ def check_nombre_frames(L):
 
 def plot_video_skeletons(list_mat_skeletons,title=None,write=True,animate=False,path_folder_save='./videos/',save_name='skeleton',num_body=0):
     """Plot the videos for several skeletons
-    Input: les mat_skeletons est une liste d'arrays qui sont supposés être des sorties de FEDFormers de la forme (nb_joints,3,nb_frames)
-    la couleur est preset et ne peut pas dépasser 11 individus...
+    Input: list_mat_skeletons is a list of skeletons which are supposed to be of shape (nb_joints,3,nb_frames)
+    We added some colors but it canoot be greater than 7
      Parameters
     ----------
     mat_skeletons : list of np.array
-        liste de np.array de la forme (nb_joints,3,nb_frames)
+        liste de np.array  (nb_joints,3,nb_frames)
     save_name : str, 
-        le nom du fichier qu'on va sauvegarder ( sans le .MP4), by default 'skeleton'
+        name of the saved file (without.mp4), by default 'skeleton'
     title : str, optional
-        nom du titre visible dans le .mp4 à côté de l'action, by default None
+        title of the video (will be plotted above the action), by default None
     write : bool, optional
-        si True, renvoie un fichier .mp4 dans le bon dossier, by default True
+        if True we save the animation, by default True
     animate : bool, optional
-        si True, renvoie la version non animé mais buggé de base, by default False
+        if True, it returns the animate version but seemed buggy on vscode, by default False
     path_folder_save : str, optional
         folder where we store the videos, by default './videos/'
 
@@ -40,11 +40,11 @@ def plot_video_skeletons(list_mat_skeletons,title=None,write=True,animate=False,
     -------
     ani the animation but useless in most of the case
     """
-    liste_color_skeleton=["b","r","c","m","y","k","w"] # les couleurs utilisés pour les différents skeleton.
-    #* définit les constantes globales de cette fonction
+    liste_color_skeleton=["b","r","c","m","y","k","w"] #color used for every skeleton
+    #* global value of the function
     liste_nb_framestotal=[mat_skeleton.shape[2] for mat_skeleton in list_mat_skeletons]
     nb_framestotal= max(liste_nb_framestotal)
-    #check_nombre_frames(list_mat_skeletons) # Check si toutes les skeletons ont le même nombre de frames, sinon renvoie une erreur. Updated the 08/08
+    #check_nombre_frames(list_mat_skeletons) # Check if every skeleton have the same length. Updated the 08/08
     nb_skeletons=len(list_mat_skeletons)
     x_coord = int(0)
     y_coord = int(2)
@@ -57,7 +57,7 @@ def plot_video_skeletons(list_mat_skeletons,title=None,write=True,animate=False,
     xlimm=min(min([ np.amin(list_mat_skeletons[i][:,x_coord,:]) for i in range(nb_skeletons)]),-axis_length)
     ylimm=min(min([ np.amin(list_mat_skeletons[i][:,y_coord,:]) for i in range(nb_skeletons)]),-axis_length)
     zlimm=min(min([ np.amin(list_mat_skeletons[i][:,z_coord,:]) for i in range(nb_skeletons)]),-axis_length)
-    #* Défine la figure overall, c'est que du statique 
+    #* Static value, define everything about the plot
     fig=plt.figure()
     ax=fig.add_subplot(111,projection='3d')
     ax.set_xlabel('X')
@@ -65,10 +65,10 @@ def plot_video_skeletons(list_mat_skeletons,title=None,write=True,animate=False,
     ax.set_zlabel('Z')
     #for nice view
     ax.view_init(10,50)
-    #* Plot des points de références
+    #* reference plot
     ax.scatter([0], [0], [0], color="red")
     ax.scatter([axis_length, 0, 0], [0, axis_length, 0], [0, 0, axis_length], marker="v", color="red")
-    # plot des lignes de références 
+    # line reference for plotting
     x_axis = plt3d.art3d.Line3D([0, axis_length], [0, 0], [0, 0])
     x_axis.set_color("red")
     y_axis = plt3d.art3d.Line3D([0, 0], [0, axis_length], [0, 0])
@@ -78,7 +78,7 @@ def plot_video_skeletons(list_mat_skeletons,title=None,write=True,animate=False,
     ax.add_line(x_axis)
     ax.add_line(y_axis)
     ax.add_line(z_axis)
-    #* Ici on a les trois points, les axes 
+    #* set ax
     ax.set_xlim3d(xlimm, xlimp)
     ax.set_ylim3d(ylimm, ylimp)
     ax.set_zlim3d(zlimm, zlimp)
@@ -87,12 +87,13 @@ def plot_video_skeletons(list_mat_skeletons,title=None,write=True,animate=False,
         ax.text2D(0.05, 0.95,title, transform=ax.transAxes)
         if nb_skeletons==1:
             ax.text2D(0.1,0.90,"the skeleton",color=liste_color_skeleton[0], transform=ax.transAxes)
-
+        # Add a legend 
         if nb_skeletons==2:
-            ax.text2D(0.1,0.90,"ground skeleton",color=liste_color_skeleton[0], transform=ax.transAxes)
+            ax.text2D(0.1,0.90,"ground skeleton",color=liste_color_skeleton[0], transform=ax.transAxes) 
             ax.text2D(0.1,0.85,"predicted skeleton",color=liste_color_skeleton[1], transform=ax.transAxes)
     else:
         ax.text2D(0.05, 0.95,save_name, transform=ax.transAxes)
+        # Add a legend 
         if nb_skeletons==1:
             ax.text2D(0.05,0.90,"skeleton",color=liste_color_skeleton[0], transform=ax.transAxes)
 
@@ -101,11 +102,11 @@ def plot_video_skeletons(list_mat_skeletons,title=None,write=True,animate=False,
             ax.text2D(0.05,0.85,"predicted skeleton",color=liste_color_skeleton[1], transform=ax.transAxes)
 
   
-    #* On définit les lignes et points à animer
+    #* define point and lines to animate
     liste_line=[ [ax.plot([],[],[],linestyle=':',color=liste_color_skeleton[k])[0] for _ in connexion_tuples] for k in range(nb_skeletons) ]
     liste_point=[[ax.plot([],[],[],color=liste_color_skeleton[k],marker='o',markersize=3)[0] for _ in range(25)] for k in range(nb_skeletons)]
     liste_invariant=[ [ax.plot([0],[0],[0],color='green')[0] for _ in range(4)] for _ in range(nb_skeletons) ]
-    #* On définit les fonctions d'animation
+    #* define the animation function. that's the core of matplotilib animation
     def update(iteration,list_mat_skeletons,ligneaplots,pointss,invariants):
         """ On mets a jour le plot, c'est sombre mais fonctionnel théoriquement """
         for k in range(nb_skeletons):
@@ -142,11 +143,11 @@ def plot_video_skeletons(list_mat_skeletons,title=None,write=True,animate=False,
             
             invariant[3].set_3d_properties(np.linspace(0,z_spine_mid,num=20))
             
-            #* des points qui ne bougent pas 
+            
         
         return ligneaplots,pointss,invariants
     
-    #* Fin on met tous en forme pour l'animation
+
 
     if not os.path.exists(path_folder_save):
         os.makedirs(path_folder_save)
@@ -166,23 +167,25 @@ def plot_video_skeletons(list_mat_skeletons,title=None,write=True,animate=False,
 
 
 def plot_skeleton(path_skeleton:str=None,save_name='skeleton',title=None,write=True,animate=False,path_folder_save='./videos/',num_body=0):
-    """plot le skeleton d'une personne du dataset NTU RGB+D sachant le .skeleton.
+    """knowing the .skeleton, return the video of the skeleton
     require to download ffmpeg I think
 
     Parameters
     ----------
     path_skeleton : str
-        le path complet du skeleton
+        complete path of the skeleton
     save_name : str, 
-        le nom du fichier qu'on va sauvegarder ( sans le .MP4), by default 'skeleton'
+        name of the saved file (without.mp4), by default 'skeleton'
     title : str, optional
-        nom du titre visible dans le .mp4 à côté de l'action, by default None
+        title of the video (will be plotted above the action), by default None
     write : bool, optional
-        si True, renvoie un fichier .mp4 dans le bon dossier, by default True
+        if True we save the animation, by default True
     animate : bool, optional
-        si True, renvoie la version non animé mais buggé de base, by default False
+        if True, it returns the animate version but seemed buggy on vscode, by default False
     path_folder_save : str, optional
         folder where we store the videos, by default './videos/'
+    num_body: int, optional
+        the number of body we want to see. if it is equal to -1 , show every skeleton in the scene (untried one)
 
     Returns
     -------
@@ -198,17 +201,27 @@ def plot_skeleton(path_skeleton:str=None,save_name='skeleton',title=None,write=T
     if not path_skeleton.strip().endswith('.skeleton') and not path_skeleton.strip().endswith('.npy'):
         path_skeleton='./dataset/NTU_RGB+D/raw/'+path_skeleton+'.skeleton'
 
-    if path_skeleton.strip().endswith('.skeleton'):
+    if path_skeleton.strip().endswith('.skeleton'): #*Debugged versions
         skeleton = read_xyz(path_skeleton) # l'ouput est `(3 {x, y, z}, max_frame, num_joint, 2 {n_subjects})
-        nv_skeleton=skeleton.transpose(3, 2, 0, 1)[num_body] #! Il st de la forme (nb_joints,3,nb_frames)
+        if num_body>=0:
+            nv_skeleton=[skeleton.transpose(3, 2, 0, 1)[num_body]] #! (nb_joints,3,nb_frames)
+        if num_body==-1:
+            nv_skeleton=[skeleton.transpose(3, 2, 0, 1)[k] for k in range(skeleton.transpose(3, 2, 0, 1).shape[0])]
+
 
     elif path_skeleton.strip().endswith('.npy'):
         skeleton=np.load(path_skeleton,allow_pickle=True).item()
-        print(' le plot de skeleton en .npy nest pas encore supporté,unexpected behavior EXPECTED !')
-        skeleton=skeleton['b0']
-        nv_skeleton=skeleton.transpose(3, 2, 0, 1)[0] #! Il st de la forme (nb_joints,3,nb_frames)
+        print('.npy plot skeleton isnt yet supported,unexpected behavior EXPECTED !')
+        if num_body>=0:
+            skeleton=skeleton[f'skel_body{num_body}'] # shape of [frames,nb_joints,3]
+            nv_skeleton=[skeleton.transpose(1,2,0)]
+        elif num_body==-1:
+            nbodys=skeleton['nbodys'][0] # assert the number of bodys of a frame are the same
+
+            skeleton=[skeleton[f'skel_body{num_body}'] for num_body in range(nbodys)]
+            nv_skeleton=[skeleton1.transpose(1,2,0) for skeleton1 in skeleton ]
 
     else:
         assert ValueError('Unexpected file format, expected .skeleton or .npy')
     print("On sauvegarde le skeleton au nom de ",save_name)
-    return plot_video_skeletons(list_mat_skeletons=[nv_skeleton],save_name=save_name,title=title,write=write,animate=animate,path_folder_save=path_folder_save)
+    return plot_video_skeletons(list_mat_skeletons=nv_skeleton,save_name=save_name,title=title,write=write,animate=animate,path_folder_save=path_folder_save)

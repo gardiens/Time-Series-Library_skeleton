@@ -1570,22 +1570,22 @@ def data_rentrer_dans_DATASET_NTU(path_csv:str='./dataset/NTU_RGB+D/summary_NTU/
     df=pd.read_csv(path_csv,low_memory=False)
 
     #On va faire un filtre sur les données
-    if preprocess==0: #* Pas de modification du dataset non particulière 
-        nvdf=df[(df['nb_frames']>=seq_len+out_len+df['debut_frame']) & (df['num_body']<=2)].dropna() #* CEST ICI QUON RECUPERE SEULEMENT CEUX QUI ONT UN NOMBRE DE FRAME SUFFISANT, A CHANGER SI BESOIn!!
-        return nvdf
-    elif preprocess==6:
+    if preprocess==0: #* la différence est dans le nombre de frame. Pour 0  la séquence à prédire inclus la séquence d'entrée
         nvdf=df[(df['nb_frames']>=seq_len+out_len+df['debut_frame']) & (df['num_body']<=2)].dropna() #* CEST ICI QUON RECUPERE SEULEMENT CEUX QUI ONT UN NOMBRE DE FRAME SUFFISANT, A CHANGER SI BESOIn!!
         return nvdf
     elif preprocess>=1:
-        #print("Attention on filtre le dataset")
-        excel_sheet=pd.read_excel(path_excel)
-        row_to_keep=excel_sheet["A"].where((excel_sheet["good_data"]=="x")|(excel_sheet["average_data"]=="x")).dropna()#* On récupère uniquement les rows labéllisés comme bonne ou moyens dans l'excel
-
         nvdf=df[(df['nb_frames']>=out_len+df['debut_frame']) & (df['num_body']<=2)].dropna() #* CEST ICI QUON RECUPERE SEULEMENT CEUX QUI ONT UN NOMBRE DE FRAME SUFFISANT, A CHANGER SI BESOIn!!
-        #! Attention, on suppose ici que out_len comprend seq_len !                                                                                                                                                                                                                            
-        nvdf=nvdf.where((nvdf['acti'].isin(row_to_keep)) &(nvdf["nb_chp"]>0)).dropna() #! nb_chp doitbien être à 0 
+
+        try: #Cas si on a data quality
+            excel_sheet=pd.read_excel(path_excel)
+            row_to_keep=excel_sheet["A"].where((excel_sheet["good_data"]=="x")|(excel_sheet["average_data"]=="x")).dropna()#* On récupère uniquement les rows labéllisés comme bonne ou moyens dans l'excel
+
+            #! Attention, on suppose ici que out_len comprend seq_len !                                                                                                                                                                                                                            
+            nvdf=nvdf.where((nvdf['acti'].isin(row_to_keep)) &(nvdf["nb_chp"]>0)).dropna() #! nb_chp doitbien être à 0 
+        except: # Autre cas
+            print("we didn't find data quality.xlsx, did you have it?")
+            nvdf=nvdf.where((nvdf["nb_chp"]>0)).dropna() #! nb_chp doitbien être à 0 
         nvdf["debut_frame"] =np.where(nvdf["chp"]+seq_len+out_len<nvdf["nb_frames"],nvdf["chp"], nvdf["debut_frame"])
-        #nvdf["debut_frame"]=nvdf["debut_frame"] if nvdf["chp"].str[1]+seq_len+out_len>int(nvdf["nb_frames"]) else nvdf["chp"].str[1]
     return nvdf 
 
 

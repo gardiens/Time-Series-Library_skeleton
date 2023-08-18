@@ -1,18 +1,9 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+
 <a name="readme-top"></a>
 <!--
 
 
 
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 
 
 <!-- PROJECT LOGO -->
@@ -69,7 +60,7 @@
 
 
 The goal of this project is to predict skeleton using Deep-learning architectures especially  using FEDFormers and AutoFormers. It relies heavily on Time-series Library from [thuml]( https://github.com/thuml/Time-Series-Library/tree/main)
-Don't forget to give the project a star! Thanks again!
+Don't forget to give the project and thuml's project a star! Thanks again!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -116,8 +107,8 @@ this repo provides several features:
 - you can train FEDFormers and AutoFormers on this dataset thanks to exp_Long_Term_Forecast
 - you can plot your results.they are stored in test_results after the test of your model.
 
-I added on every folder a readme to help you to grasp what functions are supposed to do. A FAQ is as well available for  any further technical questions. This comments are unfortunately in French.
-If you want to use fast some function of this repo, I added a COMMANDE_UTILE.ipynb which is supposed to summarize the needed functions.
+I added on every folder a readme to help you to grasp what functions are supposed to do. A [FAQ](https://github.com/gardiens/Time-Series-Library_babygarches/blob/master/FAQ.md#faq-questions-techniques-et-autres) is as well available for  any further technical questions. This comments are unfortunately in French.
+If you want to use fast some function of this repo, I added a COMMANDE_UTILE.ipynb which is supposed to summarize the usual functions.
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -144,7 +135,7 @@ Project Link: [https://github.com/gardiens/Time-Series-Library_babygarches](http
 you can contact me by email ( pierrick.bournez@student-cs.fr ).
 Please star if you find this repo useful :) 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
+ you can have access of some insights of my experiene [here](A METTRE) if you are lucky enough
 
 
 

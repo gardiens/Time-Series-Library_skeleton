@@ -37,27 +37,30 @@ seq_len correspond à la longueur à prédire, pred_len à la longueur à prédi
  ```console
  long_term_forecast_model-id_FEDformer_NTU_ftM_sl16_ll32_pl32_dm512_nh8_el2_dl1_df2048_fc3_ebtimeNTU_dtTrue_Exp_0_cv0_tvv1_p3
  ```
-- long_term_forecast:  le nom de l'expérience qu'on utilise. Normalement ce sera toujours long_term_forecast (sinon il va y avoir des bugs dans get_settings)
-- model-id: l'id du modèle qu'on expérimente. C'est le nom auquel on va faire référence
-- FEDformer: nom en string du modèle
--NTU: nom du dataset
--ftM: indique si on prédit en varié ou multivarié, noramlement on ne touchera pas à ça
--sl: séquence len ,longueur de l'input en entrée
--ll: label len, longueur du label
--pl:longueur de prédiction
--dm: dimension du modèle, je crois que c'est la dimension de l'espace intermédiaire entre les layers
--nh:  je ne sais pas
--el: nombre de layers de l'encodeur
-dl: nombre de layer du décodeur
--df: dimension du modèle, je crois que c'est la dimension de l'espace intermédiaire entre les layers
--fc: je crois que cela représente la window average utilisé pour le serie decompositionde certains modèle
--ebtime: comment on encode le temps, NTU signifie qu'on nefait rien 
--dt: 
--EXP: nom de l'expérience
--0: nombre d'itération, globalement un boulet
--cv: 1 si on prend les categorical value, 0 sinon
--tv: 1 si on récupère dans le dataset l'encodage du temps , 0 sinon
-- p: preprocesisng. 1 est le preprocessing recomandé pour FEfformer et cela modifie juste comment on preprocess le skeleton en entrée.
+
+| nom du setting     	| signification                                                                                           	| remarque éventuelle                                                                                           	|
+|--------------------	|---------------------------------------------------------------------------------------------------------	|---------------------------------------------------------------------------------------------------------------	|
+| long_term_forecast 	| nom de l'expérience qu'on utilise. Normalement ce sera toujours celui-ci ( sinon bug dans get_settings) 	|                                                                                                               	|
+| model_id           	| id du modèle qu'on expérimente                                                                          	| nom des expériences qu'on va faire référence                                                                  	|
+| FEDFormer          	| nom du string du modèle                                                                                 	| le même que celui dans le model_dict                                                                          	|
+| NTU                	| nom du dataset                                                                                          	| Même nom que le nom du dataset dans le data_dict                                                              	|
+| ft M               	| indique si on prédit en varié ou multivarié                                                             	| à priori ne pas changer                                                                                       	|
+| sl                 	| longueur de l'input                                                                                     	| dans le code correspond à args.seq_len                                                                        	|
+| ll                 	| longueur du label                                                                                       	| dans le code correspond à args.label_len                                                                      	|
+| pl                 	| longueur de prédiction                                                                                  	| correspond à args.pred_len                                                                                    	|
+| dm                 	| dimension du modèle, je crois que c'est la dimension intermédiaire entre les layers                     	|                                                                                                               	|
+| nh                 	| je ne sais pas                                                                                          	|                                                                                                               	|
+| el                 	| nombre de layer de l'encodeur                                                                           	| 2 est un fort minimum local                                                                                   	|
+| dl                 	| nombre de layer du décodeur                                                                             	| 1 fort minimum local                                                                                          	|
+| df                 	| dimension du modèle, ptet la dimension de l'espace intermédiaire                                        	| cet hyperparamètre ne joue pas trop dans le tuning de FEDF                                                    	|
+| fc                 	| winow average utilisé dans la seric decomposition de certains modèle                                    	|                                                                                                               	|
+| ebtime             	| comment on encode le temps.                                                                             	| Pour NTU c'est embedNTU qui correspond à ne rien faire                                                        	|
+| dt                 	| ?                                                                                                       	| ?                                                                                                             	|
+| EXP                	| nom de l'expérience                                                                                     	| je crois que c'est pour faire joli                                                                            	|
+| 0                  	| nombre d'itération, à priori c'est un boulet                                                            	|                                                                                                               	|
+| cv                 	| 1 si on prend les categorical value, 0 sinon                                                            	| recommandé 0. Sinon il ne fait que concaténer les catégories à l'input                                        	|
+| tv                 	| 1 si on récupère dans le dataset l'encodage du temps,0 sinon                                            	| recommandé 1                                                                                                  	|
+| p                  	| preprocessing de l'entrée,                                                                              	| le preprocessing recommandé pour FEDFormer est 1 pour enlever uniquement l'épine et 3 pour enlever la moyenne 	|
 ### Tensorboard comment c'est implémenté?
 Tensorboad est initialisé au début de Exp et nous ajoutons au modèle les loss de train/vali/test à chaque epoch.
 
