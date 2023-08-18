@@ -64,7 +64,17 @@ Don't forget to give the project and thuml's project a star! Thanks again!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- USAGE EXAMPLES -->
 
+
+## Usage
+this repo provides several features:
+- you can preprocess the NTU_RGB+D  dataset efficiently. The implementation is in the folder data_loader
+- you can train FEDFormers and AutoFormers on this dataset thanks to exp_Long_Term_Forecast
+- you can plot your results.they are stored in test_results after the test of your model. if you just want to plot the skeleton, you can look [here](https://github.com/gardiens/plot_skeleton_NTU_RGB-D)
+
+I added on every folder a readme to help you to grasp what functions are supposed to do. A [FAQ](https://github.com/gardiens/Time-Series-Library_babygarches/blob/master/FAQ.md#faq-questions-techniques-et-autres) is as well available for  any further technical questions. This comments are unfortunately in French.
+If you want to use fast some function of this repo, I added a COMMANDE_UTILE.ipynb which is supposed to summarize the usual functions.
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -81,34 +91,29 @@ To get a local copy up and running follow these simple  steps.
    pip install requirements.txt
    ```
    if you are working on the dataset NTU RGB+D you may need to download [ffmpeg](https://ffmpeg.org/about.html)
+
 3. If you want to use NTU_RGB download the dataset [here](https://rose1.ntu.edu.sg/dataset/actionRecognition/)
+
 4. run txt2npy. 
 the file .npy should be stored in dataset/NTU_RGB+D/numpyed/ and the raw data should be in dataset/NTU_RGB+D/raw/
+
 5. build the csv for the data. it may take a while
  ```py
    python3 build_csv.py
    ```
+
 6. then run the main.py with your argument :)  Somes scripts are provided in the scripts folder. for example:
  ```console
    sh scripts/utils/template_script.sh
    ```
+   
 7. You can deep dive on your results with several tools. Videos of some sample are stored in the folder test_results, a dataframe of the loss of each sample is stored in results and you can see your runs in the folder runs thanks to Tensorboard
 
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
-<!-- USAGE EXAMPLES -->
-## Usage
-this repo provides several features:
-- you can preprocess the NTU_RGB+D  dataset efficiently. The implementation is in the folder data_loader
-- you can train FEDFormers and AutoFormers on this dataset thanks to exp_Long_Term_Forecast
-- you can plot your results.they are stored in test_results after the test of your model.
-
-I added on every folder a readme to help you to grasp what functions are supposed to do. A [FAQ](https://github.com/gardiens/Time-Series-Library_babygarches/blob/master/FAQ.md#faq-questions-techniques-et-autres) is as well available for  any further technical questions. This comments are unfortunately in French.
-If you want to use fast some function of this repo, I added a COMMANDE_UTILE.ipynb which is supposed to summarize the usual functions.
+https://github.com/gardiens/livrables
 
 <!-- ROADMAP -->
 ## Roadmap
