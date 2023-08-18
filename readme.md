@@ -72,7 +72,7 @@ Don't forget to give the project and thuml's project a star! Thanks again!
 this repo provides several features:
 - you can preprocess the NTU_RGB+D  dataset efficiently. The implementation is in the folder data_loader
 - you can train FEDFormers and AutoFormers on this dataset thanks to exp_Long_Term_Forecast
-- you can plot your results.they are stored in test_results after the test of your model. if you just want to plot the skeleton, you can look [here](https://github.com/gardiens/plot_skeleton_NTU_RGB-D)
+- you can plot your results. They are stored in test_results after the test of your model. if you just want to plot the skeleton, you can look [here](https://github.com/gardiens/plot_skeleton_NTU_RGB-D)
 
 I added on every folder a readme to help you to grasp what functions are supposed to do.\
 A [FAQ](https://github.com/gardiens/Time-Series-Library_babygarches/blob/master/FAQ.md#faq-questions-techniques-et-autres) is as well available for  any further technical questions. This comments are unfortunately in French.\
@@ -138,8 +138,9 @@ if you are working on the dataset NTU RGB+D you may need to download [ffmpeg](ht
 
 
 Project Link: [https://github.com/gardiens/Time-Series-Library_babygarches](https://github.com/gardiens/Time-Series-Library_babygarches) \
-you can contact me by email ( pierrick.bournez@student-cs.fr ).If you have new idea or findings, you can talk to Mr rambaud : philippe.rambaud@lisn.fr;
-Please star if you find this repo useful :) 
+you can contact me by email ( pierrick.bournez@student-cs.fr ). \
+If you have new idea or findings, you can talk to Mr rambaud : philippe.rambaud@lisn.fr\
+Please star if you find this repo useful :)  \
  you can have access of some insights of my experience  [here](https://github.com/gardiens/livrables) if you are lucky enough
 
 ##  Citation
