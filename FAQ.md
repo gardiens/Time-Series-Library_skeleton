@@ -1,14 +1,5 @@
 # FAQ: questions techniques et autres
 
-### Comment tester rapidement un modèle?
-Voir commande_utile  Run of the model:FED pour plus d'explications. Il ne faut pas oublier de choisir au début un arg.
-
-
-### Quels modèles recommandez vous d'essayer?
-
-Nous avons testé  lors de stage principalement AutoFormer,FEDFormer et légèrement NTS. Nous recommandons FEDformer qui donne des résultats décents.  Concernant les autres modèles, nous tenons à signaler qu'ils semblent relativement peu optimiser car la compléxité temporelle semble non néggligeable...
-###  Comment rajouter rapidement un modèle à l'implémentation? 
-Il suffit d'implémenter un torch.nn module avec une méthode forward. Voir [ici](https://pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html)  pour plus d'informations
 
 # Dataset 
 ###  Comment faire de la Data Augmentation?
@@ -34,7 +25,7 @@ Dans la fonction __getitem__ , il doit produire en sortie au moins 4 matrices qu
 - label, la matrice de la série temporelle  à prédire. Elle est de la forme (pred_len,nb_channel)
 - time_value_enc, matrice de la série temporelle qui encode le temps en entrée.Il est de la forme (seq_len,)
 - time_value_dec, matrice de la série temporelle qui encode le temps pour le label. Il est de la forme (pred_len,).
-
+Il faut ensuite rajouter un nom à votre dataset dans le data_dict de data_factory
 
 
 # Modèle 
@@ -70,6 +61,18 @@ dl: nombre de layer du décodeur
 ### Tensorboard comment c'est implémenté?
 Tensorboad est initialisé au début de Exp et nous ajoutons au modèle les loss de train/vali/test à chaque epoch.
 
+### Comment tester rapidement un modèle?
+Voir commande_utile  Run of the model:FED pour plus d'explications. Il ne faut pas oublier de choisir au début un arg.
+
+
+### Quels modèles recommandez vous d'essayer?
+
+Nous avons testé  lors de stage principalement AutoFormer,FEDFormer et légèrement NTS. Nous recommandons FEDformer qui donne des résultats décents.  Concernant les autres modèles, nous tenons à signaler qu'ils semblent relativement peu optimiser car la compléxité temporelle semble non néggligeable... 
+
+
+###  Comment rajouter rapidement un modèle à l'implémentation? 
+Il suffit d'implémenter un torch.nn module avec une méthode forward. Voir [ici](https://pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html)  pour plus d'informations.
+Il faut ensuite donner un nom du model dans exp_basic du dossier exp.
 # Bugs ou techniques utiles.
 
 
@@ -86,7 +89,7 @@ Sinon il faut chercher sur le net mais il s'agit d'un bug présent sur une versi
 
 ### C'est qui ce cupy dans les import?
 
- Numpy ne marche pas sur GPU, donc pour accélerer le training il fallait soit passer en torch soit utiliser une autre librairie. Cupy a l'avantage d'avoir une interface proche de Numpy et d'être GPU friendly sans aucune réecriture, nous avons donc adopté cette solution.
+ Numpy ne marche pas sur GPU, donc pour accélerer le training il fallait soit passer en torch soit utiliser une autre librairie. Cupy a l'avantage d'avoir une interface proche de Numpy et d'être GPU friendly sans aucune réecriture, nous avons donc adopté cette solution. A noter qu'il y a eût une augmentation de près de 0.1 seconde par itération mais que numpy est importé au lieu de numpy dans certains dossiers.
 
 
 
@@ -132,7 +135,7 @@ Les sorties d'une boucle de train et de test sont de trois natures:
  - Si on veut faire en sortie du modèle il preprocess un peu les données et utiliser plot_video_skeleton
  ```py 
  plot_video_skeletons(list_mat_skeleton= liste des array desskeleton qu'on veut plot de la bonne manière, save_name=nom du fichier sauvegardé, path_folder_save= nom du dossier où on veut sauvegardé.)
-```
+ ```
 
 ### Pourquoi c'est aussi mal codé?
 Je ne suis pas encore employé chez google et il y a peut-être une raison....

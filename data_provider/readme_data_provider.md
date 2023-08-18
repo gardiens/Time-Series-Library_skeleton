@@ -37,8 +37,8 @@ Pour rajouter son propre dataset, il faut créer un dataset pytorch  qui va poss
 Dans la fonction __getitem__ , il doit produire en sortie au moins 4 matrices qui sont:
 - entry, une matrice de la série temporelle de départ. Elle est de la forme (seq_len,nb_channel)
 - label, la matrice de la série temporelle  à prédire. Elle est de la forme (pred_len,nb_channel)
-- time_value_enc, matrice de la série temporelle qui encode le temps en entrée.Il est de la forme (seq_len,)
-- time_value_dec, matrice de la série temporelle qui encode le temps pour le label. Il est de la forme (pred_len,).
+- time_value_enc, matrice de la série temporelle qui encode le temps en entrée.Il est de la forme (seq_len)
+- time_value_dec, matrice de la série temporelle qui encode le temps pour le label. Il est de la forme (pred_len).
 
 
 ## Quels sont les data augmentation disponible?
@@ -49,7 +49,7 @@ Nous proposons 4 type de data augmentation possible:
 4. Une prédiction type "Cutmix " [3] Cette prédiction est un raffinement de Mixup : On va prendre cette fois non une séparation (haut/bas) mais on va à la place prendre deux échantillons puis prendre aléatoirement des membres des deux personnes pour en faire un nouveaux sample
 Concernant l’application de ces augmentations, on peut les tester uniformément (on en applique à chaque fois) ou avec des Policy particulières comme Rand Augment ou Fast Rand Augment [4]. Dans notre cas, nous n’avons fait que les appliquer individuellement sur les samples initiaux. Il est aussi à noter que nous prenons les données augmentées ET les données initiales, une autre éventualité aurait été de transformer les données initiales par ces transformations. 
 
-Pour pouvoir les utiliser, il suffit d'ajouter en argument à main.py --augment et de mettre "--prop 0.05,0.05,0.05,0.05". le premier est backward, le second flip, le troisième cutmix et le dernier Randmix. Il est à noter que notre implémentation <b> ajoute</b> les données augmentées au dataset et non les transforme.
+Pour pouvoir les utiliser, il suffit d'ajouter en argument à main.py --augment et de mettre "--prop 0.05,0.05,0.05,0.05". le premier est la proportion de data augmentée pour backward, le second flip, le troisième cutmix et le dernier Randmix. Il est à noter que notre implémentation <b> ajoute</b> les données augmentées au dataset et non les transforme.
 
 
 ##Todo: 

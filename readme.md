@@ -89,6 +89,7 @@ To get a local copy up and running follow these simple  steps.
   ```py
    pip install requirements.txt
    ```
+   if you are working on the dataset NTU RGB+D you may need to download [ffmpeg](https://ffmpeg.org/about.html)
 3. If you want to use NTU_RGB download the dataset [here](https://rose1.ntu.edu.sg/dataset/actionRecognition/)
 4. run txt2npy. 
 the file .npy should be stored in dataset/NTU_RGB+D/numpyed/ and the raw data should be in dataset/NTU_RGB+D/raw/
@@ -100,7 +101,7 @@ the file .npy should be stored in dataset/NTU_RGB+D/numpyed/ and the raw data sh
  ```console
    sh scripts/utils/template_script.sh
    ```
-7. You can deep dive on your data with several tools. Videos of some sample are stored in the folder test_results, a dataframe of the loss of each sample is stored in results and you can see your runs in the folder runs thanks to Tensorboard
+7. You can deep dive on your results with several tools. Videos of some sample are stored in the folder test_results, a dataframe of the loss of each sample is stored in results and you can see your runs in the folder runs thanks to Tensorboard
 
 
 

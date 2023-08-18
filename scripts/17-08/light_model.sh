@@ -55,7 +55,7 @@ pred_len=32
 label_len=32
 data=NTU
 batch_size=256
-model_id_name=17-08-${model_name}
+model_id_name=17-08-${model_name} #c'est du pre
 python -u run.py \
   --task_name long_term_forecast \
   --is_training 1 \

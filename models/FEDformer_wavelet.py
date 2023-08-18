@@ -12,6 +12,7 @@ class Model(nn.Module):
     """
     FEDformer performs the attention mechanism on frequency domain and achieved O(N) complexity
     Paper link: https://proceedings.mlr.press/v162/zhou22g.html
+    This is the same FEDFormer but with the version Wavelets.
     """
 
     def __init__(self, configs, version='Wavelets', mode_select='random', modes=32):
