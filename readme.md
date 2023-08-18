@@ -75,7 +75,7 @@ this repo provides several features:
 - you can plot your results. They are stored in test_results after the test of your model. if you just want to plot the skeleton, you can look [here](https://github.com/gardiens/plot_skeleton_NTU_RGB-D)
 
 
-You can see how our model behaves on the dataset in the folder videos_example. Please notice that theirs is still a lot of possible improvements.  \
+You can see how our model behaves on the dataset in the folder [videos_example](https://github.com/gardiens/Time-Series-Library_babygarches/tree/master/videos_example). Please notice that theirs is still a lot of possible improvements.  \
 I added on every folder a readme to help you to grasp what functions are supposed to do.\
 A [FAQ](https://github.com/gardiens/Time-Series-Library_babygarches/blob/master/FAQ.md#faq-questions-techniques-et-autres) is as well available for  any further technical questions. This comments are unfortunately in French.\
 If you want to use fast some function of this repo, I added a COMMANDE_UTILE.ipynb which is supposed to summarize the usual functions.
