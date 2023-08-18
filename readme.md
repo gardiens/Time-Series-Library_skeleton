@@ -90,7 +90,7 @@ To get a local copy up and running follow these simple  steps.
   ```py
    pip install requirements.txt
    ```
-   if you are working on the dataset NTU RGB+D you may need to download [ffmpeg](https://ffmpeg.org/about.html)
+   
 
 3. If you want to use NTU_RGB download the dataset [here](https://rose1.ntu.edu.sg/dataset/actionRecognition/)
 
@@ -102,18 +102,17 @@ the file .npy should be stored in dataset/NTU_RGB+D/numpyed/ and the raw data sh
    python3 build_csv.py
    ```
 
-6. then run the main.py with your argument :)  Somes scripts are provided in the scripts folder. for example:
+6. then run the main.py with your argument :)  Some scripts are provided in the scripts folder. for example:
  ```console
    sh scripts/utils/template_script.sh
    ```
-   
-7. You can deep dive on your results with several tools. Videos of some sample are stored in the folder test_results, a dataframe of the loss of each sample is stored in results and you can see your runs in the folder runs thanks to Tensorboard
 
+7. You can deep dive on your results with several tools. Videos of some sample are stored in the folder test_results, a dataframe of the loss of each sample is stored in results and you can see your runs in the folder runs thanks to Tensorboard
+if you are working on the dataset NTU RGB+D you may need to download [ffmpeg](https://ffmpeg.org/about.html) to see videos.
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-https://github.com/gardiens/livrables
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -139,13 +138,20 @@ https://github.com/gardiens/livrables
 Project Link: [https://github.com/gardiens/Time-Series-Library_babygarches](https://github.com/gardiens/Time-Series-Library_babygarches) 
 you can contact me by email ( pierrick.bournez@student-cs.fr ).
 Please star if you find this repo useful :) 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
- you can have access of some insights of my experiene [here](A METTRE) if you are lucky enough
+ you can have access of some insights of my experience  [here](https://github.com/gardiens/livrables) if you are lucky enough
 
+##  Citation
+incoming
 
+## Acknowledgement
 
-## Pipeline of the code
-the code is organised as follow:
+This library is constructed based on this repo : 
+  - Time Series Library (TSlib): 
+  https://github.com/thuml/Time-Series-Library/tree/main
+- you can download the dataset of NTU-RGB : https://rose1.ntu.edu.sg/dataset/actionRecognition/
+- Credit to Tobias Baumgaertner for the main picture of the readme
+## (technical:) Pipeline of the code
+the code is organized as follow:
 1. When you run main.py, it builds an instance of exp/Long_term_forecasting which is the pipeline of the training/test 
 2. it find the dataset on [dataset/your_dataset](https://github.com/gardiens/Time-Series-Library_babygarches/tree/master/data_provider) and builds the model in [models/your_model](https://github.com/gardiens/Time-Series-Library_babygarches/tree/master/models). it eventually runs  the training/test code
 3. you can fetch the result and have logs on several folder. 
