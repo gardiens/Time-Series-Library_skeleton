@@ -171,3 +171,5 @@ data_loader_all.py
 !COMMANDE_UTILE.ipynb
 /dataset/*
 !/dataset/*.md
+
+!/videos_example/*.mp4
