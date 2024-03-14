@@ -120,6 +120,7 @@ if you are working on the dataset NTU RGB+D you may need to download [ffmpeg](ht
 
 <!-- ROADMAP -->
 ## Roadmap
+This is a roadmap if I would like to push the project further, however I will not do it in a close futur
 ### Non technical roadmap
 - [ ] Insert Categorical value in the prediction.
 - [ ] Insert Wavelet Transform
